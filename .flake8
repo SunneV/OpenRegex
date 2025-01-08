@@ -1,0 +1,150 @@
+[flake8]
+# E101 - Indentation contains mixed spaces and tabs
+# E111 - Indentation is not a multiple of four
+# E112 - Expected an indented block
+# E113 - Unexpected indentation
+# E114 - Indentation is not a multiple of four (comment)
+# E115 - Expected an indented block (comment)
+# E116 - Unexpected indentation (comment)
+# E121 - Continuation line under-indented for hanging indent
+# E122 - Continuation line missing indentation or outdented
+# E123 - Closing bracket does not match indentation of opening bracket's line
+# E124 - Closing bracket does not match visual indentation
+# E125 - Continuation line with same indent as next logical line
+# E126 - Continuation line over-indented for hanging indent
+# E127 - Continuation line over-indented for visual indent
+# E128 - Continuation line under-indented for visual indent
+# E129 - Visually indented line with same indent as next logical line
+# E131 - Continuation line unaligned for hanging indent
+# E133 - Closing bracket is missing indentation
+# E201 - Whitespace after '('
+# E202 - Whitespace before ')'
+# E203 - Whitespace before ':'
+# E211 - Whitespace before '('
+# E221 - Multiple spaces before operator
+# E222 - Multiple spaces after operator
+# E223 - Tab before operator
+# E224 - Tab after operator
+# E225 - Missing whitespace around operator
+# E226 - Missing whitespace around arithmetic operator
+# E227 - Missing whitespace around bitwise or shift operator
+# E228 - Missing whitespace around modulo operator
+# E231 - Missing whitespace after ','
+# E241 - Multiple spaces after ','
+# E242 - Tab after ','
+# E251 - Unexpected spaces around keyword / parameter equals
+# E261 - At least two spaces before inline comment
+# E262 - Inline comment should start with '# '
+# E265 - Block comment should start with '# '
+# E266 - Too many leading '#' for block comment
+# E271 - Multiple spaces after keyword
+# E272 - Multiple spaces before keyword
+# E273 - Tab after keyword
+# E274 - Tab before keyword
+# E275 - Missing whitespace after keyword
+# E301 - Expected 1 blank line, found 0
+# E302 - Expected 2 blank lines, found 0
+# E303 - Too many blank lines (3)
+# E304 - Blank lines found after function decorator
+# E305 - Expected 2 blank lines after class or function definition, found 1
+# E306 - Expected 1 blank line before a nested definition
+# E401 - Multiple imports on one line
+# E402 - Module level import not at top of file
+# E501 - Line too long (82 > 79 characters)
+# E502 - The backslash is redundant between brackets
+# E701 - Multiple statements on one line (colon)
+# E702 - Multiple statements on one line (semicolon)
+# E703 - Statement ends with a semicolon
+# E704 - Multiple statements on one line (def)
+# E711 - Comparison to None should be 'if cond is None:'
+# E712 - Comparison to True should be 'if cond is True:' or 'if cond:'
+# E713 - Test for membership should be 'not in'
+# E714 - Test for object identity should be 'is not'
+# E721 - Do not compare types, use 'isinstance()'
+# E722 - Do not use bare 'except', specify exception instead
+# E731 - Do not assign a lambda expression, use a def
+# E741 - Do not use variables named 'l', 'O', or 'I'
+# E742 - Do not define classes named 'l', 'O', or 'I'
+# E743 - Do not define functions named 'l', 'O', or 'I'
+# E901 - SyntaxError or IndentationError
+# E902 - IOError
+
+# W191 - Indentation contains tabs
+# W291 - Trailing whitespace
+# W292 - No newline at end of file
+# W293 - Blank line contains whitespace
+# W391 - Blank line at end of file
+# W503 - Line break occurred before a binary operator
+# W504 - Line break occurred after a binary operator
+# W601 - .has_key() is deprecated, use 'in'
+# W602 - Deprecated form of raising exception
+# W603 - '<>' is deprecated, use '!='
+# W604 - backticks are deprecated, use 'repr()'
+# W605 - Invalid escape sequence 'x'
+# W606 - 'async' and 'await' are reserved keywords starting with Python 3.7
+
+# F401 - Module imported but unused
+# F402 - Import module from line N shadowed by loop variable
+# F403 - 'from module import *' used; unable to detect undefined names
+# F404 - Future import(s) name after other statements
+# F405 - Name may be undefined, or defined from star imports: module
+# F406 - 'from module import *' only allowed at module level
+# F407 - An undefined __future__ feature name was imported
+# F601 - Dictionary key name repeated with different values
+# F602 - Dictionary key variable name repeated with different values
+# F621 - Too many expressions in an assignment with star-unpacking
+# F622 - Two or more starred expressions in an assignment (a, *b, *c = d)
+# F631 - Assertion test is a tuple, which are always True
+# F701 - A break statement outside of a while or for loop
+# F702 - A continue statement outside of a while or for loop
+# F703 - A continue statement in a finally block in a loop
+# F704 - A yield or yield from statement outside of a function
+# F705 - A return statement with arguments inside a generator
+# F706 - A return statement outside of a function/method
+# F707 - An except: block as not the last exception handler
+# F721 - SyntaxError: doctest syntax error
+# F722 - SyntaxError: forward annotation syntax error
+# F723 - SyntaxError: comment annotation syntax error
+# F811 - Redefinition of unused name from line N
+# F812 - List comprehension redefines 'name' from line N
+# F821 - Undefined name name
+# F822 - Undefined name name in __all__
+# F823 - Local variable name ... referenced before assignment
+# F831 - Duplicate argument name in function definition
+# F841 - Local variable name is assigned to but never used
+
+# H101 - Use TODO comments for code that is temporary, a short-term solution, or good-enough but not perfect
+# H102 - Apache 2.0 license header not found
+# H103 - Have license in source file
+# H104 - File contains nothing but comments
+# H105 - Don’t use author tags
+# H106 - Don’t put vim configuration in source files
+# H201 - No ‘except:’ at least use ‘except Exception:’
+# H202 - Assert statement used
+# H233 - Python 3.x incompatible use of print operator
+# H234 - assertEquals() logs a DeprecationWarning in Python 3.x, use assertEqual() instead
+# H235 - Use assertIs(Not)None to check for None
+# H236 - Python 3.x incompatible __metaclass__, use six.add_metaclass()
+# H237 - Removed modules are imported
+# H238 - Old style class declaration, use new style (inherits from `object`)
+# H301 - One import per line
+# H302 - Import only modules.‘from foo import bar’ should be ‘import foo.bar’
+# H303 - No wildcard (*) import
+# H304 - No relative imports
+# H305 - Imports not grouped correctly
+# H306 - Alphabetically ordered imports
+# H401 - Docstring should not start with a space
+# H402 - One-line docstring should fit on one line with quotes
+# H403 - Multi line docstrings should end on a new line
+# H404 - Multi line docstring should start without a leading new line
+# H405 - Multi line docstring should start with a summary
+# H501 - Do not use locals() for string formatting
+
+ignore = E226,E302
+max-line-length = 120
+exclude =
+    tests/*
+max-complexity = 10
+
+per-file-ignores =
+    __init__.py: F401

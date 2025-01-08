@@ -1,0 +1,241 @@
+variables:
+  IMAGE_TAG_DEV: "develop"
+  IMAGE_TAG_MAIN: "latest"
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE
+  DOCKER_HUB_IMAGE: sunnev/openregex
+
+stages:
+  - build-develop
+  - lint-test
+  - auto-fix
+  - test
+  - get-version
+  - build-deploy
+  - push-to-docker-hub
+  - deploy
+
+# --- DEVELOPMENT STAGE ---
+build-dev:
+  stage: build-develop
+  image: docker:24.0.5
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  services:
+    - docker:24.0.5-dind
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - Dockerfile_dev
+      - requirements.txt
+  only:
+    changes:
+      - Dockerfile_dev
+      - requirements.txt
+      - requirements_dev.txt
+  before_script:
+    - echo "======Dev Docker Build======"
+    - mv Dockerfile_dev Dockerfile
+    - echo "======Login to GitLab Registry======"
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - echo "======Building Docker Image====="
+    - docker build -t $DOCKER_IMAGE:$IMAGE_TAG_DEV .
+    - docker push $DOCKER_IMAGE:$IMAGE_TAG_DEV
+  tags:
+    - docker
+  except:
+    - main
+  retry: 2
+
+# --- LINTING AND FORMATTING STAGE ---
+pylint-test:
+  stage: lint-test
+  image: $DOCKER_IMAGE:$IMAGE_TAG_DEV
+  before_script:
+    - echo "Installing Pylint..."
+    - pip install pylint
+  script:
+    - find . -type f -name "*.py" \( ! -path "**/.venv/**" -a ! -path "**/tests/**" \) -exec pylint --fail-under=7 {} +
+  tags:
+    - docker
+  except:
+    - main
+
+flake8-test:
+  stage: lint-test
+  image: $DOCKER_IMAGE:$IMAGE_TAG_DEV
+  before_script:
+    - echo "Installing Flake8..."
+    - pip install flake8
+  script:
+    - echo "Running Flake8..."
+    - flake8 . --filename="*.py" --exclude=".venv,tests"
+  allow_failure: true
+  tags:
+    - docker
+  except:
+    - main
+
+isort-test:
+  stage: lint-test
+  image: $DOCKER_IMAGE:$IMAGE_TAG_DEV
+  before_script:
+    - echo "Installing isort..."
+    - pip install isort
+  script:
+    - echo "Running isort..."
+    - isort --check-only --line-length 120 .
+  tags:
+    - docker
+  except:
+    - main
+
+black-test:
+  stage: lint-test
+  image: $DOCKER_IMAGE:$IMAGE_TAG_DEV
+  before_script:
+    - echo "Installing Black..."
+    - pip install black
+  script:
+    - echo "Running Black..."
+    - black --check --line-length 120 .
+  tags:
+    - docker
+  except:
+    - main
+
+# --- AUTO FIX STAGE ---
+lint-fix:
+  stage: auto-fix
+  image: $DOCKER_IMAGE:$IMAGE_TAG_DEV
+  needs:
+    - black-test
+    - isort-test
+  when: on_failure
+  before_script:
+    - echo "Installing Black and isort..."
+    - pip install black
+    - pip install isort
+    - echo "Configuring Git..."
+    - git config --global user.email ""
+    - git config --global user.name "CI Robot"
+    - git remote set-url origin --push https://${GIT_CI_USER}:${GIT_CI_PASS}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
+  script:
+    - echo "Applying Black formatting..."
+    - black --line-length 120 .
+    - git add .
+    - git commit -m "Robot - Lint Black" || true
+    - echo "Applying isort formatting..."
+    - isort --line-length 120 .
+    - git add .
+    - git commit -m "Robot - Lint Isort" || true
+    - git push origin HEAD:$CI_COMMIT_REF_NAME
+  tags:
+    - docker
+  except:
+    - main
+
+# --- TESTING STAGE ---
+pytest:
+  stage: test
+  needs:
+    - pylint-test
+    - flake8-test
+    - isort-test
+    - black-test
+  image: $DOCKER_IMAGE:$IMAGE_TAG_DEV
+  script:
+    - echo "Running Unit Tests..."
+    - export PYTHONPATH=$PYTHONPATH:`pwd`
+    - pytest --junitxml=report/report.xml
+  artifacts:
+    reports:
+      junit: report/report.xml
+  only:
+    refs:
+      - develop
+  tags:
+    - docker
+
+# --- MAIN BRANCH STAGES ---
+build-main:
+  stage: build-deploy
+  image: docker:24.0.5
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  services:
+    - docker:24.0.5-dind
+  only:
+    refs:
+      - main
+  before_script:
+    - echo "======Main Docker Build======"
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+  script:
+    - echo "======Building Docker Image====="
+    - docker build -t "$DOCKER_IMAGE:$IMAGE_TAG_MAIN" .
+    - docker push "$DOCKER_IMAGE:$IMAGE_TAG_MAIN"
+  tags:
+    - docker
+
+version:
+  stage: build-deploy
+  image: $DOCKER_IMAGE:$IMAGE_TAG_DEV
+  only:
+    refs:
+      - main
+  script:
+    - echo "======Extracting Version====="
+    - VERSION=$(python project/environments.py)
+    - echo "APP_VERSION=$VERSION" > version.env
+  artifacts:
+    reports:
+      dotenv: version.env
+  tags:
+    - docker
+
+# --- DOCKER HUB PUSH STAGE ---
+docker-hub:
+  stage: push-to-docker-hub
+  needs:
+    - build-main
+    - version
+  image: docker:24.0.5
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  services:
+    - docker:24.0.5-dind
+
+  before_script:
+    - echo "======Docker Hub Push (Version:$APP_VERSION)======"
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker pull "$DOCKER_IMAGE:$IMAGE_TAG_MAIN"
+    - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASSWORD"
+  script:
+    - docker tag "$DOCKER_IMAGE:$IMAGE_TAG_MAIN" "$DOCKER_HUB_IMAGE:$IMAGE_TAG_MAIN"
+    - docker tag "$DOCKER_IMAGE:$IMAGE_TAG_MAIN" "$DOCKER_HUB_IMAGE:$APP_VERSION"
+    - echo "======Pushing Image to Docker Hub -> $DOCKER_HUB_IMAGE:$IMAGE_TAG_MAIN====="
+    - docker push "$DOCKER_HUB_IMAGE:$IMAGE_TAG_MAIN"
+    - echo "======Tagging Image for Docker Hub -> $DOCKER_HUB_IMAGE:$APP_VERSION====="
+    - docker push "$DOCKER_HUB_IMAGE:$APP_VERSION"
+  tags:
+    - docker
+  only:
+    refs:
+      - main
+
+# --- DEPLOY STAGE ---
+release:
+  stage: deploy
+  needs:
+    - docker-hub
+  image: ubuntu
+  before_script:
+    - echo "======Starting Deployment======"
+  script:
+    - echo "Deploying application..."
+  tags:
+    - shell
+  only:
+    refs:
+      - main
