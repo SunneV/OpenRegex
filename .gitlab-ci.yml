@@ -45,6 +45,7 @@ build-dev:
     - docker
   except:
     - main
+    - tags
   retry: 2
 
 # --- LINTING AND FORMATTING STAGE ---
@@ -60,6 +61,7 @@ pylint-test:
     - docker
   except:
     - main
+    - tags
 
 flake8-test:
   stage: lint-test
@@ -75,6 +77,7 @@ flake8-test:
     - docker
   except:
     - main
+    - tags
 
 isort-test:
   stage: lint-test
@@ -89,6 +92,7 @@ isort-test:
     - docker
   except:
     - main
+    - tags
 
 black-test:
   stage: lint-test
@@ -103,6 +107,7 @@ black-test:
     - docker
   except:
     - main
+    - tags
 
 # --- AUTO FIX STAGE ---
 lint-fix:
@@ -134,6 +139,7 @@ lint-fix:
     - docker
   except:
     - main
+    - tags
 
 # --- TESTING STAGE ---
 pytest:
