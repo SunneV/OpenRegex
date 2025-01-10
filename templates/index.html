@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OpenRegex is a simple, self-hosted, web-based regular expression (regex) tester and debugger. Supports multiple engines: Python (re, regex), Java, C++.">
+    <meta name="keywords" content="regex, regular expression, tester, debugger, python, java, c++, re, regex module, web regex tool, self-hosted regex">
+    <meta name="author" content="{{app_author}}">
+    <title>{{ app_name }} - {{ app_description }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style id="dynamic-styles"></style>
+</head>
+
+<body class="light-theme">
+<div class="top-bar">
+    <button id="theme-switcher" class="theme-switcher">
+        <i class="fas fa-moon"></i>
+    </button>
+    <div class="center-container">
+        <h1>{{ app_name }}</h1>
+        <p>{{ app_description }}</p>
+    </div>
+    <div class="engine-selection">
+        <div id="engine-info" class="engine-info">
+            <table class="info-table">
+                <tr>
+                    <td>Engine:</td>
+                    <td id="selected-engine-name">
+                        <select id="engine-selector" class="engine-selector">
+                            {% for engine in engines %}
+                            <option value="{{ engine }}">{{ engine }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Version:</td>
+                    <td id="selected-engine-version"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+
+    <div class="output-container">
+        <div class="output-left">
+            <div class="inputs">
+                <div class="input-group">
+                    <h3>Input Regex:</h3>
+                    <textarea id="regex-input" class="output-text-highlight" name="regex_input" rows="1"
+                              placeholder="Enter your regex pattern here"></textarea>
+                </div>
+                <div class="input-group">
+                    <h3>Input Text:</h3>
+                    <textarea id="text-input" class="output-text-highlight" name="text_input" rows="5"
+                              placeholder="Enter text to match against"></textarea>
+                </div>
+            </div>
+            <div class="output-text">
+                <h3>Output:</h3>
+                <div id="highlight" class="output-text-highlight"></div>
+            </div>
+        </div>
+        <div class="output-right">
+            <div class="output-matches">
+                <div class="matches-header">
+                    <h3>Matches:</h3>
+                    <div>
+                        <span id="web-time" class="output-web-time"></span>
+                        <span id="exec-time" class="output-exec-time">{{ execution_time }}</span>
+                    </div>
+
+                </div>
+                <div id="matches-table" class="output-matches-table"></div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<footer>
+    <div class="footer-top">
+        <a href={{ app_repository }} target="_blank" class="github-link">
+            <i class="fab fa-github"></i> SourceCode
+        </a>
+        <a href={{ app_linkedin }} target="_blank" class="linkedin-link">
+            <i class="fab fa-linkedin"></i> {{app_author}}
+        </a>
+        <a href={{ app_docker_link }} target="_blank" class="docker-link">
+            <i class="fab fa-docker"></i> DockerHub
+        </a>
+    </div>
+    <div class="footer-bottom">
+        <div><strong>Version:</strong> <span>{{ app_version }}</span></div>
+        <div><strong>Release date:</strong> <span>{{ app_release_date }}</span></div>
+        <div><strong>Powered by <a href="https://flask.palletsprojects.com/" target="_blank">Flask</a></strong></div>
+    </div>
+</footer>
+
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>

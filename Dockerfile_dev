@@ -1,0 +1,38 @@
+# Use the official Python image from the Docker Hub
+FROM python:3.12-slim
+
+RUN apt-get clean
+RUN apt-get update
+RUN apt-get install -y git
+
+# Install required dependencies for downloading and extracting JDK
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    tar \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Download and install JDK 23.0.1
+RUN curl -fsSL https://download.java.net/java/GA/jdk23.0.1/c28985cbf10d4e648e4004050f8781aa/11/GPL/openjdk-23.0.1_linux-x64_bin.tar.gz \
+    | tar -xz -C /usr/local \
+    && ln -s /usr/local/jdk-23.0.1 /usr/local/java
+
+# Enable venv
+ENV PATH="/opt/venv/bin:$PATH"
+# Set JAVA_HOME environment variable
+ENV JAVA_HOME=/usr/local/java
+# Add PATH to include Java binaries
+ENV PATH="$JAVA_HOME/bin:$PATH"
+
+# Set the working directory
+WORKDIR /app
+
+# Copy and install python dependencies
+COPY requirements.txt .
+COPY requirements_dev.txt .
+
+
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir -r requirements_dev.txt
+

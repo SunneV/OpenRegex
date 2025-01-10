@@ -1,0 +1,678 @@
+/* static/css/style.css */
+
+/* =====================================
+   Global Styles
+   ===================================== */
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 0.9em;
+}
+
+/* =====================================
+   Top Bar Styles
+   ===================================== */
+
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid #ddd;
+    z-index: 100;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.engine-selection {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.engine-info {
+    margin-right: 8px;
+}
+
+.engine-info table {
+    width: 100%;
+}
+
+.engine-info td {
+    padding: 5px;
+}
+
+.engine-selector {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+    font-size: 0.9em;
+}
+
+.engine-selector:hover,
+.engine-selector:focus {
+    border-color: #666;
+}
+
+.theme-switcher {
+    background: none;
+    border: none;
+    font-size: 2em;
+    cursor: pointer;
+    transition: transform 0.3s, color 0.3s;
+    padding: 5px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+}
+
+.theme-switcher:hover {
+    transform: scale(1.2);
+}
+
+/* =====================================
+   Content Styles
+   ===================================== */
+
+.content {
+    flex: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+h1 {
+    margin-bottom: 8px;
+    text-align: left;
+    font-size: 1.4em;
+}
+
+p {
+    margin-bottom: 15px;
+    text-align: left;
+    max-width: 600px;
+    font-size: 0.95em;
+}
+
+.center-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0;
+}
+
+/* =====================================
+   Output Container Styles
+   ===================================== */
+
+.output-container {
+    display: flex;
+    width: 100%;
+    flex: 1;
+}
+
+.output-left {
+    flex: 70%;
+    padding-right: 15px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ddd;
+}
+
+.output-right {
+    flex: 30%;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =====================================
+   Input Styles
+   ===================================== */
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    margin-bottom: 3px;
+    font-size: 1.2em;
+}
+
+textarea {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    font-family: inherit;
+    transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+    font-size: 1.2em;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+textarea:focus {
+    border-color: #666;
+    outline: none;
+}
+
+/* =====================================
+   Output Styles
+   ===================================== */
+
+.output-matches .matches-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.output-matches .matches-header h3 {
+    font-size: 1.1em;
+    margin-bottom: 0;
+}
+
+h3 {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.output-text-highlight {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 1.2em;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    overflow-y: auto;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.05em;
+}
+
+/* =====================================
+   Highlight Styles
+   ===================================== */
+
+.match-main-highlight {
+  background-color: lightgreen;
+  border: 1px solid #333;
+  border-radius: 0;
+    margin-top: -2px;
+    margin-bottom: -2px;
+}
+
+/* Dark Theme Highlight */
+.dark-theme .match-main-highlight {
+  background-color: #4d7738;
+  border: 1px solid #aaa;
+  border-radius: 0;
+    margin-top: -2px;
+    margin-bottom: -2px;
+}
+
+/* =====================================
+  Match Table Styles
+  ===================================== */
+
+.output-matches-table {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 5px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.match-table th,
+.match-table td,
+.group-table th,
+.group-table td,
+.info-table td {
+    padding: 5px;
+    text-align: left;
+    font-family: 'Courier New', monospace;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    box-sizing: border-box;
+}
+
+.match-table th,
+.group-table th,
+.info-table td:first-child {
+    font-weight: bold;
+}
+
+.match-container {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 2px 5px;
+    background-color: transparent;
+    box-shadow: 1 1px 1px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, box-shadow 0.3s;
+    margin-bottom: 6px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.match-container span {
+    display: block;
+    overflow-wrap: break-word;
+    font-size: 0.85em;
+}
+
+.match-container:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.match-table {
+    font-size: 1em;
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 4px;
+}
+
+.group-table {
+    font-size: 0.9em;
+    border-collapse: collapse;
+    width: 100%;
+    border-top: 2px solid #ddd;
+}
+
+
+.group-table th,
+.group-table td {
+    font-size: 0.85em;
+}
+
+/* =====================================
+   Theme Styles (Light)
+   ===================================== */
+
+.light-theme {
+    background-color: #f8f9fa;
+    color: #343a40;
+}
+
+.light-theme .top-bar {
+    background-color: #ffffff;
+    border-color: #dee2e6;
+}
+
+.light-theme .theme-switcher {
+    color: #343a40;
+}
+
+.light-theme .engine-selector {
+    background-color: #fff;
+    color: #343a40;
+    border-color: #ced4da;
+}
+
+.light-theme textarea {
+    background-color: #fff;
+    color: #343a40;
+    border-color: #ced4da;
+}
+
+.light-theme .output-text-highlight {
+    background-color: #fff;
+}
+
+.light-theme .output-matches-table {
+    background-color: #fff;
+}
+
+.light-theme .match-container {
+    background-color: #f8f9fa;
+}
+
+/* =====================================
+   Theme Styles (Dark)
+   ===================================== */
+
+.dark-theme {
+    background-color: #1a202c;
+    color: #d1d1d1;
+}
+
+.dark-theme .top-bar {
+    background-color: #2d3748;
+    border-color: #4a5568;
+}
+
+.dark-theme .theme-switcher {
+    color: #d1d1d1;
+}
+
+.dark-theme .engine-selector {
+    background-color: #2d3748;
+    color: #d1d1d1;
+    border-color: #4a5568;
+}
+
+.dark-theme textarea {
+    background-color: #2d3748;
+    color: #d1d1d1;
+    border-color: #4a5568;
+}
+
+.dark-theme .output-text-highlight {
+    background-color: #2d3748;
+}
+
+.dark-theme .output-matches-table {
+    background-color: #2d3748;
+}
+
+.dark-theme .match-container {
+    background-color: #344158;
+}
+
+/* =====================================
+   Info Table Styles
+   ===================================== */
+
+.info-table {
+    width: 100%;
+    max-width: 250px;
+    margin: 10px auto;
+    border-radius: 4px;
+}
+
+.info-table td {
+    padding: 5px;
+    vertical-align: middle;
+    text-align: left;
+}
+
+.info-table td:last-child {
+    color: #007BFF;
+    word-wrap: break-word;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Light theme info-table */
+.light-theme .info-table {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+}
+
+.light-theme .info-table td {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.light-theme .info-table tr:nth-child(odd) {
+    background-color: #f1f1f1;
+}
+
+.light-theme .info-table tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Dark theme info-table */
+.dark-theme .info-table {
+    background-color: #2d3748;
+    border: 1px solid #444;
+}
+
+.dark-theme .info-table td {
+    background-color: #344158;
+    color: #d1d1d1;
+    border-bottom: 1px solid #555;
+}
+
+.dark-theme .info-table tr:nth-child(odd) {
+    background-color: #3a4a64;
+}
+
+.dark-theme .info-table tr:hover {
+    background-color: #4b6071;
+}
+
+
+/* =====================================
+   Execution Time Output
+   ===================================== */
+
+.output-exec-time .output-web-time {
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px
+}
+
+/* Light theme highlight */
+.light-theme .output-web-time {
+    background-color: #fff0e6;
+    color: #cc5500;
+    border: 1px solid #ffccb3;
+}
+
+/* Dark theme highlight */
+.dark-theme .output-web-time {
+    background-color: #4d2100;
+    color: #ffccb3;
+    border: 1px solid #7a3400;
+}
+
+.light-theme .output-exec-time {
+    background-color: #ffe6e6;
+    color: #990000;
+    border: 1px solid #ffcccc;
+}
+
+.dark-theme .output-exec-time {
+    background-color: #4d0f0f;
+    color: #ffcccc;
+    border: 1px solid #7a1e1e;
+}
+
+/* Spinning animation */
+.output-exec-time.loading::before {
+    content: '\f110';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    display: inline-block;
+    animation: rotate 1s linear infinite;
+}
+
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+footer {
+    padding-top: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 3px; /* Increased bottom padding to 20px */
+    text-align: center;
+    font-size: 0.8em;
+    border-top: 1px solid #ddd;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+footer .footer-top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+footer .footer-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 0.85em;
+}
+
+/* Separator Line */
+footer::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: 50%;
+    border-bottom: 1px solid #ddd;
+    transform: translateY(-50%);
+    pointer-events: none;
+    margin-top: 10px; /* Added margin-top */
+    margin-bottom: 10px; /* Added margin-bottom */
+}
+
+footer div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+footer div strong {
+    font-weight: bold;
+}
+
+/* Light theme footer */
+.light-theme footer {
+    background-color: #f8f9fa;
+    color: #343a40;
+    border-color: #dee2e6;
+}
+
+/* Light Theme Separator*/
+.light-theme footer::before{
+    border-color: #dee2e6;
+}
+
+/* Dark theme footer */
+.dark-theme footer {
+    background-color: #2d3748;
+    color: #d1d1d1;
+    border-color: #4a5568;
+}
+
+/* Dark Theme Separator*/
+.dark-theme footer::before{
+   border-color: #4a5568;
+}
+
+/* =====================================
+   Social Links Styles
+   ===================================== */
+
+   /* Github and LinkedIn links */
+.github-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.github-link:hover {
+    color: #007BFF;
+}
+
+.github-link i {
+    font-size: 2.0em;
+}
+
+.linkedin-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.linkedin-link:hover {
+    color: #0077B5;
+}
+
+.linkedin-link i {
+    font-size: 2.0em;
+}
+
+/* Styles for the "Powered by Flask" link */
+footer .footer-bottom div a {
+    color: inherit; /* Inherit color to maintain theme consistency */
+    text-decoration: underline; /* Underline for better visibility */
+    transition: color 0.3s;
+}
+
+
+.light-theme footer .footer-bottom div a:hover {
+     color: #007BFF; /* Light mode hover color */
+}
+
+.dark-theme footer .footer-bottom div a:hover {
+    color: #94a3b8; /* Dark mode hover color */
+}
+
+
+/*  Docker hub link */
+.docker-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.docker-link:hover {
+    color: #2496ED;
+}
+
+.docker-link i {
+    font-size: 2.0em;
+}
