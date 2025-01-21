@@ -1,0 +1,20 @@
+/* =====================================
+   Highlight Styles
+   ===================================== */
+.match-main-highlight-tablet {
+    font-size: 1.1em; /* Adjust the size as needed */
+}
+
+.match-main-highlight {
+    background-color: lime; /* Will be overridden by themes */
+    border: 1px solid #333; /* Will be overridden by themes */
+    border-radius: 1;
+    margin-top: -2px;
+    margin-bottom: -2px;
+}
+
+.highlight {
+    box-sizing: border-box;
+   position: relative; /* Important - Allow positioning without affecting layout */
+    top: -1px; /* Move the element 2px up - adjust as needed */
+}

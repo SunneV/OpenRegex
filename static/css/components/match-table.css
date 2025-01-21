@@ -1,0 +1,75 @@
+/* =====================================
+  Match Table Styles
+  ===================================== */
+
+.output-matches-table {
+    border: 1px solid #ddd; /* Might be theme-specific */
+    border-radius: 8px;
+    padding: 5px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+/* Common styles for all table cells (th, td) in match and group tables */
+.match-table th,
+.match-table td,
+.group-table th,
+.group-table td {
+    padding: 4px; /* Reduced padding for a more compact look */
+    text-align: left;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    box-sizing: border-box;
+    font-family: 'Courier New', monospace; /* Consistent font */
+    font-size: 0.85em; /* Consistent font size */
+}
+
+/* Styles for the match container */
+.match-container {
+    border: 1px solid #ddd; /* Might be theme-specific */
+    border-radius: 4px;
+    padding: 3px 4px;
+    background-color: transparent; /* Will be overridden by themes */
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    transition: background-color 0.3s, box-shadow 0.3s;
+    margin-bottom: 3px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.match-container:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow on hover */
+}
+
+/* Styles for the main match table */
+.match-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 5px; /* Add margin-bottom for spacing between match-table and group-table */
+}
+
+/* Styles for the group table */
+.group-table {
+    border-collapse: collapse; /* Collapse borders */
+    width: 100%;
+    border-top: 1px solid #ddd; /* Might be theme-specific */
+}
+
+.group-table th,
+.group-table td {
+    padding: 0px;
+    border: none;  /* Remove default border */
+}
+
+.match-main-highlight-tablet,
+.group-table-highlight {
+    font-size: 0.95em; /* Adjust as needed */
+    display: block; /* Treat the highlight as a block-level element */
+    width: 100%;    /* Make it occupy the full width of its parent */
+    box-sizing: border-box; /* Include padding and border in the element's total width */
+}
+
+/* Highlight styles - keep these at the end to ensure higher specificity */
+.match-main-highlight-tablet {
+    font-size: 1.5em; /* Adjust as needed */
+}

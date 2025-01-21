@@ -1,0 +1,32 @@
+/* =====================================
+   Layout Styles
+   ===================================== */
+
+.content {
+    flex: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.output-container {
+    display: flex;
+    width: 100%;
+    flex: 1;
+}
+
+.output-left {
+    flex: 70%;
+    padding-right: 15px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ddd; /* Might be theme-specific */
+}
+
+.output-right {
+    flex: 30%;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+}

@@ -4,13 +4,13 @@
 This module initializes and runs the Flask application for regex matching.
 """
 
-import html as html_lib
+import html
 
 from flask import Flask, jsonify, render_template, request, send_from_directory
 
-from project import App, Config
+from project import App, Config, log
 from src.engine_manager import EngineManager
-from src.utils.html import ColorGenerator, MatchHighlighter, MatchTableGenerator
+from src.utils.interface import ColorGenerator, MatchHighlighterRegex, MatchHighlighterText, MatchTableGenerator
 
 
 class RegexMatcherApp:
@@ -22,18 +22,22 @@ class RegexMatcherApp:
         self.app = Flask(__name__)
         self.engine_manager = EngineManager()
         self.color_generator = ColorGenerator(division_factor=4)
-        self.match_highlighter = MatchHighlighter()
+        self.match_highlighter_text = MatchHighlighterText()
+        self.match_highlighter_regex = MatchHighlighterRegex()
         self.match_table_generator = MatchTableGenerator()
 
         self.app.add_url_rule("/", methods=["GET", "POST"], view_func=self.index)
         self.app.add_url_rule("/get_engine_info", methods=["POST"], view_func=self.get_engine_info)
+        self.app.add_url_rule("/get_example_regex", methods=["POST"], view_func=self.get_example_regex)
         self.app.add_url_rule("/robots.txt", methods=["GET"], view_func=self.robots_txt)
 
     def robots_txt(self):
         """
         Serves the robots.txt file.
         """
-        return send_from_directory(self.app.static_folder, "robots.txt")
+        if Config.debug:
+            return send_from_directory(self.app.static_folder, "robots_disallow.txt")
+        return send_from_directory(self.app.static_folder, "robots_allow.txt")
 
     def index(self):
         """
@@ -45,21 +49,37 @@ class RegexMatcherApp:
             selected_engine = request.json.get("engine", None)
 
             if not regex_pattern or not input_text:
-                return jsonify({"error": "", "highlighted_text": html_lib.escape(input_text)})
+                response_data = {
+                    "error": "",
+                    "highlighted_text": html.escape(input_text) if input_text else "",
+                    "highlighted_regex": html.escape(regex_pattern) if regex_pattern else "",
+                    "selected_engine": selected_engine,
+                    "matches_table": "",
+                    "execution_time": "Engine: N/A",
+                    "dark_theme_color": {},
+                    "light_theme_color": {},
+                }
+                return jsonify(response_data)
 
             matches, error, execution_time = self.engine_manager.match(selected_engine, regex_pattern, input_text)
             number_of_colors = self.get_number_of_colors(matches)
             self.color_generator.generate_color(number_of_colors)
             matches_table = self.match_table_generator.generate_match_table(matches)
-            highlighted_text = self.match_highlighter.highlight_matches(input_text, matches)
+            highlighted_text = self.match_highlighter_text.highlight_matches(input_text, matches)
+            highlighted_regex = self.match_highlighter_regex.highlight_regex(regex_pattern, number_of_colors)
+            self.color_generator.generate_gray_color(
+                number_of_colors, number_of_colors + self.match_highlighter_regex.gray_color_counter
+            )
             if error:
-                highlighted_text = html_lib.escape(error)
+                highlighted_text = html.escape(error)
+                highlighted_regex = html.escape(regex_pattern)
             return jsonify(
                 {
-                    "matches_table": matches_table,
                     "error": error,
                     "selected_engine": selected_engine,
+                    "matches_table": matches_table,
                     "highlighted_text": highlighted_text,
+                    "highlighted_regex": highlighted_regex,
                     "execution_time": self.execution_time(execution_time),
                     "dark_theme_color": self.color_generator.dark_theme_colors,
                     "light_theme_color": self.color_generator.light_theme_colors,
@@ -72,7 +92,9 @@ class RegexMatcherApp:
         return render_template(
             "index.html",
             app_name=App.name,
+            app_link=App.home_link,
             app_description=App.description,
+            app_debug_mode=App.debug_info,
             app_author=App.author,
             app_linkedin=App.linkedin,
             app_repository=App.repository,
@@ -93,7 +115,21 @@ class RegexMatcherApp:
         engine = self.engine_manager.get_engine(selected_engine)
         if not engine:
             return jsonify({"error": "Invalid engine name."})
-        return jsonify({"selected_engine": selected_engine, "engine_version": engine.version})
+        return jsonify(
+            {
+                "selected_engine": selected_engine,
+                "engine_version": engine.version,
+                "cheat_sheet": engine.regex_cheat_sheet,
+            }
+        )
+
+    def get_example_regex(self):
+        """
+        Returns the example regex and text.
+        """
+        selected_engine = request.json.get("engine", None)
+        engine = self.engine_manager.get_engine(selected_engine)
+        return jsonify(engine.regex_examples)
 
     @staticmethod
     def execution_time(execution_time: float) -> str:
@@ -119,4 +155,5 @@ class RegexMatcherApp:
 app = RegexMatcherApp().app
 
 if __name__ == "__main__":
+    log.warning("Running the Flask development mode")
     app.run(debug=Config.debug, port=Config.port, use_reloader=False)

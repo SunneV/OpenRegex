@@ -1,0 +1,24 @@
+/* =====================================
+   Info Table Styles
+   ===================================== */
+
+.info-table {
+    width: 100%;
+    max-width: 250px;
+    margin: 10px auto;
+    border-radius: 4px;
+}
+
+.info-table td {
+    padding: 5px;
+    vertical-align: middle;
+    text-align: left;
+}
+
+.info-table td:last-child {
+    color: #007BFF;
+    word-wrap: break-word;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

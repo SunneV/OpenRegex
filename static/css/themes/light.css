@@ -1,0 +1,174 @@
+/* =====================================
+   Theme Styles (Light)
+   ===================================== */
+
+.light-theme {
+    background-color: #f8f9fa;
+    color: #212529; /* Dark text */
+}
+
+/* Top Bar */
+.light-theme .top-bar {
+    background-color: #fff;
+    border-color: #ced4da;
+}
+
+/* Theme Switcher */
+.light-theme .theme-switcher {
+    color: #212529;
+}
+
+/* Engine Selector */
+.light-theme .engine-selector {
+    background-color: #fff;
+    color: #212529;
+    border-color: #ced4da;
+}
+
+.light-theme .engine-selector:focus {
+    border-color: #888;
+}
+
+/* Textarea */
+.light-theme textarea {
+    background-color: #fff;
+    color: #212529;
+    border-color: #ced4da;
+}
+
+.light-theme textarea:focus {
+    border-color: #888;
+}
+
+/* Text Highlight */
+.light-theme .text-highlight {
+    background-color: #fff;
+    color: #212529;
+    border-color: #ced4da;
+}
+
+/* Output Matches Table */
+.light-theme .output-matches-table {
+    background-color: #fff;
+    border-color: #ced4da;
+}
+
+.light-theme .match-container {
+    background-color: #f2f2f2;
+    border-color: #ced4da;
+}
+
+/* Highlight */
+.light-theme .match-main-highlight {
+    background-color: lightgreen;
+    border: 1px solid #333;
+}
+
+/* Info Table */
+.light-theme .info-table {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+}
+
+.light-theme .info-table td {
+    background-color: #f8f9fa;
+    color: #212529;
+    border-bottom: 1px solid #ced4da;
+}
+
+.light-theme .info-table tr:nth-child(odd) {
+    background-color: #e9ecef;
+}
+
+/* Output Web Time & Execution Time */
+.light-theme .output-web-time {
+    background-color: #fff0e6;
+    color: #cc5500;
+    border: 1px solid #ffccb3;
+}
+
+.light-theme .output-exec-time {
+    background-color: #ffe6e6;
+    color: #990000;
+    border: 1px solid #ffcccc;
+}
+
+/* Footer */
+.light-theme footer {
+    background-color: #fff;
+    color: #212529;
+    border-color: #ced4da;
+}
+
+.light-theme footer::before {
+    border-color: #ced4da;
+}
+
+/* Hover Colors */
+.github-link:hover,
+.linkedin-link:hover,
+.docker-link:hover,
+.light-theme .app-link:hover,
+.light-theme footer .footer-bottom div a:hover {
+    color: #0056b3; /* Adjust as needed */
+}
+
+.light-theme .highlight {
+    /* Stronger shadow for light theme */
+    box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* Button styles in light theme */
+.light-theme .collapse-button {
+    background-color: #f5f5f5;
+    color: #212529; /* Dark text */
+    border-color: #ced4da;
+}
+
+.light-theme .collapse-button:hover {
+    background-color: #e0e0e0;
+}
+
+.light-theme #cheat-sheet-wrapper {
+    border: 1px solid #ced4da;
+    /* Lighter border */
+}
+
+.light-theme .category-item td:first-child::before {
+    background-color: #e9ecef;
+    /* Lighter gray background */
+}
+
+.light-theme .category-item th {
+    background-color: #f8f9fa;
+    /* Lighter background for table headers */
+    color: #212529;
+    /* Darker text color */
+}
+
+.light-theme .category-item td {
+    color: #212529;
+    /* Darker text color */
+}
+
+.light-theme .collapse-button {
+    background-color: #f5f5f5;
+    color: #212529;
+    /* Dark text */
+    border-color: #ced4da;
+}
+
+.light-theme .collapse-button:hover {
+    background-color: #e0e0e0;
+}
+
+
+.light-theme .example-button,
+.light-theme .clear-button {  /* Common styles for both buttons in light theme */
+    border-color: #6c757d;
+}
+
+.light-theme .example-button:hover,
+.light-theme .clear-button:hover { /* Common hover styles */
+    background-color: #e9ecef;
+}

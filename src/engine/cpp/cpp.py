@@ -11,6 +11,79 @@ from ctypes import POINTER, Structure, c_char_p, c_size_t
 from project import Path, log
 from src.engine.basic import BasicRegexEngine
 
+_REGEX_CHEAT_SHEET_TEMPLATE_CPP = [
+    {
+        "category": "Core Matching",
+        "items": [
+            {"character": ".", "description": "Any character (except newline)"},
+            {"character": "[abc]", "description": "Any one character: a, b, or c"},
+            {"character": "[^abc]", "description": "Any one character except: a, b, or c"},
+            {"character": "[a-z]", "description": "Any one character in the range a-z"},
+            {"character": "[a-zA-Z]", "description": "Any one character in the range a-z or A-Z"},
+            {"character": "\\d", "description": "Any digit (equivalent to [0-9])"},
+            {"character": "\\D", "description": "Any non-digit (equivalent to [^0-9])"},
+            {"character": "\\s", "description": "Any whitespace character"},
+            {"character": "\\S", "description": "Any non-whitespace character"},
+            {"character": "\\w", "description": "Any word character (alphanumeric and underscore)"},
+            {"character": "\\W", "description": "Any non-word character"},
+            {"character": "\\\\", "description": "Literal backslash"},
+            {"character": "\\ooo", "description": "Character with octal value ooo (up to three digits)"},
+            {"character": "\\xhh", "description": "Character with hexadecimal value hh (two digits)"},
+            {"character": "\\uhhhh", "description": "Character with Unicode hexadecimal value hhhh (four digits)"},
+            {"character": "\\n", "description": "Newline character"},
+            {"character": "\\r", "description": "Carriage return character"},
+            {"character": "\\t", "description": "Tab character"},
+            {"character": "\\f", "description": "Form feed character"},
+            {"character": "\\v", "description": "Vertical tab character"},
+            {"character": "?", "description": "Zero or one (optional)"},
+            {"character": "*", "description": "Zero or more"},
+            {"character": "+", "description": "One or more"},
+            {"character": "{n}", "description": "Exactly n"},
+            {"character": "{n,}", "description": "n or more"},
+            {"character": "{n,m}", "description": "Between n and m"},
+        ],
+    },
+    {
+        "category": "Grouping and Logic",
+        "items": [
+            {"character": "( )", "description": "Capturing group"},
+            {"character": "(?: )", "description": "Non-capturing group"},
+            {"character": "|", "description": "OR operator (match either the expression before or after)"},
+            {
+                "character": "\\1, \\2, ...",
+                "description": "Backreference to captured group (numbered from left to right)",
+            },
+        ],
+    },
+    {
+        "category": "Anchors and Lookarounds",
+        "items": [
+            {"character": "^", "description": "Matches the beginning of a line/string"},
+            {"character": "$", "description": "Matches the end of a line/string"},
+            {"character": "\\b", "description": "Matches a word boundary"},
+            {"character": "\\B", "description": "Matches a non-word boundary"},
+            {"character": "(?= )", "description": "Positive lookahead assertion"},
+            {"character": "(?! )", "description": "Negative lookahead assertion"},
+            {"character": "(?<= )", "description": "Positive lookbehind assertion"},
+            {"character": "(?<! )", "description": "Negative lookbehind assertion"},
+        ],
+    },
+]
+
+_REGEX_EXAMPLES_PYTHON_CPP = {
+    "input_regex": r"((?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d"
+    r"\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d))(/(\d{1,2}))?(?:-((?:25[0-5]|2[0-4]\d|1\d\d|[1-9"
+    r"]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(?:25[0-5]|2[0-4]"
+    r"\d|1\d\d|[1-9]?\d)))?(:(\d{1,5}))?",
+    "input_text": r"""192.168.1.100
+192.168.1.100:8080
+127.0.0.1
+192.168.1.0/24
+192.168.1.1-192.168.1.255
+192.168.1.1-192.168.1.255:80
+192.168.1.0/24:80""",
+}
+
 
 class Match(Structure):
     """
@@ -52,6 +125,8 @@ class CppRegex(BasicRegexEngine):
         self.lib_path = os.path.join(Path.ENGINE_CPP, lib_name)
         self._compile_dll_if_not_compiled()
         super().__init__()
+        self.regex_cheat_sheet = _REGEX_CHEAT_SHEET_TEMPLATE_CPP
+        self.regex_examples = _REGEX_EXAMPLES_PYTHON_CPP
 
     def _compile_dll_if_not_compiled(self):
         if not os.path.exists(self.lib_path):

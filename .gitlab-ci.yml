@@ -173,7 +173,7 @@ pytest:
     reports:
       junit: report/report.xml
   rules:
-    - if: '$CI_COMMIT_BRANCH == "develop" && $CI_COMMIT_TAG == null && ($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "merge_request_event")'
+    - if: '$CI_COMMIT_BRANCH != "main" && $CI_COMMIT_TAG == null && ($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "merge_request_event")'
       changes:
         - "**/*.py"
         - "**/*.cpp"
@@ -189,9 +189,6 @@ build-main:
     DOCKER_TLS_CERTDIR: "/certs"
   services:
     - docker:24.0.5-dind
-  only:
-    refs:
-      - main
   before_script:
     - echo "======Main Docker Build======"
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
@@ -201,13 +198,14 @@ build-main:
     - docker push "$DOCKER_IMAGE:$IMAGE_TAG_MAIN"
   tags:
     - docker
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "test"
 
 version:
   stage: build-deploy
   image: $DOCKER_IMAGE:$IMAGE_TAG_DEV
-  only:
-    refs:
-      - main
+
   script:
     - echo "======Extracting Version====="
     - VERSION=$(python project/environments.py)
@@ -217,6 +215,9 @@ version:
       dotenv: version.env
   tags:
     - docker
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "test"
 
 # --- DOCKER HUB PUSH STAGE ---
 docker-hub:
@@ -244,22 +245,71 @@ docker-hub:
     - docker push "$DOCKER_HUB_IMAGE:$APP_VERSION"
   tags:
     - docker
-  only:
-    refs:
-      - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
 
-# --- DEPLOY STAGE ---
-release:
+# --- TAG VERSION STAGE ---
+tag-version:
   stage: deploy
   needs:
     - docker-hub
-  image: ubuntu
+  image: alpine/git
+  variables:
+    GIT_STRATEGY: clone
   before_script:
-    - echo "======Starting Deployment======"
+    - git config --global user.email ""
+    - git config --global user.name "CI Robot"
   script:
-    - echo "Deploying application..."
+    - git remote set-url origin https://${GIT_CI_USER}:${GIT_CI_PASS}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
+    - git tag -a $APP_VERSION -m "Version $APP_VERSION"
+    - git push origin $APP_VERSION
   tags:
-    - shell
-  only:
-    refs:
-      - main
+    - docker
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+
+
+# --- DEPLOY STAGE ---
+deploy:
+  stage: deploy
+  needs:
+    - build-main
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  variables:
+    APP_CONTAINER_NAME: "OpenRegex_$CI_COMMIT_REF_SLUG"
+  script:
+    - echo "======Starting Deployment======"
+    - echo "Deploying to container:$APP_CONTAINER_NAME"
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker pull "$DOCKER_IMAGE:$IMAGE_TAG_MAIN"
+    - |
+      if [[ "$CI_COMMIT_REF_SLUG" == "main" ]]; then
+        PORT="5000"
+        LOG_LEVEL="ERROR"
+      elif [[ "$CI_COMMIT_REF_SLUG" == "test" ]]; then
+        PORT="5001"
+        LOG_LEVEL="DEBUG"
+      else
+        echo "Error: Branch $CI_COMMIT_REF_SLUG not supported for deployment."
+        exit 1
+      fi
+    - echo "Using external port:$PORT"
+    - docker stop "$APP_CONTAINER_NAME" || true
+    - docker rm "$APP_CONTAINER_NAME" || true
+    - |
+      # Start the container
+      docker run -d --name "$APP_CONTAINER_NAME" \
+      -e OPENREGEX_LOG_LEVEL=$LOG_LEVEL \
+      -e OPENREGEX_TIMEOUT_S=6 \
+      -p "$PORT:5000" \
+      "$DOCKER_IMAGE:$IMAGE_TAG_MAIN"
+  after_script:
+    - echo "Cleaning up..."
+    - docker image prune -f
+  tags:
+    - openregex
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "test"

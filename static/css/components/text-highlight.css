@@ -1,0 +1,18 @@
+.text-highlight {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding-top: 20px;
+    padding-right: 5px;
+    padding-bottom: 20px;
+    padding-left: 5px;
+    font-size: 1.0em;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    overflow-y: auto;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.1 em;
+}

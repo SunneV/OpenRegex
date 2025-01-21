@@ -1,0 +1,37 @@
+/* =====================================
+   Form Styles
+   ===================================== */
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    margin-bottom: 3px;
+    font-size: 1.2em;
+}
+
+textarea {
+    padding: 8px;
+    border: 1px solid #ccc; /* Might be theme-specific */
+    border-radius: 4px;
+    resize: vertical;
+    font-family: inherit;
+    transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+    font-size: 1.2em;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+textarea:focus {
+    border-color: #666; /* Might be theme-specific */
+    outline: none;
+}

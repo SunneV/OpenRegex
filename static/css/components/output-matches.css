@@ -1,0 +1,15 @@
+/* =====================================
+  Output Matches Styles
+  ===================================== */
+
+.output-matches .matches-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.output-matches .matches-header h3 {
+    font-size: 1.1em;
+    margin-bottom: 0;
+}

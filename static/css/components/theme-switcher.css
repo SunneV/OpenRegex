@@ -1,0 +1,20 @@
+/* =====================================
+   Theme Switcher Styles
+   ===================================== */
+
+.theme-switcher {
+    background: none;
+    border: none;
+    font-size: 2em;
+    cursor: pointer;
+    transition: transform 0.3s, color 0.3s;
+    padding: 5px;
+    border-radius: 50%;
+    display: flex;
+    width: 35px;
+    height: 35px;
+}
+
+.theme-switcher:hover {
+    transform: scale(1.2);
+}

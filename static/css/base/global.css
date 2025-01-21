@@ -1,0 +1,230 @@
+/* =====================================
+   Global Styles
+   ===================================== */
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 0.95em;
+}
+
+.center-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0;
+}
+
+/* =====================================
+   Debug Mode Styles
+   ===================================== */
+
+#mode {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    pointer-events: none;
+    border: 5px solid yellow;
+    box-sizing: border-box;
+}
+
+#mode span {
+    font-size: 50px;
+    font-weight: bold;
+    white-space: nowrap;
+    letter-spacing: 0.5em;
+    text-align: center;
+    color: rgba(255, 0, 0, 0.2);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.collapsed {
+    display: none;
+}
+
+.collapse-button {
+    margin-bottom: 5px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 0.9em;
+    background-color: #f5f5f5;
+}
+
+.collapse-button:hover {
+    background-color: #e0e0e0;
+}
+
+/* =====================================
+   Cheat Sheet Styles
+   ===================================== */
+
+/* Basic styling for the cheat sheet wrapper */
+#cheat-sheet-wrapper {
+    width: 100%; /* Adjust width as needed */
+    border: 1px solid #ccc; /* Only outside border */
+    padding: 10px;
+    box-sizing: border-box;
+    font-size: 12px; /* Smaller font size for the whole cheat sheet */
+}
+
+/* Styling for the main cheat sheet container */
+#regex-cheat-sheet {
+    display: flex; /* Use flexbox to position left and right divs */
+    gap: 10px; /* Add some space between the columns */
+}
+
+/* Styling for the left column */
+#regex-cheat-sheet-left {
+    width: 50%; /* Each column takes up half the width */
+}
+
+/* Styling for the right column */
+#regex-cheat-sheet-right {
+    width: 50%; /* Each column takes up half the width */
+}
+
+/* Styling for the individual category items */
+.category-item {
+    margin-bottom: 15px; /* Add space between categories */
+}
+
+/* Styling for the category title */
+.category-item h3 {
+    font-size: 1.1em; /* Slightly larger than the main font size */
+    margin-bottom: 1px;
+}
+
+/* Styling for the tables */
+.category-item table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.category-item th,
+.category-item td {
+    text-align: left;
+    padding: 1px 4px 1px 4px; /* Reduce padding to make rows more compact */
+    border: none; /* Remove individual cell borders */
+    line-height: 1.0; /* Adjust line height for compactness */
+}
+
+.category-item td:first-child {
+    font-family: 'Courier New', monospace;
+    /* Remove background-color from here */
+    /* background-color: #cecece;  Light gray background for the first column */
+}
+
+.category-item td:first-child::before {
+    content: "";
+    background-color: #cecece; /* Light gray background */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Place the background behind the text */
+}
+
+.category-item td:first-child {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    user-select: all; /* Enable selection of the entire cell content on click/double-click */
+    -moz-user-select: all; /* For Firefox */
+    -webkit-user-select: all; /* For Chrome, Safari, and Edge */
+    -ms-user-select: all; /* For older versions of Edge */
+}
+
+.category-item th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.collapse-button {
+    padding: 8px 16px;
+    background-color: transparent; /* Background color from theme */
+    color: inherit; /* Text color from theme */
+    border: 1px solid; /* Border color from theme */
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    font-weight: 500;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.collapse-button:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* More pronounced shadow on hover */
+    transform: translateY(-1px); /* Slightly raise the button on hover */
+}
+
+.collapse-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.5); /* Example focus ring */
+}
+
+.example-button,
+.clear-button { /* Common styles for both buttons */
+    padding: 4px 8px;
+    background-color: transparent;
+    border: 1px solid;
+    color: inherit;
+    cursor: pointer;
+    font-size: 0.9em;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.example-button { /* Specific styles for Example button */
+    margin-left: 10px;
+}
+
+.clear-button { /* Specific styles for Clear button */
+    margin-left: 5px; /* A bit less margin than the Example button */
+}
+
+.example-button:hover,
+.clear-button:hover {
+    /* Hover effect will be defined in themes */
+}
+
+.input-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically in the group */
+}
+
+.input-header {
+    display: flex;
+    justify-content: space-between; /* Push elements to opposite ends */
+    align-items: center; /* Center vertically */
+    margin-bottom: 5px; /* Add some space between the header and the textarea */
+}
+
+.button-group {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Space between buttons */
+}
