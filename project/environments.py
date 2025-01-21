@@ -43,23 +43,25 @@ class _Path:
 
 
 @dataclass()
-class _App:
-    name = "OpenRegex "
-    description = "OpenSource self hosted regex debug tool"
-    version, release_date = _get_version()
-    author = "Wojciech Cichoń"
-    linkedin = "https://www.linkedin.com/in/wojciech-cicho%C5%84-421127141/"
-    repository = "https://github.com/SunneV/OpenRegex"
-    docker_link = "https://hub.docker.com/r/sunnev/openregex"
-    python_version = platform.python_version()
-
-
-@dataclass()
 class _Config:
     port = int(os.getenv("OPENREGEX_PORT", "5000"))
     log_level = os.getenv("OPENREGEX_LOG_LEVEL", "INFO").upper()
     regex_timeout = int(os.getenv("OPENREGEX_TIMEOUT_S", "5"))
     debug = log_level == "DEBUG"
+
+
+@dataclass()
+class _App:
+    name = "OpenRegex"
+    home_link = "https://openregex.com"
+    description = "Open source, self-hosted, web-based regular expression (regex) tester and debugger."
+    debug_info = "DEBUG MODE" if _Config.debug else ""
+    version, release_date = _get_version()
+    author = "Wojciech Mariusz Cichoń"
+    linkedin = "https://www.linkedin.com/in/wojciech-cicho%C5%84-421127141/"
+    repository = "https://github.com/SunneV/OpenRegex"
+    docker_link = "https://hub.docker.com/r/sunnev/openregex"
+    python_version = platform.python_version()
 
 
 def write_version_to_env(target_file):

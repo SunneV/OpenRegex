@@ -1,8 +1,16 @@
 # OpenRegex
+[![License](https://img.shields.io/github/license/sunnev/openregex)]()
+[![Docker Pulls](https://img.shields.io/docker/pulls/sunnev/openregex)](https://hub.docker.com/r/sunnev/openregex)
+[![GitHub stars](https://img.shields.io/github/stars/sunnev/openregex)]()    
+[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/sunnev/openregex?label=latest)](https://github.com/sunnev/openregex/tags)
 
-OpenRegex is a simple, self-hosted, web-based regular expression (regex) tester and debugger.
 
-<img src="assets/interface.png" alt="OpenRegex Interface Screenshot" width="800">
+OpenRegex is an open-source, self-hosted web application for testing and debugging regular expressions (regex).
+
+Official website: **[www.openregex.com](https://www.openregex.com)**
+
+<img src="assets/interface_light.png" alt="OpenRegex Interface Screenshot" width="800">
+<img src="assets/interface_dark.png" alt="OpenRegex Interface Screenshot" width="800">
 
 ## Features
 
@@ -92,7 +100,7 @@ These instructions will help you set up OpenRegex on your local machine.
            Note: You may need to restart your terminal or computer for these changes to take effect.
     * **Linux:**
       ```bash
-      sudo apt-get update  # (Optional, but recommended)
+      sudo apt-get update
       sudo apt-get install g++
       ```
 
@@ -124,21 +132,31 @@ If you prefer using Docker, you can build and run the application in a container
    Use the following command to start a container with environment variables and port mapping:
 
    ```bash
-   docker run -e OPENREGEX_LOG_LEVEL=INFO -e OPENREGEX_TIMEOUT_S=5 -e GUNICORN_WORKERS=4 -e GUNICORN_THREADS=4 -p 5000:5000 openregex
+   docker run -e OPENREGEX_LOG_LEVEL=INFO -e OPENREGEX_TIMEOUT_S=5 -e GUNICORN_WORKERS=1 -e GUNICORN_THREADS=4 -p 5000:5000 openregex
    ```
 3. **Access the Application:**
 
    Open your web browser and go to `http://localhost:5000` to access the application.
 
-**Pull Docker hub:**
+**Pull Docker Hub:**
 
-1. **Pull the Docker Image:**
+1. **Pull and run the Docker Image:**
 
    You can also pull the image from Docker Hub:
 
    ```bash
-   docker run -e OPENREGEX_LOG_LEVEL=INFO -e OPENREGEX_TIMEOUT_S=5 -e GUNICORN_WORKERS=4 -e GUNICORN_THREADS=4 -p 5000:5000 sunnev/openregex
+   docker run -e OPENREGEX_LOG_LEVEL=ERROR -e OPENREGEX_TIMEOUT_S=5 -e GUNICORN_WORKERS=1 -e GUNICORN_THREADS=4 -p 5000:5000 sunnev/openregex
    ```
 2. **Access the Application:**
 
    Open your web browser and go to `http://localhost:5000` to access the application.
+
+## Notes
+
+This application is developed in a private repository and mirrored to a public repository.
+
+## Support
+
+You like my work? Just sponsor me!
+
+☕ [![GitHub sponsors](https://img.shields.io/github/sponsors/sunnev)]()☕

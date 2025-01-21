@@ -1,0 +1,73 @@
+/* =====================================
+   Typography Styles
+   ===================================== */
+
+h1 {
+    margin-bottom: 8px;
+    text-align: left;
+    font-size: 1.4em;
+}
+
+h3 {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+p {
+    margin-bottom: 15px;
+    text-align: left;
+    max-width: 600px;
+    font-size: 0.95em;
+}
+
+.match-table th,
+.match-table td,
+.group-table th,
+.group-table td,
+.info-table td {
+    font-family: 'Courier New', monospace;
+}
+
+.match-table th,
+.group-table th,
+.info-table td:first-child {
+    font-weight: bold;
+}
+
+.group-table th,
+.group-table td {
+    font-size: 0.85em;
+}
+
+.match-table th:first-child,
+.match-table td:first-child,
+.group-table th:first-child,
+.group-table td:first-child {
+    text-align: center;
+}
+
+.match-table th:first-child,
+.match-table td:first-child {
+    width: 10%;
+}
+
+.match-table th:nth-child(2),
+.match-table td:nth-child(2) {
+    width: 20%;
+}
+
+.group-table th:first-child,
+.group-table td:first-child {
+    width: 9%;
+}
+
+.group-table th:nth-child(2),
+.group-table td:nth-child(2) {
+    width: 18%;
+}
+
+
+.group-table th:nth-child(3),
+.group-table td:nth-child(3) {
+    width: 20%;
+}

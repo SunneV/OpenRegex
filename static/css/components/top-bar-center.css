@@ -1,0 +1,60 @@
+/* =====================================
+    top-bar-center
+  ===================================== */
+
+.top-bar-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.app-link {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s, transform 0.2s ease-in-out;
+    display: inline-block;
+    position: relative;
+}
+
+/* Hover Effects */
+.app-link:hover {
+    color: #007bff; /* Adjust hover color as needed */
+    transform: scale(1.1);
+}
+
+.app-name {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+/* Tooltip */
+.app-link::before {
+    content: attr(title);
+    position: absolute;
+    bottom: -2.5em;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.app-link:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.app-description {
+    font-size: 0.9em;
+    color: #666; /* Adjust description color as needed */
+}

@@ -1,0 +1,113 @@
+/* =====================================
+   Footer Styles
+   ===================================== */
+
+footer {
+    padding-top: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 3px;
+    text-align: center;
+    font-size: 0.8em;
+    border-top: 1px solid #ddd; /* Might be theme-specific */
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+footer .footer-top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+footer .footer-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 0.85em;
+}
+
+/* Separator Line */
+footer::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: 50%;
+    border-bottom: 1px solid #ddd; /* Might be theme-specific */
+    transform: translateY(-50%);
+    pointer-events: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+footer div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+footer div strong {
+    font-weight: bold;
+}
+
+/* Styles for the "Powered by Flask" link */
+footer .footer-bottom div a {
+    color: inherit;
+    text-decoration: underline;
+    transition: color 0.3s;
+}
+
+/* Base Styles for Social Links */
+.docker-link,
+.github-link,
+.linkedin-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s; /* Smooth color transition */
+}
+
+/* Icons */
+.github-link i,
+.linkedin-link i,
+.docker-link i {
+    font-size: 2.0em; /* Adjust icon size as needed */
+    /* Remove transition from here */
+}
+
+/* Hover Effects for Social Links */
+.github-link:hover,
+.docker-link:hover,
+.linkedin-link:hover {
+    transform: scale(1.2); /* Enlarge the whole link (icon + text) */
+    transition: transform 0.2s ease-in-out; /* Add transition here */
+}
+
+.github-link:hover,
+.github-link:hover i {
+    color: #007BFF; /* GitHub color */
+}
+
+.docker-link:hover,
+.docker-link:hover i {
+    color: #0db7ed; /* Docker color */
+}
+
+.linkedin-link:hover,
+.linkedin-link:hover i {
+    color: #0077b5; /* LinkedIn color */
+}

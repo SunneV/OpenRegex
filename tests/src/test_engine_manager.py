@@ -1,7 +1,15 @@
+import logging
+
 import pytest
 
+from project import log
 from src.engine import CppRegex, JavaRegex, PythonRe, PythonRegex
 from src.engine_manager import EngineManager
+
+
+@pytest.fixture(scope="session", autouse=True)
+def set_log_level():
+    log.setLevel(logging.DEBUG)
 
 
 @pytest.fixture

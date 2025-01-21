@@ -1,0 +1,39 @@
+/* =====================================
+   Top Bar Styles
+   ===================================== */
+
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid #ddd;
+    /* Might be theme-specific */
+    z-index: 100;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.top-bar-left {
+    width: 25%; /* Adjust width as needed */
+    display: flex;
+    justify-content: flex-start; /* Align to the left */
+}
+
+.top-bar-right {
+    width: 25%; /* Adjust width as needed */
+    display: flex;
+    justify-content: flex-end; /* Align to the right */
+}
+
+.top-bar-center {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0;
+    white-space: nowrap;
+    position: absolute; /* Take out of the normal flow */
+    left: 50%;         /* Position 50% from the left edge of the viewport */
+    transform: translateX(-50%); /* Shift the element to the left by half of its own width */
+    width: 50%;
+}

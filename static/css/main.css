@@ -1,0 +1,27 @@
+/* static/css/main.css */
+
+/* Base Styles (These should come first) */
+@import "base/global.css";
+@import "base/typography.css";
+@import "base/layout.css";
+@import "base/forms.css";
+
+/* Component Styles (Specific component styles come after base styles) */
+@import "components/top-bar.css";
+@import "components/top-bar-center.css";
+@import "components/engine-selection.css";
+@import "components/theme-switcher.css";
+@import "components/output-container.css";
+@import "components/output-matches.css";
+@import "components/match-table.css"; /* match-table is now correctly placed */
+@import "components/info-table.css";
+@import "components/execution-time.css";
+@import "components/footer.css";
+
+/* Theme Styles (Themes should be imported after base and component styles) */
+@import "themes/light.css";
+@import "themes/dark.css";
+
+/* Highlight Styles (These should come last to override any previous styles if necessary) */
+@import "components/text-highlight.css";
+@import "components/highlight.css";

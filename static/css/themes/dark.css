@@ -1,0 +1,172 @@
+/* =====================================
+   Theme Styles (Dark)
+   ===================================== */
+
+.dark-theme {
+    background-color: #121212; /* Dark background */
+    color: #d4d4d4; /* Slightly darker text - changed from #eee */
+}
+
+/* Top Bar */
+.dark-theme .top-bar {
+    background-color: #1e1e1e;
+    border-color: #333;
+}
+
+/* Theme Switcher */
+.dark-theme .theme-switcher {
+    color: #ccc; /* Slightly darker icon - changed from #eee */
+}
+
+/* Engine Selector */
+.dark-theme .engine-selector {
+    background-color: #252525;
+    color: #d4d4d4; /* Slightly darker text - changed from #eee */
+    border-color: #444;
+}
+
+.dark-theme .engine-selector:focus {
+    border-color: #999;
+}
+
+/* Textarea */
+.dark-theme textarea {
+    background-color: #252525;
+    color: #d4d4d4; /* Slightly darker text - changed from #eee */
+    border-color: #444;
+}
+
+.dark-theme textarea:focus {
+    border-color: #999;
+}
+
+/* Text Highlight */
+.dark-theme .text-highlight {
+    background-color: #252525;
+    color: #d4d4d4; /* Slightly darker text - changed from #eee */
+    border-color: #444;
+}
+
+/* Output Matches Table */
+.dark-theme .output-matches-table {
+    background-color: #1e1e1e;
+    border-color: #444;
+}
+
+.dark-theme .match-container {
+    background-color: #252525;
+    border-color: #444;
+}
+
+/* Highlight */
+.dark-theme .match-main-highlight {
+    background-color: #4d7738;
+    border: 1px solid #aaa;
+}
+
+/* Info Table */
+.dark-theme .info-table {
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+}
+
+.dark-theme .info-table td {
+    background-color: #252525;
+    color: #d4d4d4;
+    border-bottom: 1px solid #444;
+}
+
+.dark-theme .info-table tr:nth-child(odd) {
+    background-color: #2a2a2a;
+}
+
+/* Output Web Time & Execution Time */
+.dark-theme .output-web-time {
+    background-color: #4d2100;
+    color: #ffccb3;
+    border: 1px solid #7a3400;
+}
+
+.dark-theme .output-exec-time {
+    background-color: #4d0f0f;
+    color: #ffcccc;
+    border: 1px solid #7a1e1e;
+}
+
+/* Footer */
+.dark-theme footer {
+    background-color: #1e1e1e;
+    color: #ccc; /* Slightly darker text - changed from #eee */
+    border-color: #444;
+}
+
+.dark-theme footer::before {
+    border-color: #444;
+}
+
+/* Hover Colors */
+.dark-theme .github-link:hover,
+.dark-theme .linkedin-link:hover,
+.dark-theme .docker-link:hover,
+.dark-theme .app-link:hover,
+.dark-theme footer .footer-bottom div a:hover {
+    color: #99c2ff; /* Adjusted hover color - changed from #007bff */
+}
+
+.dark-theme .highlight {
+    /* Stronger and brighter shadow for dark theme */
+    box-shadow: 0 0 3px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Button styles in dark theme */
+.dark-theme .collapse-button {
+    background-color: #333;
+    color: #d4d4d4;
+    border-color: #666;
+}
+
+.dark-theme .collapse-button:hover {
+    background-color: #444;
+}
+
+.dark-theme #cheat-sheet-wrapper {
+    border: 1px solid #444;
+    /* Darker border */
+}
+
+.dark-theme .category-item td:first-child::before {
+    background-color: #444;
+    /* Darker gray background */
+}
+
+.dark-theme .category-item th {
+    background-color: #333;
+    /* Darker background for table headers */
+    color: #eee;
+    /* Lighter text color */
+}
+
+.dark-theme .category-item td {
+    color: #d4d4d4;
+    /* Lighter text color */
+}
+
+.dark-theme .collapse-button {
+    background-color: #333;
+    color: #d4d4d4;
+    border-color: #666;
+}
+
+.dark-theme .collapse-button:hover {
+    background-color: #444;
+}
+
+.dark-theme .example-button,
+.dark-theme .clear-button { /* Common styles for both buttons in dark theme */
+    border-color: #6c757d;
+}
+
+.dark-theme .example-button:hover,
+.dark-theme .clear-button:hover { /* Common hover styles */
+    background-color: #495057;
+}

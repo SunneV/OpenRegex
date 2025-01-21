@@ -1,0 +1,35 @@
+/* =====================================
+  Engine Selection Styles
+  ===================================== */
+
+.engine-selection {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.engine-info {
+    margin-right: 8px;
+}
+
+.engine-info table {
+    width: 100%;
+}
+
+.engine-info td {
+    padding: 5px;
+}
+
+.engine-selector {
+    padding: 6px;
+    border: 1px solid #ccc; /* Might be theme-specific */
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+    font-size: 0.9em;
+}
+
+.engine-selector:hover,
+.engine-selector:focus {
+    border-color: #666; /* Might be theme-specific */
+}
