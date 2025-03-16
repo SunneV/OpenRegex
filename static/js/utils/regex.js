@@ -35,6 +35,11 @@ export const fetchRegexMatch = async (regex, text, engine, elements) => {
         applyDynamicStyles(data.dark_theme_color, data.light_theme_color);
 
         attachMatchEventListeners();
+
+        if (data.encode_data) {
+            const newUrl = `${window.location.origin}${window.location.pathname}?link=${data.encode_data}`;
+            window.history.replaceState({}, document.title, newUrl);
+        }
     } catch (error) {
         console.error('Error fetching regex match', error);
     } finally {
@@ -77,4 +82,23 @@ export const applyDynamicStyles = (darkThemeColors, lightThemeColors) => {
     const isDarkTheme = body.classList.contains('dark-theme');
     const styleText = generateDynamicStyles(isDarkTheme ? darkThemeColors : lightThemeColors, isDarkTheme);
     dynamicStyles.textContent = styleText;
+};
+
+export const fetchAndDecodeLink = async (encodedData) => {
+    try {
+        const response = await fetch('/get_decode_link', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ encoded_data: encodedData })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json(); // Return the decoded data
+    } catch (error) {
+        console.error('Error fetching or decoding link data:', error);
+        return null; // Return null on error
+    }
 };

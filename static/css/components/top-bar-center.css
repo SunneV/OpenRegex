@@ -29,7 +29,17 @@
 .app-name {
     font-size: 1.5em;
     font-weight: bold;
+    display: flex; /* Use flexbox to align icon and text */
+    align-items: center; /* Vertically center the icon and text */
+    gap: 8px; /* Add some space between icon and text */
 }
+
+/* New style for the icon */
+.app-icon {
+    height: 4em; /* Adjust as needed, relative to the font size */
+    width: auto;  /* Maintain aspect ratio */
+}
+
 
 /* Tooltip */
 .app-link::before {

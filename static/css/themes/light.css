@@ -162,13 +162,38 @@
     background-color: #e0e0e0;
 }
 
-
-.light-theme .example-button,
-.light-theme .clear-button {  /* Common styles for both buttons in light theme */
-    border-color: #6c757d;
+/* Action Buttons (Light Theme) */
+.light-theme .generate-link-button,
+.light-theme .example-button {
+    border-color: #ced4da; /* Light gray border */
+    color: #495057;      /* Dark gray text */
 }
 
-.light-theme .example-button:hover,
-.light-theme .clear-button:hover { /* Common hover styles */
-    background-color: #e9ecef;
+.light-theme .clear-button {
+    border-color: #dc3545; /* Red border (consistent) */
+    color: #dc3545;      /* Red text (consistent) */
+}
+
+.light-theme .generate-link-button:hover,
+.light-theme .example-button:hover {
+    background-color: #e9ecef; /* Light gray background on hover */
+    border-color: #adb5bd;    /* Slightly darker border on hover */
+}
+
+.light-theme .clear-button:hover {
+    background-color: #c82333; /* Darker red on hover */
+    color: white;             /* White text on hover */
+    border-color: #bd2130;
+}
+
+/* Focus Styles (Light Theme) */
+.light-theme .generate-link-button:focus,
+.light-theme .example-button:focus,
+.light-theme .clear-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);  /* Blue focus ring */
+}
+
+.light-theme .clear-button:focus {
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);  /* Red focus ring */
 }

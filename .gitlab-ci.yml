@@ -253,9 +253,7 @@ tag-version:
   stage: deploy
   needs:
     - docker-hub
-  image: alpine/git
-  variables:
-    GIT_STRATEGY: clone
+  image: $DOCKER_IMAGE:$IMAGE_TAG_DEV
   before_script:
     - git config --global user.email ""
     - git config --global user.name "CI Robot"

@@ -1,0 +1,128 @@
+/* =====================================
+   Responsive Styles (Media Queries)
+   ===================================== */
+
+/* Small devices (landscape phones, 576px and up) */
+@media (max-width: 1024px) {
+
+    /* Top Bar */
+    .top-bar {
+        flex-direction: column; /* Stack elements vertically */
+        align-items: stretch; /* Stretch items to full width */
+        padding: 10px; /* Adjust padding */
+    }
+
+    .top-bar-left,
+    .top-bar-right,
+    .top-bar-center {
+        width: 100%; /* Full width */
+        justify-content: center; /* Center content */
+        margin-bottom: 5px; /* Add spacing between elements */
+    }
+    .top-bar-center{
+      position: static; /* Take out of the normal flow */
+      transform: none;
+    }
+
+    .top-bar-right{
+      justify-content: center;
+    }
+
+    /* Content */
+    .content {
+        padding: 10px; /* Reduce padding */
+    }
+
+    /* Output Container */
+    .output-container {
+        flex-direction: column; /* Stack left and right sections */
+    }
+
+
+
+    .output-left,
+    .output-right {
+        width: 100%; /* Full width */
+        padding: 0;    /* Reset padding */
+        border-right: none; /* Remove the border */
+        padding-bottom: 15px;
+    }
+     .output-right {
+        padding-left: 0px;
+    }
+
+    /* Input Textareas */
+    textarea {
+        font-size: 1em;  /* Make font size slightly smaller */
+    }
+
+    /* Output Matches Table */
+    .output-matches-table {
+        overflow-x: auto; /* Allow horizontal scrolling if content overflows */
+    }
+
+    /* Cheat Sheet */
+    #regex-cheat-sheet {
+        flex-direction: column; /* Stack left and right cheat sheet sections */
+    }
+
+    #regex-cheat-sheet-left,
+    #regex-cheat-sheet-right {
+        width: 100%; /* Full width */
+    }
+
+    /* Footer */
+    footer {
+        padding: 2px; /* Adjust padding */
+        text-align: center;
+        font-size: 0.85em; /* Slightly smaller font */
+    }
+
+    footer::before {
+      display: none;
+    }
+
+    .footer-top {
+    }
+
+    .footer-top a{
+      margin-bottom: 10px;
+    }
+
+    .footer-bottom-inner {
+    }
+
+    .footer-bottom-inner span{
+      margin-bottom: 5px;
+    }
+
+    h1{
+      font-size: 1.2em;
+    }
+
+    .text-highlight {
+      letter-spacing: 0;
+    }
+
+    .match-main-highlight-tablet{
+      font-size: 1.2em;
+    }
+
+    /* Input Header & Button Group - adjust to prevent overflow*/
+    .input-header{
+      flex-wrap: wrap;
+    }
+
+    .button-group{
+      margin-top: 0.5em;
+      /*width: 100%;*/ /* Removed width: 100% */
+      justify-content: space-around; /*Keep space-around*/
+      display: flex; /* Ensure it's a flex container*/
+      gap: 0.5em;     /* Add gap between buttons - this is key! */
+    }
+
+    .button-group button {
+        /* No need for width/flex properties on individual buttons */
+        margin: 0; /* Remove any default margins */
+    }
+}

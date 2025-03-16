@@ -14,15 +14,26 @@
 }
 
 .top-bar-left {
-    width: 25%; /* Adjust width as needed */
+    width: 50%; /* Full width on smaller screens, auto on larger */
     display: flex;
-    justify-content: flex-start; /* Align to the left */
+    justify-content: center; /* Center on smaller screens */
+    margin-bottom: 5px; /* Space below on smaller screens */
+    order: 1; /* Control order for responsiveness */
 }
 
 .top-bar-right {
-    width: 25%; /* Adjust width as needed */
+    width: 50%; /* Full width */
     display: flex;
-    justify-content: flex-end; /* Align to the right */
+    justify-content: center; /* Center content */
+    margin-bottom: 5px; /* Add spacing between elements */
+     order: 3; /* Control order for responsiveness */
+}
+
+/* Container for the right-side elements */
+.top-bar-right-inner {
+    display: flex;
+    align-items: center; /* Vertically align items */
+    gap: 30px; /* Spacing between items */
 }
 
 .top-bar-center {
@@ -32,8 +43,6 @@
     text-align: center;
     margin: 0;
     white-space: nowrap;
-    position: absolute; /* Take out of the normal flow */
-    left: 50%;         /* Position 50% from the left edge of the viewport */
-    transform: translateX(-50%); /* Shift the element to the left by half of its own width */
-    width: 50%;
+    width: 100%;
+    order: 2; /* Control order for responsiveness */
 }
