@@ -180,6 +180,7 @@ body {
     box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.5); /* Example focus ring */
 }
 
+.generate-link-button,
 .example-button,
 .clear-button { /* Common styles for both buttons */
     padding: 4px 8px;
@@ -192,17 +193,27 @@ body {
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
-.example-button { /* Specific styles for Example button */
-    margin-left: 10px;
+.generate-link-button i,
+.example-button i,
+.clear-button i {
+    font-size: 1.2em; /* Adjust icon size as needed */
+    margin: 0;       /* Remove any default margin */
 }
 
-.clear-button { /* Specific styles for Clear button */
-    margin-left: 5px; /* A bit less margin than the Example button */
-}
-
-.example-button:hover,
-.clear-button:hover {
-    /* Hover effect will be defined in themes */
+.generate-link-button,
+.example-button,
+.clear-button {
+    background-color: transparent; /* Remove default background */
+    border: 1px solid;          /* Add a border */
+    border-radius: 4px;         /* Slightly rounded corners */
+    padding: 0.375rem 0.75rem;  /* Bootstrap-like padding */
+    cursor: pointer;           /* Show pointer cursor on hover */
+    color: inherit;            /* Inherit text color from parent */
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; /* Smooth transitions */
+    font-size: 1rem;           /* Set a base font size (adjust as needed) */
+    display: inline-flex;      /* Use flexbox for centering icon */
+    align-items: center;       /* Vertically center icon */
+    justify-content: center;   /* Horizontally center icon */
 }
 
 .input-header {

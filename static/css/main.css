@@ -25,3 +25,5 @@
 /* Highlight Styles (These should come last to override any previous styles if necessary) */
 @import "components/text-highlight.css";
 @import "components/highlight.css";
+
+@import "base/responsive.css";

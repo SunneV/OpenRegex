@@ -4,13 +4,17 @@
 [![GitHub stars](https://img.shields.io/github/stars/sunnev/openregex)]()    
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/sunnev/openregex?label=latest)](https://github.com/sunnev/openregex/tags)
 
-
-OpenRegex is an open-source, self-hosted web application for testing and debugging regular expressions (regex).
+<img src="static/logo.svg" alt="OpenRegex Interface Screenshot" width="640">
 
 Official website: **[www.openregex.com](https://www.openregex.com)**
 
-<img src="assets/interface_light.png" alt="OpenRegex Interface Screenshot" width="800">
-<img src="assets/interface_dark.png" alt="OpenRegex Interface Screenshot" width="800">
+OpenRegex is an open-source, self-hosted web application for testing and debugging regular expressions (regex).
+
+## Screenshots
+
+<img src="assets/interface_light.png" alt="OpenRegex Interface Screenshot" width="640">
+
+<img src="assets/interface_dark.png" alt="OpenRegex Interface Screenshot" width="640">
 
 ## Features
 
@@ -132,7 +136,7 @@ If you prefer using Docker, you can build and run the application in a container
    Use the following command to start a container with environment variables and port mapping:
 
    ```bash
-   docker run -e OPENREGEX_LOG_LEVEL=INFO -e OPENREGEX_TIMEOUT_S=5 -e GUNICORN_WORKERS=1 -e GUNICORN_THREADS=4 -p 5000:5000 openregex
+   docker run -e OPENREGEX_LOG_LEVEL=ERROR -e OPENREGEX_TIMEOUT_S=5 -e GUNICORN_WORKERS=1 -e GUNICORN_THREADS=4 -p 5000:5000 openregex
    ```
 3. **Access the Application:**
 
