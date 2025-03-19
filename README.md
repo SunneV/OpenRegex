@@ -6,7 +6,7 @@
 
 <img src="static/logo.svg" alt="OpenRegex Interface Screenshot" width="640">
 
-Official website: **[www.openregex.com](https://www.openregex.com)**
+Official website: **[OpenRegex.com](https://www.openregex.com)**
 
 OpenRegex is an open-source, self-hosted web application for testing and debugging regular expressions (regex).
 
@@ -21,6 +21,7 @@ OpenRegex is an open-source, self-hosted web application for testing and debuggi
 * **Web Interface:** Access the tool through a user-friendly web browser.
 * **Self-Hosted:** Run the application on your own infrastructure for complete control and privacy.
 * **Simple Setup:** Relatively easy installation with clear instructions.
+* **Link support:** Easily share links with others to test regular expressions. [Example](https://openregex.com/?link=eJx9kEFPwkAQhf_K2BNF2k3UEyElJiR6EgIRD50eSpnSxrLb7G5BRf6700WaJiaedifz3jfz5uRpb-yFw8F0jGgG08Xksa5f0j1F8zgNvpLT_XmJODs9nH3_28l-Na-6ihTiaogYZmrv83MRLCZPpS2aTVRYW5uxELvSxojHUCS3ztvYQukoNqvETWDAMT6sE_8qumJmKnsn_dwj_cXc_cfxRp7lcG9U8YIEVsG8JrmkHX2MwBYEGzIWdFuD5S_pG5TzPC-zMq3gSBswpSVQbHKiNmeIsquhNK4ZGNXojCCVWzBU5VAohm3DHkxTraB3EL5PSxOrRkpai24vlJfUwAJodNV5WsPWtZxPC9M6D6JbBiXHJY67-OTDSAh4pnf-AUszo1c)
 * **Multiple Engine Support:**
 
   | Engine | Description                                                                           |
