@@ -59,8 +59,9 @@ export const initGenerateLinkButton = () => {
 
         const generatedLink = `${currentUrl}/?link=${base64Encoded}`;
 
-        if (generatedLink.length > 2000) {
-            displayWarningMessage('The generated link is too long for the web!');
+        if (generatedLink.length > 4094) {
+            displayWarningMessage('URL exceeds 4094 char limit. Remove or shorten input text.');
+            navigator.clipboard.writeText(generatedLink)
         } else {
             navigator.clipboard.writeText(generatedLink).then(() => {
                 // Display a balloon message to confirm the link was copied

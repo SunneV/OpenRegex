@@ -9,6 +9,21 @@
     <meta name="keywords"
           content="regex, open regex, openregex, regular expression, tester, debugger, python, java, c++, re, regex module, free, web regex tool, self-hosted regex, open source">
     <meta name="author" content="{{app_author}}">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{{ app_name }} - {{ app_description }}">
+    <meta property="og:description" content="OpenRegex is a self-hosted, open-source web application designed for testing and debugging regular expressions (regex). It supports multiple engines, including Python (re, regex), Java, and C++.">
+    <meta property="og:image" content="{{ url_for('static', filename='logo.svg') }}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ app_name }} - {{ app_description }}">
+    <meta name="twitter:description" content="OpenRegex is a self-hosted, open-source web application designed for testing and debugging regular expressions (regex). It supports multiple engines, including Python (re, regex), Java, and C++.">
+    <meta name="twitter:image" content="{{ url_for('static', filename='logo.svg') }}">
+    <meta name="twitter:url" content="{{ request.url }}">
+
     <title>{{ app_name }} - {{ app_description }}</title>
 
     <!-- Base Styles -->
