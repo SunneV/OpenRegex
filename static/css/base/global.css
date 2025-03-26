@@ -10,7 +10,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
     transition: background-color 0.3s, color 0.3s;
-    font-size: 0.95em;
+    font-size: 0.9em;
 }
 
 .center-container {

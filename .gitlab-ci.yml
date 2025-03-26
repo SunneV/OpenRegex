@@ -248,24 +248,6 @@ docker-hub:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
 
-# --- TAG VERSION STAGE ---
-tag-version:
-  stage: deploy
-  needs:
-    - docker-hub
-  image: $DOCKER_IMAGE:$IMAGE_TAG_DEV
-  before_script:
-    - git config --global user.email ""
-    - git config --global user.name "CI Robot"
-  script:
-    - git remote set-url origin https://${GIT_CI_USER}:${GIT_CI_PASS}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
-    - git tag -a $APP_VERSION -m "Version $APP_VERSION"
-    - git push origin $APP_VERSION
-  tags:
-    - docker
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-
 
 # --- DEPLOY STAGE ---
 deploy:

@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2025-03-26
+
+### Added
+
+- JavaScript regex engine to webpage using  `Node.js`
+
+### Changed
+
+- icons convert from `svg` inkscape to `svg` plain
+- update metadata in the `index.html` file.
+- small cosmetic update into web ui
+
+
+### Fixed
+
+- when input regex is empty link will not be generated and copied to the clipboard.
+
 ## [1.2.1] - 2025-03-20
 
 ### Changed

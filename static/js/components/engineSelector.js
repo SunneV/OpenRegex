@@ -17,13 +17,13 @@ const toggleCheatSheet = () => {
     if (isCollapsed) {
         engineCheatSheetOutput.classList.remove('collapsed');
         cheatSheetWrapper.style.display = 'flex';
-        toggleCheatSheetButton.textContent = 'Hide CheatSheet';
+        toggleCheatSheetButton.textContent = 'Hide Cheat Sheet';
         localStorage.setItem('cheatSheetState', 'visible');
 
     } else {
         engineCheatSheetOutput.classList.add('collapsed');
         cheatSheetWrapper.style.display = 'none';
-        toggleCheatSheetButton.textContent = 'Show CheatSheet';
+        toggleCheatSheetButton.textContent = 'Show Cheat Sheet';
         localStorage.setItem('cheatSheetState', 'collapsed');
     }
 };

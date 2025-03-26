@@ -40,9 +40,10 @@ class _Path:
     PROJECT = _get_path_n_levels_up(os.path.dirname(__file__), 1)
     ENGINE_CPP = os.path.join(PROJECT, "src", "engine", "cpp")
     ENGINE_JAVA = os.path.join(PROJECT, "src", "engine", "java")
+    ENGINE_JAVASCRIPT = os.path.join(PROJECT, "src", "engine", "javascript")
 
 
-@dataclass()
+@dataclass
 class _Config:
     port = int(os.getenv("OPENREGEX_PORT", "5000"))
     log_level = os.getenv("OPENREGEX_LOG_LEVEL", "INFO").upper()
@@ -50,7 +51,7 @@ class _Config:
     debug = log_level == "DEBUG"
 
 
-@dataclass()
+@dataclass
 class _App:
     name = "OpenRegex"
     home_link = "https://openregex.com"
@@ -62,13 +63,6 @@ class _App:
     repository = "https://github.com/SunneV/OpenRegex"
     docker_link = "https://hub.docker.com/r/sunnev/openregex"
     python_version = platform.python_version()
-
-
-def write_version_to_env(target_file):
-    """Writes a version string to a specified target file in KEY=VALUE format."""
-
-    with open(target_file, "w", encoding="utf-8") as f:
-        f.write(f"APP_VERSION={_App.version}\n")
 
 
 if __name__ == "__main__":

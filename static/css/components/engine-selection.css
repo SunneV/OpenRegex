@@ -5,7 +5,7 @@
 .engine-selection {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .engine-info {
@@ -13,23 +13,28 @@
 }
 
 .engine-info table {
-    width: 100%;
+    width: 250%;
 }
 
 .engine-info td {
-    padding: 5px;
+    padding: 8px;
 }
 
 .engine-selector {
-    padding: 6px;
+    padding: 8px;
     border: 1px solid #ccc; /* Might be theme-specific */
     border-radius: 4px;
     cursor: pointer;
     transition: border-color 0.3s;
     font-size: 0.9em;
+    width: 100%;
 }
 
 .engine-selector:hover,
 .engine-selector:focus {
     border-color: #666; /* Might be theme-specific */
+}
+
+.selected-engine-version {
+    font-size: 0.8em;
 }

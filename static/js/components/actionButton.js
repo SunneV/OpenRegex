@@ -52,11 +52,14 @@ export const initGenerateLinkButton = () => {
     const generateLinkButton = getElement('generate-link');
 
     generateLinkButton.addEventListener('click', () => {
-       const urlParams = new URLSearchParams(window.location.search);
+        const urlParams = new URLSearchParams(window.location.search);
         const base64Encoded = urlParams.get('link');
+        if (!base64Encoded) {
+            displayWarningMessage('Input regex is required to generate a link.');
+            return;
+        }
 
         const currentUrl = window.location.origin;
-
         const generatedLink = `${currentUrl}/?link=${base64Encoded}`;
 
         if (generatedLink.length > 4094) {
