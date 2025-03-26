@@ -43,15 +43,6 @@ OpenRegex is an open-source, self-hosted web application for testing and debuggi
 * **Docker:** Optional for containerized deployment.
 * **Basic Familiarity with Command Line:** For setting up the environment and running commands.
 
-## Requirements
-
-* **Python:** 3.12 or later (required)
-* **OpenJDK:** Required for Java regex engine.
-* **Node.js:** Required for JavaScript regex engine.
-* **g++:** Required for C++ regex engine.
-* **Docker:** Optional for containerized deployment.
-* **Basic Familiarity with Command Line:** For setting up the environment and running commands.
-
 ## Installation
 
 These instructions will help you set up OpenRegex on your local machine.
