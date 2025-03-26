@@ -3,7 +3,7 @@ import logging
 import pytest
 
 from project import log
-from src.engine import CppRegex, JavaRegex, PythonRe, PythonRegex
+from src.engine import CppRegex, JavaRegex, JavaScriptRegex, PythonRe, PythonRegex
 from src.engine_manager import EngineManager
 
 
@@ -21,24 +21,27 @@ def engine_manager():
 class TestEngineManager:
     def test_init_engine(self, engine_manager):
         """Test if all engines are initialized correctly."""
-        assert len(engine_manager.engine) == 4
+        assert len(engine_manager.engine) == 5
         assert "Python - re" in engine_manager.engine
         assert "Python - regex" in engine_manager.engine
         assert "Java" in engine_manager.engine
         assert "C++" in engine_manager.engine
+        assert "JavaScript" in engine_manager.engine
         assert isinstance(engine_manager.engine["Python - re"], PythonRe)
         assert isinstance(engine_manager.engine["Python - regex"], PythonRegex)
         assert isinstance(engine_manager.engine["Java"], JavaRegex)
         assert isinstance(engine_manager.engine["C++"], CppRegex)
+        assert isinstance(engine_manager.engine["JavaScript"], JavaScriptRegex)
 
     def test_get_engine_list(self, engine_manager):
         """Test if get_engine_list returns the correct list of engine names."""
         engine_list = engine_manager.get_engine_list()
-        assert len(engine_list) == 4
+        assert len(engine_list) == 5
         assert "Python - re" in engine_list
         assert "Python - regex" in engine_list
         assert "Java" in engine_list
         assert "C++" in engine_list
+        assert "JavaScript" in engine_list
 
     def test_get_engine_existing(self, engine_manager):
         """Test if get_engine returns an existing engine correctly."""

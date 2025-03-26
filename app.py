@@ -9,7 +9,7 @@ import html
 from flask import Flask, jsonify, render_template, request, send_from_directory
 
 from project import App, Config, log
-from src.engine_manager import EngineManager
+from src import EngineManager
 from src.utils.interface import ColorGenerator, MatchHighlighterRegex, MatchHighlighterText, MatchTableGenerator
 from src.utils.link import decode_dict, encode_dict
 

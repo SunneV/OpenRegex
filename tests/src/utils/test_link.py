@@ -15,7 +15,7 @@ def set_log_level():
     log.setLevel(logging.DEBUG)
 
 
-class TestZip85:
+class TestZipBase64:
     def test_encode_decode(self):
         data = {"e": "Python - regex", "r": r"(?P<name>\w+)", "t": "Hello, World!"}
 

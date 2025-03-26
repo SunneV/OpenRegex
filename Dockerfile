@@ -1,11 +1,16 @@
 # Use the official Python image from the Docker Hub
 FROM python:3.12-slim
 
-# Install required dependencies for downloading and extracting JDK
+# Install required dependencies for JDK, Node.js, and general system utilities
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     tar \
+    xz-utils \
     g++ \
+    ca-certificates \
+    gnupg \
+    dirmngr \
+    apt-transport-https \
     && rm -rf /var/lib/apt/lists/*
 
 # Download and install JDK 23.0.1
@@ -15,8 +20,17 @@ RUN curl -fsSL https://download.java.net/java/GA/jdk23.0.1/c28985cbf10d4e648e400
 
 # Set JAVA_HOME environment variable
 ENV JAVA_HOME=/usr/local/java
-# Add PATH to include Java binaries
+# Add Java to PATH
 ENV PATH="$JAVA_HOME/bin:$PATH"
+
+# Download and install Node.js v22.14.0
+RUN curl -fsSL https://nodejs.org/dist/v22.14.0/node-v22.14.0-linux-x64.tar.xz \
+    | tar -xJ -C /usr/local \
+    && ln -s /usr/local/node-v22.14.0-linux-x64 /usr/local/node
+
+# Set Node.js environment variables
+ENV NODE_HOME=/usr/local/node
+ENV PATH="$NODE_HOME/bin:$PATH"
 
 # Set the working directory
 WORKDIR /app

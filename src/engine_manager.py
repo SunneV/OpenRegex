@@ -7,9 +7,7 @@ import signal
 import time
 
 from project import Config, log
-from src.engine import PythonRe, PythonRegex
-from src.engine.cpp.cpp import CppRegex
-from src.engine.java.java import JavaRegex
+from src.engine import CppRegex, JavaRegex, JavaScriptRegex, PythonRe, PythonRegex
 
 
 class EngineManager:
@@ -28,10 +26,12 @@ class EngineManager:
         python_regex = PythonRegex()
         java = JavaRegex()
         cpp = CppRegex()
+        javascript = JavaScriptRegex()
         self.engine[python_re.name] = python_re
         self.engine[python_regex.name] = python_regex
-        self.engine[java.name] = java
         self.engine[cpp.name] = cpp
+        self.engine[java.name] = java
+        self.engine[javascript.name] = javascript
 
     def get_engine_list(self):
         """Get the list of available engines."""

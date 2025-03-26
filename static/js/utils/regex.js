@@ -36,8 +36,12 @@ export const fetchRegexMatch = async (regex, text, engine, elements) => {
 
         attachMatchEventListeners();
 
-        if (data.encode_data) {
+        if (data.encode_data && regex !== '') {
             const newUrl = `${window.location.origin}${window.location.pathname}?link=${data.encode_data}`;
+            window.history.replaceState({}, document.title, newUrl);
+        }
+        if (regex === '') {
+            const newUrl = `${window.location.origin}${window.location.pathname}`;
             window.history.replaceState({}, document.title, newUrl);
         }
     } catch (error) {
