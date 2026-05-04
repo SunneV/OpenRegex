@@ -62,6 +62,22 @@ const RegexTextToken: React.FC<RegexTextTokenProps> = ({
   );
 };
 
+const getSymbolClass = (t: string): string => {
+  if (t.startsWith('\\')) {
+    if (/^\\[bBAZzGMmK]/.test(t) || t.startsWith('\\b{')) return "text-sky-600/70 dark:text-sky-200/40";
+    if (/^\\[wWdDsShHvVXpP]/.test(t)) return "text-orange-600/70 dark:text-orange-200/40";
+    if (/^\\[xUu0-9]/.test(t) || /^\\[afnrt]/.test(t)) return "text-emerald-600/70 dark:text-emerald-200/40";
+    if (/^\\[1-9]/.test(t) || /^\\[kg]/.test(t)) return "text-indigo-600/70 dark:text-indigo-200/40";
+    return "text-orange-600/70 dark:text-orange-200/40";
+  }
+  if (t.startsWith('(*')) return "text-rose-600/70 dark:text-rose-200/40";
+  if (t.startsWith('[') || t.startsWith('[^')) return "text-amber-600/70 dark:text-amber-200/40";
+  if (/^[*+?][?+]?$/.test(t) || t.startsWith('{')) return "text-purple-600/70 dark:text-purple-200/40";
+  if (t === '^' || t === '$' || t === '|') return "text-sky-600/70 dark:text-sky-200/40";
+  if (t === '.') return "text-rose-600/70 dark:text-rose-200/40";
+  return "";
+};
+
 export const RegexViewerNode: React.FC<RegexViewerNodeProps> = ({
   node, activeGroupIds, hoveredGroupId, hoveredToken, hoveredTokenIndex, activeToken, activeTokenIndex, isBoundary, forceBoundaryHighlight, forceBoundaryActive, boundaryClasses, parentGroupId, nonCapturingPrefix, openingToken, cheatSheetItems
 }) => {
@@ -85,19 +101,7 @@ export const RegexViewerNode: React.FC<RegexViewerNodeProps> = ({
         tokenStr = nonCapturingPrefix || openingToken || '(';
       }
     } else {
-      if (t.startsWith('\\')) {
-        if (t.length > 1 && /[^a-zA-Z0-9]/.test(t.charAt(1))) {
-          symbolClass = "";
-        } else {
-          symbolClass = "text-orange-600/70 dark:text-orange-200/40";
-        }
-      }
-      else if (t.startsWith('[^')) symbolClass = "text-amber-600/70 dark:text-amber-200/40";
-      else if (t.startsWith('[')) symbolClass = "text-amber-600/70 dark:text-amber-200/40";
-      else if (/^[*+?][?+]?$/.test(t)) symbolClass = "text-purple-600/70 dark:text-purple-200/40";
-      else if (t === '^' || t === '$' || t === '|') symbolClass = "text-sky-600/70 dark:text-sky-200/40";
-      else if (t.startsWith('{') || t === '}') symbolClass = "text-purple-600/70 dark:text-purple-200/40";
-      else if (t === '.') symbolClass = "text-rose-600/70 dark:text-rose-200/40";
+      symbolClass = getSymbolClass(t);
     }
 
     const supported = isSupported(tokenStr) || isSupported(t);
@@ -197,7 +201,7 @@ export const RegexViewerNode: React.FC<RegexViewerNodeProps> = ({
             if (match) opToken = match[0];
             else opToken = "(";
         } else {
-            const match = prefix.match(/^\(\?(?:<=|<!|[=!:>|]|[a-zA-Z-]+:)/);
+            const match = prefix.match(/^\(\?(?:<=|<!|[=!:>|~]|[a-zA-Z-]+:?|\([^\)]+\))/);
             if (match) nonCapPrefix = match[0];
             else nonCapPrefix = node.children[0]?.text;
         }

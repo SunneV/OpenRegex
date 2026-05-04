@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - refactor the architecture so engines define flag metadata dynamically
 
 ### Added
+- implement robust regex token parsing and syntax highlighting
 - implement terms of service and cookie policy compliance flow
 
 ## [2.0.1] - 2026-05-04
