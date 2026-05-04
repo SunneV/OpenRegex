@@ -76,6 +76,7 @@ public class JvmStandard {
                             List.of(
                                     new CheatSheetItem("(...)", "Capturing group"),
                                     new CheatSheetItem("(?:...)", "Non-capturing group"),
+                                    new CheatSheetItem("x|y", "Alternation (match x or y)"),
                                     new CheatSheetItem("(?<name>...)", "Named capturing group"),
                                     new CheatSheetItem("\\1", "Backreference to capture group 1"),
                                     new CheatSheetItem("\\k<name>", "Backreference to named group")

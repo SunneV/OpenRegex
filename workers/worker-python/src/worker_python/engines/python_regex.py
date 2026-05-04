@@ -89,6 +89,7 @@ engine = EngineInfo(
             items=[
                 CheatSheetItem(character="(...)", description="Capturing group"),
                 CheatSheetItem(character="(?:...)", description="Non-capturing group"),
+                CheatSheetItem(character="x|y", description="Alternation (match x or y)"),
                 CheatSheetItem(character="(?P<name>...)", description="Named capturing group"),
                 CheatSheetItem(character="(?<name>...)", description="Named capturing group"),
                 CheatSheetItem(character="\\1", description="Backreference to capture group 1"),

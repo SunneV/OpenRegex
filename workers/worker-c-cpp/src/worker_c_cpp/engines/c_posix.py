@@ -60,6 +60,7 @@ engine = EngineInfo(
             category=CAT_GROUPS,
             items=[
                 CheatSheetItem(character="(...)", description="Capturing group"),
+                CheatSheetItem(character="x|y", description="Alternation (match x or y)"),
                 CheatSheetItem(character="\\1", description="Backreference to capture group 1 (GNU libc extension; not portable POSIX ERE)", engine_cheat=True)
             ]
         )

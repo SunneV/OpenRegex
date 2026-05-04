@@ -83,6 +83,7 @@ engine = EngineInfo(
             items=[
                 CheatSheetItem(character="(...)", description="Capturing group"),
                 CheatSheetItem(character="(?:...)", description="Non-capturing group"),
+                CheatSheetItem(character="x|y", description="Alternation (match x or y)"),
                 CheatSheetItem(character="(?P<name>...)", description="Named capturing group (Python/RE2 syntax)")
             ]
         ),

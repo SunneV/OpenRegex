@@ -76,6 +76,7 @@ export const engine = {
       items: [
         { character: "(...)", description: "Capturing group" },
         { character: "(?:...)", description: "Non-capturing group" },
+        { character: "x|y", description: "Alternation (match x or y)" },
         { character: "(?<name>...)", description: "Named capturing group" },
         { character: "\\1", description: "Backreference to capture group 1" },
         { character: "\\k<name>", description: "Backreference to a named capture group" }

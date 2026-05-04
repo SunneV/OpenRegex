@@ -131,6 +131,7 @@ class Registry {
                             'items' => [
                                 ['character' => '(...)', 'description' => 'Capturing group'],
                                 ['character' => '(?:...)', 'description' => 'Non-capturing group'],
+                                ['character' => 'x|y', 'description' => 'Alternation (match x or y)'],
                                 ['character' => '(?<name>...)', 'description' => 'Named capturing group'],
                                 ['character' => "(?'name'...)", 'description' => 'Named capturing group'],
                                 ['character' => '(?P<name>...)', 'description' => 'Named capturing group'],

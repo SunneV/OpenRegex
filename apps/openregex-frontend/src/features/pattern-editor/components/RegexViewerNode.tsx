@@ -70,6 +70,7 @@ export const RegexViewerNode: React.FC<RegexViewerNodeProps> = ({
     const t = node.text || "";
 
     const isSupported = (tokenToTest: string) => {
+      if (tokenToTest === '|') return true;
       if (!cheatSheetMap || cheatSheetMap.size === 0) return true;
       if (cheatSheetMap.has(tokenToTest)) return true;
       return cheatSheetItems?.some(item => isCheatSheetItemHovered(tokenToTest, item.character));

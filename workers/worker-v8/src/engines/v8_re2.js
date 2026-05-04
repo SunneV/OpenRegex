@@ -74,6 +74,7 @@ export const engine = {
             items: [
                 {character: "(...)", description: "Capturing group"},
                 {character: "(?:...)", description: "Non-capturing group"},
+                {character: "x|y", description: "Alternation (match x or y)"},
                 {character: "(?<name>...)", description: "Named capturing group"}
             ]
         }

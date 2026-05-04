@@ -73,6 +73,7 @@ public class JvmRe2j {
                             List.of(
                                     new CheatSheetItem("(...)", "Capturing group"),
                                     new CheatSheetItem("(?:...)", "Non-capturing group"),
+                                    new CheatSheetItem("x|y", "Alternation (match x or y)"),
                                     new CheatSheetItem("(?P<name>...)", "Named capturing group"),
                                     new CheatSheetItem("(?<name>...)", "Named capturing group")
                             )

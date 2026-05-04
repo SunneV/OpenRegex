@@ -5,7 +5,6 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] - YYYY-MM-DD
 
 ### Changed
-- Update engine scripts
 - clean up code structure
 - Update engine implementations
 - Refactor architecture so engines define flag metadata dynamically

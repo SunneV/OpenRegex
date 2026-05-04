@@ -32,7 +32,10 @@ export const RegexTooltip: React.FC<RegexTooltipProps> = ({ cheatSheetMap, cheat
   let displayToken = token;
 
   if (token) {
-    if (cheatSheetMap.has(token)) {
+    if (token === '|') {
+      description = "x|y Alternation (x or y, prefer x)";
+      displayToken = "|";
+    } else if (cheatSheetMap.has(token)) {
       description = cheatSheetMap.get(token);
     } else if (cheatSheetItems) {
       const match = cheatSheetItems.find(item => isCheatSheetItemHovered(token, item.character));

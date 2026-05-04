@@ -6,8 +6,6 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Update engine registry
-- clean up registry implementation
-- Update registry
 - Update architecture for dynamic flag metadata definition
 
 ## [1.0.1] - 2026-05-02

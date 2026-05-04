@@ -6,7 +6,6 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Update engine registrations
-- Update registry
 - Refactored architecture to define flag metadata dynamically in engines
 
 ## [1.0.0] - 2026-04-30

@@ -64,6 +64,12 @@ engine = EngineInfo(
                 CheatSheetItem(character="{m}", description="Exactly m times"),
                 CheatSheetItem(character="{m,n}", description="Between m and n times (greedy)")
             ]
+        ),
+        CheatSheetCategory(
+            category="Composites",
+            items=[
+                CheatSheetItem(character="x|y", description="Alternation (match x or y)")
+            ]
         )
     ],
     engine_examples=[

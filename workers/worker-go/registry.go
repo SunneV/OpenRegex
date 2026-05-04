@@ -97,6 +97,7 @@ func registerEngines(ctx context.Context, client *redis.Client) error {
 				Items: []CheatSheetItem{
 					{Character: "(...)", Description: "Capturing group"},
 					{Character: "(?:...)", Description: "Non-capturing group"},
+					{Character: "x|y", Description: "Alternation (match x or y)"},
 					{Character: "(?P<name>...)", Description: "Named capturing group"},
 					{Character: "(?<name>...)", Description: "Named capturing group"},
 				},

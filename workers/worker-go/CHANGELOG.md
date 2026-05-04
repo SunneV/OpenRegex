@@ -6,7 +6,6 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Update engine registry
-- Update registry
 - Update engine flag metadata definition to be dynamic.
 
 ## [1.0.0] - 2026-04-30
