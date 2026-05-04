@@ -49,6 +49,15 @@ def get_commits(rev_range: str, cwd: Path, limit: int = 0) -> list[list[str]]:
 
 
 def get_component_path_by_scope(scope: str) -> str:
+    scope_map = {
+        "backend": "apps/openregex-backend",
+        "frontend": "apps/openregex-frontend",
+        "shared-lib": "libs/python-shared"
+    }
+
+    if scope in scope_map:
+        return scope_map[scope]
+
     for path in VERSIONS.keys():
         if scope in path:
             return path
