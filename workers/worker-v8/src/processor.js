@@ -28,8 +28,8 @@ function executeRegexIsolated(req) {
 
         let flagStr = flags.includes('g') ? flags.join('') : flags.join('') + 'g';
         
-        // Inject 'd' flag for native V8 to extract precise capture group boundaries via match.indices
-        if (engine_id === 'v8_standard' && !flagStr.includes('d')) {
+        // Inject 'd' flag to extract precise capture group boundaries via match.indices
+        if (!flagStr.includes('d')) {
           flagStr += 'd';
         }
         
@@ -69,11 +69,11 @@ function executeRegexIsolated(req) {
               let end = 0;
               
               if (match.indices && match.indices[i]) {
-                // Native V8 exact boundaries
+                // Exact boundaries via match.indices
                 start = match.indices[i][0];
                 end = match.indices[i][1];
               } else {
-                // Fallback for node-re2 which does not support 'd' flag / match.indices
+                // Fallback
                 start = text.indexOf(match[i], match.index);
                 end = start + match[i].length;
               }

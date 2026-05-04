@@ -93,19 +93,6 @@ export const engine = {
         { character: "(?i:...)", description: "Scoped modifier: case-insensitive; requires runtime support for RegExp modifiers" },
         { character: "(?-i:...)", description: "Scoped modifier: disable case-insensitive; requires runtime support for RegExp modifiers" }
       ]
-    },
-    {
-      category: "Flags",
-      items: [
-        { character: "d", description: "Return start and end indices for matches and capturing groups" },
-        { character: "g", description: "Global matching; find all matches and advance lastIndex" },
-        { character: "i", description: "Case-insensitive matching" },
-        { character: "m", description: "Multiline mode for ^ and $" },
-        { character: "s", description: "DotAll mode; dot matches line terminators" },
-        { character: "u", description: "Unicode-aware mode" },
-        { character: "v", description: "Unicode sets mode; enables set operations and string properties" },
-        { character: "y", description: "Sticky matching at lastIndex" }
-      ]
     }
   ],
   engine_examples: [

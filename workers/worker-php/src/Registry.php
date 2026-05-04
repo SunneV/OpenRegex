@@ -157,24 +157,6 @@ class Registry {
                                 ['character' => '(?U)', 'description' => 'Inline flag: Ungreedy quantifiers'],
                                 ['character' => '(?J)', 'description' => 'Inline flag: Allow duplicate named groups']
                             ]
-                        ],
-                        [
-                            'category' => 'Pattern Modifiers',
-                            'items' => [
-                                ['character' => 'i', 'description' => 'Case-insensitive matching'],
-                                ['character' => 'm', 'description' => 'Multiline mode for ^ and $'],
-                                ['character' => 's', 'description' => 'Dot matches newline'],
-                                ['character' => 'x', 'description' => 'Extended / free-spacing pattern mode'],
-                                ['character' => 'A', 'description' => 'Force pattern to be anchored at the start of the subject'],
-                                ['character' => 'D', 'description' => '$ matches only at the end of the subject, not before a final newline'],
-                                ['character' => 'S', 'description' => 'Study modifier; accepted for compatibility but ignored in modern PHP/PCRE2'],
-                                ['character' => 'U', 'description' => 'Ungreedy mode; quantifiers are lazy by default'],
-                                ['character' => 'X', 'description' => 'Extra syntax checking for unknown escaped letters'],
-                                ['character' => 'J', 'description' => 'Allow duplicate named capturing groups'],
-                                ['character' => 'u', 'description' => 'Treat subject and pattern as UTF-8'],
-                                ['character' => 'n', 'description' => 'No auto-capture mode; unnamed groups are non-capturing by default in PHP 8.2+'],
-                                ['character' => 'r', 'description' => 'Restrict caseless matching across ASCII/non-ASCII boundary folds in PHP 8.4+']
-                            ]
                         ]
                     ],
                     'engine_examples' => [

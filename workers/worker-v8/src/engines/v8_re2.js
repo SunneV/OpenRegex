@@ -75,18 +75,6 @@ export const engine = {
                 {character: "(?:...)", description: "Non-capturing group"},
                 {character: "(?<name>...)", description: "Named capturing group"}
             ]
-        },
-        {
-            category: "Flags",
-            items: [
-                {character: "g", description: "Global matching; find all matches and advance lastIndex"},
-                {character: "i", description: "Case-insensitive matching"},
-                {character: "m", description: "Multiline mode for ^ and $"},
-                {character: "s", description: "DotAll mode; dot matches line terminators"},
-                {character: "u", description: "Unicode mode; always enabled by node-re2"},
-                {character: "y", description: "Sticky matching at lastIndex"},
-                {character: "d", description: "Return match indices via the indices property"}
-            ]
         }
     ],
     engine_examples: [
