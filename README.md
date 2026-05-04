@@ -177,12 +177,13 @@ of the available settings to manage SEO, rate limits, AI worker parameters, and 
 | Component    | Environment Variable              | Default Value         | Explanation                                                                                                    |
 |--------------|:----------------------------------|:----------------------|:---------------------------------------------------------------------------------------------------------------|
 | Frontend     | **`ROBOTS_META`**                 | `"noindex, nofollow"` | Controls search engine indexing for production environments. Set to `"index, follow"` to make the site public. |
+| Frontend     | **`VITE_APP_TERMS`**              | `""`                  | Toggles the Terms of Service and Cookie Policy popup. Use accept to disable it.                                |
 | Backend      | **`RATE_LIMIT_REQUESTS`**         | `60`                  | The maximum number of requests allowed per engine per minute to prevent abuse.                                 |
 | Backend      | **`RATE_LIMIT_WINDOW`**           | `60`                  | The time window (in seconds) for the rate-limiting threshold.                                                  |
 | Backend      | **`API_AI_ENDPOINT_ENABLE`**      | `"false"`             | Toggles the availability of the AI assistant endpoint (`worker-ai`).                                           |
 | Backend      | **`API_REGEX_ENDPOINT_ENABLE`**   | `"true"`              | Toggles the core regex evaluation endpoint.                                                                    |
 | Backend      | **`MAX_AI_QUEUE`**                | `10`                  | Max users allowed in the human-agent waitlist before new requests are rejected.                                |
-| AI Worker    | **`AI_MAX_WORKERS`**              | `"2"`                 | The maximum number of concurrent AI worker processes.                                                          |
+| AI Worker    | **`AI_MAX_WORKERS`**              | `2`                   | The maximum number of concurrent AI worker processes.                                                          |
 | AI Worker    | **`LLM_ENDPOINT`**                | `""`                  | The base URL for the LLM service. Can be pointed to a proxy like LiteLLM.                                      |
 | AI Worker    | **`LLM_MODEL`**                   | `""`                  | The specific LLM model used for generating, explaining, and optimizing patterns.                               |
 | AI Worker    | **`LLM_API_KEY`**                 | `""`                  | Your secret API key for the chosen LLM provider.                                                               |

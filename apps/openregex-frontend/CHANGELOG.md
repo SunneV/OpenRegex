@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] - YYYY-MM-DD
 
 ### Changed
+- Update terms modal component logic
 - refactor the architecture so engines define flag metadata dynamically
 
 ### Added

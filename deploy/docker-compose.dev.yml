@@ -32,13 +32,11 @@ services:
       context: ..
       dockerfile: deploy/dockerfiles/openregex-frontend.dockerfile
       target: development
-      args:
-        - VITE_APP_TERMS=${APP_TERMS:-}
     ports:
       - "5000:5000"
     environment:
       - ROBOTS_META=${ROBOTS_META:-}
-      - VITE_APP_TERMS=${APP_TERMS:-}
+      - VITE_APP_TERMS=${VITE_APP_TERMS:-accept}
     volumes:
       - ../apps/openregex-frontend:/app/apps/openregex-frontend
       - /app/apps/openregex-frontend/node_modules

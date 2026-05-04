@@ -9,7 +9,8 @@ export const TermsModal: React.FC = () => {
   const [termsContent, setTermsContent] = useState<string>('Loading terms...');
   const [view, setView] = useState<'main' | 'terms' | 'cookies'>('main');
 
-  const isForced = import.meta.env.VITE_APP_TERMS !== 'accepted' && !hasAcceptedTerms;
+  // Yes, this checks the VITE_APP_TERMS variable. If it's "accepted", the modal will not be forced open.
+  const isForced = import.meta.env.VITE_APP_TERMS !== 'accept' && !hasAcceptedTerms;
   const isOpen = isForced || isTermsModalOpen;
 
   useEffect(() => {
@@ -23,6 +24,11 @@ export const TermsModal: React.FC = () => {
         .catch(() => setTermsContent('Terms of Service document could not be loaded.'));
     }
   }, [isOpen, view]);
+
+  const handleClose = () => {
+    setView('main');
+    closeTermsModal();
+  };
 
   if (!isOpen) return null;
 
@@ -61,46 +67,52 @@ export const TermsModal: React.FC = () => {
               </h2>
             </div>
           </div>
-          {!isForced && (
-            <button
-              onClick={closeTermsModal}
-              className="p-2 text-theme-muted hover:text-theme-text hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors"
-            >
-              <X size={18} />
-            </button>
-          )}
-          {(view === 'terms' || view === 'cookies') && isForced && (
-            <button
-              onClick={() => setView('main')}
-              className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded transition-colors"
-            >
-              Back
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {view !== 'main' && (
+              <button
+                onClick={() => setView('main')}
+                className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded transition-colors"
+              >
+                Back
+              </button>
+            )}
+            {!isForced && (
+              <button
+                onClick={handleClose}
+                className="p-2 text-theme-muted hover:text-theme-text hover:bg-rose-500/10 hover:text-rose-500 rounded-full transition-colors"
+              >
+                <X size={18} />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
           {view === 'main' && (
-            <div className="flex flex-col gap-4">
-              <p className="text-sm text-theme-text leading-relaxed">
-                Before you continue to OpenRegex, please review and accept our Terms of Service and Cookie Policy.
+            <div className="flex flex-col gap-6">
+              <p className="text-sm text-theme-text/80 leading-relaxed text-center px-4">
+                Before you continue to <strong className="text-theme-primary">OpenRegex</strong>, please review and accept our <strong>Terms of Service</strong> and <strong>Cookie Policy</strong>.
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button
                   onClick={() => setView('terms')}
-                  className="flex flex-col items-center justify-center gap-3 p-6 rounded-xl border border-theme-border bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 hover:border-purple-500/30 transition-all group"
+                  className="flex flex-col items-center justify-center gap-4 p-8 rounded-2xl border border-theme-border bg-gradient-to-b from-black/5 to-black/10 dark:from-white/5 dark:to-white/10 hover:from-purple-500/10 hover:to-purple-500/20 hover:border-purple-500/50 shadow-sm hover:shadow-purple-500/20 transition-all duration-300 group"
                 >
-                  <FileText size={32} className="text-theme-muted group-hover:text-purple-500 transition-colors" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-theme-text">Terms of Service</span>
+                  <div className="p-4 bg-black/5 dark:bg-white/5 rounded-full group-hover:bg-purple-500/20 transition-colors">
+                    <FileText size={36} className="text-theme-muted group-hover:text-purple-500 transition-colors" />
+                  </div>
+                  <span className="text-sm font-black uppercase tracking-widest text-theme-text group-hover:text-purple-500 transition-colors">Terms of Service</span>
                 </button>
 
                 <button
                   onClick={() => setView('cookies')}
-                  className="flex flex-col items-center justify-center gap-3 p-6 rounded-xl border border-theme-border bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 hover:border-purple-500/30 transition-all group"
+                  className="flex flex-col items-center justify-center gap-4 p-8 rounded-2xl border border-theme-border bg-gradient-to-b from-black/5 to-black/10 dark:from-white/5 dark:to-white/10 hover:from-purple-500/10 hover:to-purple-500/20 hover:border-purple-500/50 shadow-sm hover:shadow-purple-500/20 transition-all duration-300 group"
                 >
-                  <Cookie size={32} className="text-theme-muted group-hover:text-purple-500 transition-colors" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-theme-text">Cookie Policy</span>
+                  <div className="p-4 bg-black/5 dark:bg-white/5 rounded-full group-hover:bg-purple-500/20 transition-colors">
+                    <Cookie size={36} className="text-theme-muted group-hover:text-purple-500 transition-colors" />
+                  </div>
+                  <span className="text-sm font-black uppercase tracking-widest text-theme-text group-hover:text-purple-500 transition-colors">Cookie Policy</span>
                 </button>
               </div>
             </div>

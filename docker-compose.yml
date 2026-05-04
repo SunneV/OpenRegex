@@ -32,6 +32,7 @@ services:
       - "5000:5000"
     environment:
       - ROBOTS_META=${ROBOTS_META:-noindex, nofollow}
+      - VITE_APP_TERMS={VITE_APP_TERMS:-} # accepted for local
     restart: always
     depends_on:
       - backend
