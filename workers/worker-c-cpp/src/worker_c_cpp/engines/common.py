@@ -1,5 +1,6 @@
 import subprocess
 import os
+from openregex_libs.models import EngineFlag
 
 WORKER_VERSION = os.environ.get("WORKER_VERSION", "Unknown")
 WORKER_RELEASE_DATE = os.environ.get("WORKER_RELEASE_DATE", "Unreleased")
@@ -53,3 +54,29 @@ CAT_ANCHORS = "Anchors & Boundaries"
 CAT_QUANTIFIERS = "Quantifiers"
 CAT_GROUPS = "Grouping & Backreferences"
 CAT_ADVANCED = "Lookarounds & Advanced"
+
+FLAG_METADATA: dict[str, tuple[str, str]] = {
+    "i": ("Case-insensitive matching.", "Basic"),
+    "m": ("Multiline mode. Makes ^ and $ work per line.", "Basic"),
+    "s": ("DotAll mode. Makes . match newline.", "Basic"),
+    "x": ("Extended/free-spacing mode. Ignores unescaped whitespace.", "Basic"),
+    "u": ("Unicode or UTF mode, engine-specific behavior.", "Basic"),
+    "U": ("Ungreedy mode, engine-specific behavior.", "Advance"),
+    "J": ("Allow duplicate named capture groups.", "Unique"),
+    "n": ("No auto-capture mode for plain (...).", "Advance"),
+    "v": ("Allow invalid UTF in byte-mode matching (engine-specific).", "Advance"),
+    "e": ("Allow empty matches to be reported (engine-specific).", "Unique"),
+    "b": ("Treat input as raw bytes mode (engine-specific).", "Unique"),
+    "w": ("Unicode word-boundary behavior (engine-specific).", "Advance"),
+    "a": ("ASCII-only matching mode.", "Advance"),
+    "f": ("Full Unicode case-folding mode.", "Advance"),
+    "p": ("POSIX leftmost-longest matching mode.", "Advance"),
+    "r": ("Reverse/right-to-left matching mode.", "Unique"),
+}
+
+def build_engine_flags(*flag_names: str) -> list[EngineFlag]:
+    flags: list[EngineFlag] = []
+    for name in flag_names:
+        description, group = FLAG_METADATA.get(name, (f"Flag ({name})", "Basic"))
+        flags.append(EngineFlag(name=name, description=description, group=group))
+    return flags

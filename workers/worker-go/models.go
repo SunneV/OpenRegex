@@ -15,8 +15,14 @@ type EngineDocs struct {
 	CheatSheetURL string   `json:"cheat_sheet_url"`
 }
 
+type EngineFlag struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Group       string `json:"group"`
+}
+
 type EngineCapabilities struct {
-	Flags              []string `json:"flags"`
+	Flags              []EngineFlag `json:"flags"`
 	SupportsLookaround bool     `json:"supports_lookaround"`
 	SupportsBackrefs   bool     `json:"supports_backrefs"`
 }

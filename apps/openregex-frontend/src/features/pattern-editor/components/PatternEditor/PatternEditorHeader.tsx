@@ -6,44 +6,16 @@ import { useOptimizedSelectionStore } from '../../../../core/store/useOptimizedS
 import { useUIStore } from '../../../../core/store/useUIStore';
 import { useLLMStore } from '../../../../core/store/useLLMStore';
 import { useStorageStore } from '../../../../core/store/useStorageStore';
+import type { EngineFlag } from '../../../../core/types';
 import { getShareUrl } from '../../../../shared/utils/link';
 
 type FlagGroup = 'Basic' | 'Advance' | 'Unique';
 
-interface FlagInfo {
-  description: string;
-  group: FlagGroup;
-}
-
-const FLAG_INFO: Record<string, FlagInfo> = {
-  'i': { description: 'Ignore case. Most common user-facing flag.', group: 'Basic' },
-  'm': { description: 'Multiline anchors. Makes ^ and $ work per line.', group: 'Basic' },
-  's': { description: 'DotAll. Makes . match newline.', group: 'Basic' },
-  'x': { description: 'Extended/free-spacing pattern mode. Allows readable multi-line regex with comments.', group: 'Basic' },
-  'u': { description: 'Unicode or UTF-8 mode. Exact behavior depends on engine.', group: 'Basic' },
-  'g': { description: 'Global matching. JavaScript-specific, but your highlighter should always collect all matches anyway.', group: 'Basic' },
-  'd': { description: 'JavaScript: return match indices. Java: Unix-lines mode. Conflicting meaning, so avoid as global UI flag.', group: 'Advance' },
-  'U': { description: 'Usually ungreedy mode in Go/RE2/Rust/PCRE/PHP; in Java it means Unicode character classes. Conflicting meaning.', group: 'Advance' },
-  'a': { description: 'ASCII-only matching for character classes like \\w, \\d, \\b. Mainly Python.', group: 'Advance' },
-  'A': { description: 'PHP/PCRE: force match to start at subject start. Python: ASCII alias internally.', group: 'Advance' },
-  'D': { description: 'PHP/PCRE: $ matches only at real end, not before final newline.', group: 'Advance' },
-  'S': { description: 'PHP/PCRE study flag, mostly compatibility/ignored in modern PCRE2. Python uses uppercase alias for s.', group: 'Unique' },
-  'X': { description: 'PHP/PCRE: extra syntax checking. Python uses uppercase alias for x.', group: 'Unique' },
-  'J': { description: 'PCRE/PHP: allow duplicate named capture groups.', group: 'Unique' },
-  'n': { description: 'No auto-capture / explicit capture. Plain (...) does not capture, depending on engine.', group: 'Advance' },
-  'r': { description: '.NET/Python regex: reverse/right-to-left matching. PHP 8.4+: restrict some caseless ASCII/non-ASCII folds.', group: 'Unique' },
-  'R': { description: 'Rust: CRLF-aware mode. Python regex: uppercase alias for reverse.', group: 'Unique' },
-  'v': { description: 'JavaScript Unicode sets mode. Mutually exclusive with u.', group: 'Advance' },
-  'y': { description: 'JavaScript sticky mode at lastIndex. Usually not needed for highlighter UI.', group: 'Advance' },
-  'b': { description: 'Python regex: best fuzzy match. Advanced only.', group: 'Unique' },
-  'e': { description: 'Python regex: enhanced fuzzy matching. Advanced only.', group: 'Unique' },
-  'f': { description: 'Python regex: full Unicode case folding. Advanced only.', group: 'Advance' },
-  'p': { description: 'Python regex: POSIX leftmost-longest matching. Advanced only.', group: 'Advance' },
-  'w': { description: 'Python regex: Unicode word-boundary behavior. Advanced only.', group: 'Advance' },
-  'L': { description: 'Locale-dependent matching. Avoid for general UI.', group: 'Unique' },
-  'l': { description: 'Locale-dependent matching. Avoid for general UI.', group: 'Unique' },
-  'V0': { description: 'Python regex: choose old regex behavior version. Advanced only.', group: 'Unique' },
-  'V1': { description: 'Python regex: choose new regex behavior version. Advanced only.', group: 'Unique' }
+const normalizeFlagGroup = (group?: string): FlagGroup => {
+  const normalized = (group || '').trim().toLowerCase();
+  if (normalized === 'advance') return 'Advance';
+  if (normalized === 'unique') return 'Unique';
+  return 'Basic';
 };
 
 const getFlagColors = (group: FlagGroup, isActive: boolean) => {
@@ -194,18 +166,18 @@ export const PatternEditorHeader: React.FC = () => {
   };
 
   const groupedFlags = useMemo(() => {
-    const basic: string[] = [];
-    const advance: string[] = [];
-    const unique: string[] = [];
+    const basic: EngineFlag[] = [];
+    const advance: EngineFlag[] = [];
+    const unique: EngineFlag[] = [];
 
-    availableFlags.forEach(f => {
-      const group = FLAG_INFO[f]?.group || 'Basic';
-      if (group === 'Basic') basic.push(f);
-      else if (group === 'Advance') advance.push(f);
-      else unique.push(f);
+    availableFlags.forEach(flag => {
+      const normalizedGroup = normalizeFlagGroup(flag.group);
+      if (normalizedGroup === 'Basic') basic.push(flag);
+      else if (normalizedGroup === 'Advance') advance.push(flag);
+      else unique.push(flag);
     });
 
-    const sortAlphabetically = (a: string, b: string) => a.localeCompare(b);
+    const sortAlphabetically = (a: EngineFlag, b: EngineFlag) => a.name.localeCompare(b.name);
     basic.sort(sortAlphabetically);
     advance.sort(sortAlphabetically);
     unique.sort(sortAlphabetically);
@@ -213,19 +185,19 @@ export const PatternEditorHeader: React.FC = () => {
     return { basic, advance, unique };
   }, [availableFlags]);
 
-  const renderFlagGroup = (flags: string[]) => {
+  const renderFlagGroup = (flags: EngineFlag[]) => {
     return flags.map(flag => {
-      const flagInfo = FLAG_INFO[flag] || { description: `Flag (${flag})`, group: 'Basic' as FlagGroup };
-      const colorClass = getFlagColors(flagInfo.group, activeFlags.includes(flag));
+      const group = normalizeFlagGroup(flag.group);
+      const colorClass = getFlagColors(group, activeFlags.includes(flag.name));
 
       return (
         <button
-          key={flag}
-          onClick={() => toggleFlag(flag)}
-          title={flagInfo.description}
+          key={flag.name}
+          onClick={() => toggleFlag(flag.name)}
+          title={flag.description}
           className={`font-mono text-[10px] px-1.5 py-0.5 rounded-sm border transition-colors shrink-0 ${colorClass}`}
         >
-          /{flag}
+          /{flag.name}
         </button>
       );
     });

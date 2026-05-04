@@ -20,7 +20,9 @@ public class Models {
 
     public record EngineDocs(List<String> trivia, String cheat_sheet_url) {}
 
-    public record EngineCapabilities(List<String> flags, boolean supports_lookaround, boolean supports_backrefs) {}
+    public record EngineFlag(String name, String description, String group) {}
+
+    public record EngineCapabilities(List<EngineFlag> flags, boolean supports_lookaround, boolean supports_backrefs) {}
 
     public record EngineExample(String regex, String text) {}
 

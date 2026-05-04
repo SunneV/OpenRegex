@@ -12,13 +12,14 @@ public class JvmStandard {
             Common.JAVA_VERSION,
             "Java (java.util.regex)",
             new EngineCapabilities(
-                    List.of("i", "m", "s", "d", "u", "x", "U"),
+                    Common.flags("i", "m", "s", "d", "u", "x", "U"),
                     true,
                     true
             ),
             new EngineDocs(
                     List.of(
                             "Standard NFA-based Java engine built into the JDK.",
+                            "In OpenJDK builds, java.util.regex is part of code distributed under GPL-2.0 with the Classpath Exception.",
                             "Supports advanced features like possessive quantifiers and intersection of character classes.",
                             "Lookbehinds in Java must have an obvious maximum length (e.g., variable length is partially supported but unbounded like '*' is not).",
                             "Vulnerable to catastrophic backtracking (ReDoS) on highly nested quantifiers."

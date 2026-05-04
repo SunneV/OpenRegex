@@ -50,8 +50,14 @@ public record EngineDocs(
     [property: JsonPropertyName("cheat_sheet_url")] string CheatSheetUrl
 );
 
+public record EngineFlag(
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("description")] string Description,
+    [property: JsonPropertyName("group")] string Group
+);
+
 public record EngineCapabilities(
-    [property: JsonPropertyName("flags")] List<string> Flags,
+    [property: JsonPropertyName("flags")] List<EngineFlag> Flags,
     [property: JsonPropertyName("supports_lookaround")] bool SupportsLookaround,
     [property: JsonPropertyName("supports_backrefs")] bool SupportsBackrefs
 );

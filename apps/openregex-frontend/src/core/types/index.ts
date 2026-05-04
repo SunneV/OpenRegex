@@ -13,8 +13,14 @@ export interface EngineDocs {
   cheat_sheet_url?: string;
 }
 
+export interface EngineFlag {
+  name: string;
+  description: string;
+  group: string;
+}
+
 export interface EngineCapabilities {
-  flags: string[];
+  flags: EngineFlag[];
   supports_lookaround: boolean;
   supports_backrefs: boolean;
 }

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - YYYY-MM-DD
+
+### Changed
+- Update registry
+- Update architecture for dynamic flag metadata definition
+
 ## [1.0.1] - 2026-05-02
 
 ### Fixed

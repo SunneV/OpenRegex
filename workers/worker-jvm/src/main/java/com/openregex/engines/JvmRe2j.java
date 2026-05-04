@@ -12,13 +12,14 @@ public class JvmRe2j {
             "1.7",
             "Java (RE2J)",
             new EngineCapabilities(
-                    List.of("i", "m", "s", "U"),
+                    Common.flags("i", "m", "s", "U"),
                     false,
                     false
             ),
             new EngineDocs(
                     List.of(
                             "Google's RE2 implementation for the JVM.",
+                            "RE2/J is distributed under a BSD-style license derived from the Go license.",
                             "Guarantees linear O(n) execution time relative to input size.",
                             "Strictly avoids backtracking, making it immune to ReDoS caused by catastrophic backtracking.",
                             "Does not support lookarounds, backreferences, atomic groups, or possessive quantifiers."

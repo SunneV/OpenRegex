@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - YYYY-MM-DD
+
+### Changed
+- refactor the architecture so engines define flag metadata dynamically
+
 ## [2.0.1] - 2026-05-04
+
 ### Fixed
 - prevent scrollbar flash by setting initial tooltip position to fixed
 

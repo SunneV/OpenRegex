@@ -221,8 +221,22 @@ maintained within their respective directories:
 
 ---
 
+## 📜 Licensing
+
+OpenRegex is licensed under the Apache License 2.0.
+
+Worker components are executed as isolated services and may include third-party libraries under their own licenses (
+e.g., BSD, MIT, LGPL). These licenses apply only to the respective worker environments and do not affect the licensing
+of the core platform.
+
+For a full list of third-party dependencies and their licenses, see:
+[Third-Party Licenses & Notices](THIRD-PARTY-LICENSES.md)
+
+---
+
 ## ❤️ Support
 
 You like my work? Just sponsor me!
 
 ☕ [![GitHub sponsors](https://img.shields.io/github/sponsors/sunnev)]() ☕
+

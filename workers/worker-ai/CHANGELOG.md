@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - YYYY-MM-DD
+
+### Changed
+- Refactor architecture to allow engines to dynamically define flag metadata
+
 ## [1.2.0] - 2026-05-03
+
 ### Added
 - Implement handle_title task for LLM processing
 

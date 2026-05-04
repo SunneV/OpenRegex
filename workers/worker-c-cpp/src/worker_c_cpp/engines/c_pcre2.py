@@ -1,6 +1,6 @@
 from openregex_libs.models import EngineInfo, EngineCapabilities, EngineDocs, CheatSheetCategory, CheatSheetItem, EngineExample
 from .common import get_pkg_version, CAT_CLASSES, CAT_ANCHORS, CAT_QUANTIFIERS, \
-    CAT_GROUPS, CAT_ADVANCED, C_VERSION
+    CAT_GROUPS, CAT_ADVANCED, C_VERSION, build_engine_flags
 
 PCRE2_LIB_VER = get_pkg_version("libpcre2-8", "pcre2", "libpcre2-dev")
 
@@ -12,13 +12,14 @@ engine = EngineInfo(
     engine_regex_lib_version=PCRE2_LIB_VER,
     engine_label="C (PCRE2)",
     engine_capabilities=EngineCapabilities(
-        flags=["i", "m", "s", "x", "U", "J", "n"],
+        flags=build_engine_flags("i", "m", "s", "x", "U", "J", "n"),
         supports_lookaround=True,
         supports_backrefs=True
     ),
     engine_docs=EngineDocs(
         trivia=[
             "PCRE2 is the revised API for Perl-Compatible Regular Expressions, widely used across the industry.",
+            "PCRE2 is distributed under BSD-3-Clause licensing with the PCRE2 exception.",
             "It replaced the original PCRE library and introduced a more powerful, flexible execution engine.",
             "Supports advanced functionality such as JIT compilation, lookbehind assertions, and atomic groups.",
             "Highly compatible with Perl 5 syntax and serves as the baseline behavior expected by most modern developers."

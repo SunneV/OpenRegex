@@ -3,18 +3,50 @@
 namespace OpenRegex\Worker;
 
 class Registry {
+    private static function flagMetadata(string $name): array {
+        return match ($name) {
+            'i' => ['Case-insensitive matching.', 'Basic'],
+            'm' => ['Multiline mode. Makes ^ and $ work per line.', 'Basic'],
+            's' => ['DotAll mode. Makes . match newline.', 'Basic'],
+            'x' => ['Extended/free-spacing pattern mode.', 'Basic'],
+            'A' => ['Force pattern to be anchored at the start of the subject.', 'Advance'],
+            'D' => ['$ matches only at the true end of the subject.', 'Advance'],
+            'S' => ['Compatibility study modifier; ignored in modern PHP/PCRE2.', 'Unique'],
+            'U' => ['Ungreedy mode; quantifiers are lazy by default.', 'Advance'],
+            'X' => ['Extra syntax checking for unknown escaped letters.', 'Unique'],
+            'J' => ['Allow duplicate named capturing groups.', 'Unique'],
+            'u' => ['Treat subject and pattern as UTF-8.', 'Basic'],
+            'n' => ['No auto-capture mode (PHP 8.2+).', 'Advance'],
+            'r' => ['Restrict caseless ASCII/non-ASCII boundary folds (PHP 8.4+).', 'Unique'],
+            default => ["Flag ({$name})", 'Basic'],
+        };
+    }
+
+    private static function buildEngineFlags(array $names): array {
+        $flags = [];
+        foreach ($names as $name) {
+            [$description, $group] = self::flagMetadata($name);
+            $flags[] = [
+                'name' => $name,
+                'description' => $description,
+                'group' => $group,
+            ];
+        }
+        return $flags;
+    }
+
     public static function registerEngines($client) {
         $workerVersion = getenv('WORKER_VERSION') ?: '1.0.0';
         $releaseDate = getenv('WORKER_RELEASE_DATE') ?: 'Unreleased';
 
-        $pcreFlags = ['i', 'm', 's', 'x', 'A', 'D', 'S', 'U', 'X', 'J', 'u'];
+        $pcreFlagNames = ['i', 'm', 's', 'x', 'A', 'D', 'S', 'U', 'X', 'J', 'u'];
 
         if (defined('PHP_VERSION_ID') && PHP_VERSION_ID >= 80200) {
-            $pcreFlags[] = 'n';
+            $pcreFlagNames[] = 'n';
         }
 
         if (defined('PHP_VERSION_ID') && PHP_VERSION_ID >= 80400) {
-            $pcreFlags[] = 'r';
+            $pcreFlagNames[] = 'r';
         }
 
         $workerInfo = [
@@ -30,13 +62,14 @@ class Registry {
                     'engine_regex_lib_version' => PCRE_VERSION,
                     'engine_label' => 'PHP (PCRE)',
                     'engine_capabilities' => [
-                        'flags' => $pcreFlags,
+                        'flags' => self::buildEngineFlags($pcreFlagNames),
                         'supports_lookaround' => true,
                         'supports_backrefs' => true
                     ],
                     'engine_docs' => [
                         'trivia' => [
                             "Powered by the highly compatible Perl Compatible Regular Expressions (PCRE/PCRE2) C library.",
+                            "PCRE2 is distributed under BSD-3-Clause licensing with the PCRE2 exception.",
                             "The standard preg_* functions utilize an NFA backtracking engine.",
                             "Susceptible to ReDoS if patterns are poorly optimized; however, execution is protected internally via pcre.backtrack_limit.",
                             "The 'u' (PCRE_UTF8) modifier is automatically appended by OpenRegex to safely navigate string payloads."

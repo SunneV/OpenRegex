@@ -73,7 +73,7 @@ class RedisBroker:
 
             capabilities = target_engine.engine_capabilities
             if capabilities:
-                flags = capabilities.flags
+                flags = [flag.name for flag in capabilities.flags]
                 supports_lookaround = capabilities.supports_lookaround
                 supports_backrefs = capabilities.supports_backrefs
                 context_parts.append(

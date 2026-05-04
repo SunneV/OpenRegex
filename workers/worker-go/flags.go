@@ -7,6 +7,18 @@ import (
 
 var goRegexFlagOrder = []string{"i", "m", "s", "U"}
 
+type engineFlagMeta struct {
+	description string
+	group       string
+}
+
+var goRegexFlagMetadata = map[string]engineFlagMeta{
+	"i": {description: "Case-insensitive matching.", group: "Basic"},
+	"m": {description: "Multiline mode. Makes ^ and $ work per line.", group: "Basic"},
+	"s": {description: "DotAll mode. Makes . match newline.", group: "Basic"},
+	"U": {description: "Ungreedy mode where quantifiers are lazy by default.", group: "Advance"},
+}
+
 var goRegexSupportedFlags = map[string]struct{}{
 	"i": {},
 	"m": {},
@@ -14,9 +26,22 @@ var goRegexSupportedFlags = map[string]struct{}{
 	"U": {},
 }
 
-func supportedGoRegexFlags() []string {
-	flags := make([]string, len(goRegexFlagOrder))
-	copy(flags, goRegexFlagOrder)
+func supportedGoRegexFlags() []EngineFlag {
+	flags := make([]EngineFlag, 0, len(goRegexFlagOrder))
+	for _, name := range goRegexFlagOrder {
+		meta, ok := goRegexFlagMetadata[name]
+		if !ok {
+			meta = engineFlagMeta{
+				description: fmt.Sprintf("Flag (%s)", name),
+				group:       "Basic",
+			}
+		}
+		flags = append(flags, EngineFlag{
+			Name:        name,
+			Description: meta.description,
+			Group:       meta.group,
+		})
+	}
 	return flags
 }
 

@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field
-from typing import List, Optional
+from pydantic import BaseModel, Field, field_validator
+from typing import Any, List, Optional
 
 class CheatSheetItem(BaseModel):
     character: str
@@ -13,10 +13,36 @@ class EngineDocs(BaseModel):
     trivia: List[str] = Field(default_factory=list)
     cheat_sheet_url: str
 
+class EngineFlag(BaseModel):
+    name: str
+    description: str
+    group: str
+
 class EngineCapabilities(BaseModel):
-    flags: List[str] = Field(default_factory=list)
+    flags: List[EngineFlag] = Field(default_factory=list)
     supports_lookaround: bool
     supports_backrefs: bool
+
+    @field_validator("flags", mode="before")
+    @classmethod
+    def _normalize_legacy_flags(cls, value: Any) -> Any:
+        if value is None:
+            return []
+        if not isinstance(value, list):
+            return value
+        normalized: List[Any] = []
+        for item in value:
+            if isinstance(item, str):
+                normalized.append(
+                    {
+                        "name": item,
+                        "description": f"Flag ({item})",
+                        "group": "Basic",
+                    }
+                )
+            else:
+                normalized.append(item)
+        return normalized
 
 class EngineExample(BaseModel):
     regex: str

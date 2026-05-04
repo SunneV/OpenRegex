@@ -1,7 +1,18 @@
-OpenRegex (https://openregex.com)
-Copyright 2026 SunneV (Wojciech Mariusz Cichoń)
+OpenRegex
 
-This product includes software developed by Wojciech Mariusz Cichoń
-as part of the OpenRegex\OpenRegex.com project.
+Copyright (c) 2026 OpenRegex
 
-Licensed under the Apache License, Version 2.0.
+This product includes software developed by third parties.
+
+All third-party components remain under their respective licenses as documented in:
+
+THIRD-PARTY-LICENSES.md
+
+No endorsement by third-party authors is implied.
+
+Modifications:
+
+OpenRegex integrates multiple runtime engines via isolated worker architecture
+Additional orchestration logic and UI layers have been added
+
+This NOTICE file must be included in all distributions of the software.

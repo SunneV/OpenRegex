@@ -1,5 +1,14 @@
 from openregex_libs.models import EngineInfo, EngineCapabilities, EngineDocs, CheatSheetCategory, CheatSheetItem, EngineExample
-from .common import get_pkg_version, CAT_CLASSES, CAT_ANCHORS, CAT_QUANTIFIERS, CAT_GROUPS, CAT_ADVANCED, CPP_VERSION
+from .common import (
+    get_pkg_version,
+    CAT_CLASSES,
+    CAT_ANCHORS,
+    CAT_QUANTIFIERS,
+    CAT_GROUPS,
+    CAT_ADVANCED,
+    CPP_VERSION,
+    build_engine_flags,
+)
 
 BOOST_LIB_VER = get_pkg_version("boost", "libboost-regex-dev", "libboost-dev")
 
@@ -10,10 +19,15 @@ engine = EngineInfo(
     engine_regex_lib="boost",
     engine_regex_lib_version=BOOST_LIB_VER,
     engine_label="C++ (Boost.Regex)",
-    engine_capabilities=EngineCapabilities(flags=["i", "s", "x"], supports_lookaround=True, supports_backrefs=True),
+    engine_capabilities=EngineCapabilities(
+        flags=build_engine_flags("i", "s", "x"),
+        supports_lookaround=True,
+        supports_backrefs=True,
+    ),
     engine_docs=EngineDocs(
         trivia=[
             "The predecessor to std::regex, developed by John Maddock. The C++11 std::regex was heavily based on this library.",
+            "Boost.Regex is distributed under the Boost Software License 1.0 (BSL-1.0).",
             "Often faster and more memory-efficient than many std::regex implementations, depending on the compiler.",
             "Supports Perl-like regular expression syntax (similar to PCRE), but is a distinct engine.",
             "Includes advanced features such as lookbehind assertions and conditionals, though not as extensive as full PCRE engines.",

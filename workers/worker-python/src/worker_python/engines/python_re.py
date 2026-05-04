@@ -1,5 +1,13 @@
 from openregex_libs.models import EngineInfo, EngineCapabilities, EngineDocs, CheatSheetCategory, CheatSheetItem, EngineExample
-from .common import PYTHON_MAJOR_MINOR, CAT_CLASSES, CAT_ANCHORS, CAT_QUANTIFIERS, CAT_GROUPS, CAT_ADVANCED
+from .common import (
+    PYTHON_MAJOR_MINOR,
+    CAT_CLASSES,
+    CAT_ANCHORS,
+    CAT_QUANTIFIERS,
+    CAT_GROUPS,
+    CAT_ADVANCED,
+    build_engine_flags,
+)
 
 engine = EngineInfo(
     engine_id=f"python{PYTHON_MAJOR_MINOR}_re",
@@ -9,12 +17,13 @@ engine = EngineInfo(
     engine_regex_lib_version=PYTHON_MAJOR_MINOR,
     engine_label=f"Python {PYTHON_MAJOR_MINOR} (re module)",
     engine_capabilities=EngineCapabilities(
-        flags=["a", "i", "m", "s", "u", "x"],
+        flags=build_engine_flags("a", "i", "m", "s", "u", "x"),
         supports_lookaround=True,
         supports_backrefs=True),
     engine_docs=EngineDocs(
         trivia=[
             "It has been the standard regular expression module built into Python since version 1.5, replacing the older, deprecated 'regex' module.",
+            "The Python standard library is distributed under the Python Software Foundation License (PSF).",
             "Uses a backtracking NFA (Non-deterministic Finite Automaton) engine, making it highly susceptible to ReDoS (Regular Expression Denial of Service) if patterns are not carefully constructed.",
             "Compiled regex patterns are cached internally to save on recompilation overhead.",
             "Python 3.11 added support for atomic grouping and possessive quantifiers: (?>...), *+, ++, ?+, and {m,n}+.",

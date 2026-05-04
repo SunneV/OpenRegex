@@ -5,7 +5,8 @@ import {
   CAT_ANCHORS,
   CAT_QUANTIFIERS,
   CAT_GROUPS,
-  CAT_ADVANCED
+  CAT_ADVANCED,
+  buildEngineFlags
 } from './common.js';
 
 export const engine = {
@@ -16,13 +17,14 @@ export const engine = {
   engine_regex_lib_version: V8_VERSION,
   engine_label: "JavaScript (V8)",
   engine_capabilities: {
-    flags: ["d", "g", "i", "m", "s", "u", "v", "y"],
+    flags: buildEngineFlags("d", "g", "i", "m", "s", "u", "v", "y"),
     supports_lookaround: true,
     supports_backrefs: true
   },
   engine_docs: {
     trivia: [
       "Native RegExp engine running in Node.js (V8).",
+      "V8 is distributed under the BSD-3-Clause license.",
       "Supports modern ECMAScript RegExp features including named captures, lookbehind, match indices, Unicode property escapes, and the 'v' flag when available in the runtime.",
       "Uses a backtracking engine for many patterns and can be susceptible to ReDoS if patterns are poorly optimized.",
       "The 'u' and 'v' flags are mutually exclusive Unicode modes."

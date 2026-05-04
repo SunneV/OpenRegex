@@ -1,5 +1,12 @@
 from openregex_libs.models import EngineInfo, EngineCapabilities, EngineDocs, CheatSheetCategory, CheatSheetItem, EngineExample
-from .common import get_pkg_version, CAT_CLASSES, CAT_ANCHORS, CAT_QUANTIFIERS, CPP_VERSION
+from .common import (
+    get_pkg_version,
+    CAT_CLASSES,
+    CAT_ANCHORS,
+    CAT_QUANTIFIERS,
+    CPP_VERSION,
+    build_engine_flags,
+)
 
 HS_LIB_VER = get_pkg_version("libhs", "libhs-dev")
 
@@ -10,13 +17,18 @@ engine = EngineInfo(
     engine_regex_lib="hyperscan",
     engine_regex_lib_version=HS_LIB_VER,
     engine_label="C++ (Hyperscan)",
-    engine_capabilities=EngineCapabilities(flags=["i", "m", "s", "u"], supports_lookaround=False, supports_backrefs=False),
+    engine_capabilities=EngineCapabilities(
+        flags=build_engine_flags("i", "m", "s", "u", "e", "v", "b", "w"),
+        supports_lookaround=False,
+        supports_backrefs=False
+    ),
     engine_docs=EngineDocs(
         trivia=[
             "High-performance multiple regex matching library developed by Intel.",
+            "Hyperscan is distributed under a BSD-3-Clause license.",
             "Executes using automata-based algorithms designed for deep packet inspection and network scanning.",
             "Hyperscan does not support sub-capturing groups or backreferences. It only returns the overall match boundaries.",
-            "Enabled with HS_FLAG_SOM_LEFTMOST to accurately report the start offsets of matches, at a slight performance cost.",
+            "Operates in block mode by default but supports streaming and vectored modes (not exposed here).",
             "Strictly operates in $O(n)$ time complexity, ensuring absolute immunity to ReDoS attacks."
         ],
         cheat_sheet_url="https://intel.github.io/hyperscan/dev-reference/compilation.html#semantics"

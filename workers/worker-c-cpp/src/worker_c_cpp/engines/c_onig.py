@@ -1,5 +1,5 @@
 from openregex_libs.models import EngineInfo, EngineCapabilities, EngineDocs, CheatSheetCategory, CheatSheetItem, EngineExample
-from .common import get_pkg_version, CAT_CLASSES, CAT_GROUPS, CAT_ADVANCED, C_VERSION
+from .common import get_pkg_version, CAT_CLASSES, CAT_GROUPS, CAT_ADVANCED, C_VERSION, build_engine_flags
 
 ONIG_LIB_VER = get_pkg_version("oniguruma", "onig", "libonig-dev", "libonig5")
 
@@ -11,13 +11,14 @@ engine = EngineInfo(
     engine_regex_lib_version=ONIG_LIB_VER,
     engine_label="C (Oniguruma)",
     engine_capabilities=EngineCapabilities(
-        flags=["i", "m", "x"],
+        flags=build_engine_flags("i", "m", "x"),
         supports_lookaround=True,
         supports_backrefs=True
     ),
     engine_docs=EngineDocs(
         trivia=[
             "The default regular expression engine for Ruby, jq, and the syntax highlighting engines for VS Code and TextMate.",
+            "Oniguruma is distributed under the BSD-2-Clause license.",
             "Features advanced multi-encoding support (UTF-8, EUC-JP, Shift_JIS, etc.) natively within the regex execution engine.",
             "Introduced the concept of 'Absent Functions' to match what is explicitly NOT there, avoiding complex negative lookaheads.",
             "Highly flexible capture group mechanics, allowing duplicate names for capture groups and robust subexpression calls (recursion)."

@@ -7,6 +7,29 @@ namespace OpenRegex.Worker;
 
 public static class Registry
 {
+    private static readonly Dictionary<string, (string Description, string Group)> FlagMetadata = new()
+    {
+        ["i"] = ("Case-insensitive matching.", "Basic"),
+        ["m"] = ("Multiline mode. Makes ^ and $ work per line.", "Basic"),
+        ["s"] = ("DotAll mode. Makes . match newline.", "Basic"),
+        ["x"] = ("Extended/free-spacing pattern mode.", "Basic"),
+        ["n"] = ("Explicit capture mode for unnamed groups.", "Advance"),
+        ["r"] = ("Right-to-left matching mode.", "Unique")
+    };
+
+    private static List<EngineFlag> BuildEngineFlags(params string[] names)
+    {
+        var flags = new List<EngineFlag>(names.Length);
+        foreach (var name in names)
+        {
+            (string Description, string Group) meta = FlagMetadata.TryGetValue(name, out var value)
+                ? value
+                : ($"Flag ({name})", "Basic");
+            flags.Add(new EngineFlag(name, meta.Description, meta.Group));
+        }
+        return flags;
+    }
+
     public static async Task RegisterEnginesAsync(IDatabase db)
     {
         var workerVersion = Environment.GetEnvironmentVariable("WORKER_VERSION") ?? "Unknow";
@@ -28,7 +51,7 @@ public static class Registry
                     EngineRegexLibVersion: libVersion,
                     EngineLabel: "C# (.NET)",
                     EngineCapabilities: new EngineCapabilities(
-                        Flags: new List<string> { "i", "m", "s", "x", "n", "r" },
+                        Flags: BuildEngineFlags("i", "m", "s", "x", "n", "r"),
                         SupportsLookaround: true,
                         SupportsBackrefs: true
                     ),
@@ -36,6 +59,7 @@ public static class Registry
                         Trivia: new List<string>
                         {
                             "Native System.Text.RegularExpressions engine.",
+                            ".NET runtime libraries (including regex) are distributed under the MIT license.",
                             "Supports Balancing Groups (e.g., '(?<depth>-...)') which allow matching balanced constructs like nested parentheses without recursion.",
                             "Supports Right-to-Left matching using the RegexOptions.RightToLeft option.",
                             "Safeguarded against ReDoS via a strict execution timeout constructor."

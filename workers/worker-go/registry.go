@@ -43,6 +43,7 @@ func registerEngines(ctx context.Context, client *redis.Client) error {
 		EngineDocs: EngineDocs{
 			Trivia: []string{
 				"Based on the RE2 syntax and algorithms.",
+				"Go's standard library (including regexp) is distributed under a BSD-3-Clause style Go license.",
 				"Guarantees linear time O(n) execution, preventing ReDoS.",
 				"Supports inline flags i, m, s, and U.",
 				"Does not support backreferences or lookaround assertions.",
