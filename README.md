@@ -212,7 +212,7 @@ OpenRegex is built on strict architectural guidelines to ensure high performance
 
 ---
 
-# OpenRegex Platform Changelog
+## OpenRegex Platform Changelog
 
 This is the central orchestration log for the OpenRegex ecosystem. Detailed technical logs for individual components are
 maintained within their respective directories:
@@ -231,6 +231,33 @@ of the core platform.
 
 For a full list of third-party dependencies and their licenses, see:
 [Third-Party Licenses & Notices](THIRD-PARTY-LICENSES.md)
+
+---
+
+## Compliance Guide
+
+### If you use OpenRegex:
+
+* No obligations (Apache 2.0 allows commercial use)
+
+### If you redistribute:
+
+You MUST:
+
+* include LICENSE
+* include NOTICE
+* preserve attribution
+
+### If you modify:
+
+* mark changes
+* keep license notices
+
+### Third-party software:
+
+Each worker includes separate licenses.
+See THIRD-PARTY-LICENSES.md
+
 
 ---
 

@@ -5,6 +5,8 @@ WORKDIR /app
 ENV VITE_APP_VERSION="2.0.1"
 ARG VITE_APP_RELEASE_DATE="Unreleased"
 ENV VITE_APP_RELEASE_DATE=${VITE_APP_RELEASE_DATE}
+ARG VITE_APP_TERMS=""
+ENV VITE_APP_TERMS=${VITE_APP_TERMS}
 
 COPY apps/openregex-frontend/package*.json ./
 
@@ -19,6 +21,11 @@ CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5000"]
 FROM base AS builder
 RUN npm install
 COPY apps/openregex-frontend/ ./apps/openregex-frontend/
+COPY TERMS.md* ./apps/openregex-frontend/public/TERMS.md
+COPY NOTICE* ./apps/openregex-frontend/public/NOTICE
+COPY LICENSE* ./apps/openregex-frontend/public/LICENSE
+COPY THIRD-PARTY-LICENSES.md* ./apps/openregex-frontend/public/THIRD-PARTY-LICENSES.md
+
 WORKDIR /app/apps/openregex-frontend
 RUN npm run build
 

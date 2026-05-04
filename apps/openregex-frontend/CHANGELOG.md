@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - refactor the architecture so engines define flag metadata dynamically
 
+### Added
+- implement terms of service and cookie policy compliance flow
+
 ## [2.0.1] - 2026-05-04
 
 ### Fixed

@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import React from 'react';
-import { Github, Heart, Linkedin, FileCode, ExternalLink } from 'lucide-react';
+import { Github, Heart, Linkedin, FileCode, ExternalLink, ShieldCheck } from 'lucide-react';
+import { useTermsStore } from '../../core/store/useTermsStore';
 
 interface FooterProps {
   frontendVersion: string;
@@ -10,6 +11,8 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ frontendVersion, backendVersion, backendReleaseDate }) => {
   const frontendReleaseDate = import.meta.env.VITE_APP_RELEASE_DATE || 'Unknown';
+  const { openTermsModal } = useTermsStore();
+
   return (
     <footer className="flex flex-col md:flex-row justify-between items-center md:items-stretch gap-2 md:gap-4 z-20 h-auto md:h-[40px] w-full">
 
@@ -59,6 +62,16 @@ export const Footer: React.FC<FooterProps> = ({ frontendVersion, backendVersion,
 
       <div className="w-full md:w-auto md:flex-1 flex justify-center md:justify-end h-[36px] md:h-full">
         <div className="glass-panel rounded-full px-5 flex items-center justify-center shadow-sm h-full w-full md:w-auto gap-3">
+          <button
+            onClick={openTermsModal}
+            className="flex flex-col items-center md:items-start justify-center leading-none gap-0.5 text-theme-text hover:text-purple-500 transition-colors"
+            title="Terms & Cookies"
+          >
+            <span className="text-[9px] font-mono font-bold flex items-center gap-1"><ShieldCheck size={10} /> TERMS</span>
+          </button>
+
+          <div className="w-px h-4 bg-theme-border opacity-40"></div>
+
           <div className="flex flex-col items-center md:items-end justify-center leading-none gap-0.5 cursor-help" title={`Frontend Release: ${frontendReleaseDate}`}>
             <span className="text-[9px] font-mono text-theme-text font-bold">GUI: {frontendVersion}</span>
           </div>

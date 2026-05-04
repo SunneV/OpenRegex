@@ -24,6 +24,8 @@ services:
       context: ..
       dockerfile: deploy/dockerfiles/openregex-frontend.dockerfile
       target: production
+      args:
+        - VITE_APP_TERMS=${APP_TERMS:-}
     ports:
       - "5000:5000"
     restart: always

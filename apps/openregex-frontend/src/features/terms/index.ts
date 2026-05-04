@@ -1,0 +1,1 @@
+export { TermsModal } from './components/TermsModal';

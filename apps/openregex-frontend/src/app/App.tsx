@@ -7,6 +7,7 @@ import { Inspector } from '../features/match-inspector';
 import { CheatSheet } from '../features/cheat-sheet';
 import { CompatibilityReport } from '../features/engine-selector';
 import { PersonalPanel } from '../features/personal';
+import { TermsModal } from '../features/terms';
 import { AISidebar } from '../features/ai-assistant';
 import { useRegexStore } from '../core/store/useRegexStore';
 import { useSelectionStore } from '../core/store/useSelectionStore';
@@ -344,6 +345,7 @@ export default function App() {
 
       <CompatibilityReport />
       <PersonalPanel />
+      <TermsModal />
     </div>
   );
 }
