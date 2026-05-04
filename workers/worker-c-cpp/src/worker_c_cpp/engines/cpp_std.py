@@ -68,6 +68,7 @@ engine = EngineInfo(
                 CheatSheetItem(character="*", description="0 or more times (greedy)"),
                 CheatSheetItem(character="+", description="1 or more times (greedy)"),
                 CheatSheetItem(character="?", description="0 or 1 time (greedy)"),
+                CheatSheetItem(character="{m}", description="Exactly m times"),
                 CheatSheetItem(character="{m,n}", description="Between m and n times (greedy)"),
                 CheatSheetItem(character="*?", description="0 or more times (lazy)"),
                 CheatSheetItem(character="+?", description="1 or more times (lazy)"),

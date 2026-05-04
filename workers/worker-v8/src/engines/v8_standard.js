@@ -63,6 +63,7 @@ export const engine = {
         { character: "*", description: "0 or more times, greedy" },
         { character: "+", description: "1 or more times, greedy" },
         { character: "?", description: "0 or 1 time, greedy" },
+        { character: "{m}", description: "Exactly m times" },
         { character: "{m,n}", description: "Between m and n times, greedy" },
         { character: "*?", description: "0 or more times, lazy" },
         { character: "+?", description: "1 or more times, lazy" },

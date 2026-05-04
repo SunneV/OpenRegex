@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] - YYYY-MM-DD
 
 ### Changed
+- Update engine registry
 - Update registry
 - Update engine flag metadata definition to be dynamic.
 

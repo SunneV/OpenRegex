@@ -60,6 +60,7 @@ public class JvmRe2j {
                                     new CheatSheetItem("*", "0 or more times (greedy)"),
                                     new CheatSheetItem("+", "1 or more times (greedy)"),
                                     new CheatSheetItem("?", "0 or 1 time (greedy)"),
+                                    new CheatSheetItem("{m}", "Exactly m times"),
                                     new CheatSheetItem("{m,n}", "Between m and n times (greedy, with repetition bounds up to 1000)"),
                                     new CheatSheetItem("*?", "0 or more times (lazy)"),
                                     new CheatSheetItem("+?", "1 or more times (lazy)"),

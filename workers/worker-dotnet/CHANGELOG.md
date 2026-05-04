@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] - YYYY-MM-DD
 
 ### Changed
+- Update engine registrations
 - Update registry
 - Refactored architecture to define flag metadata dynamically in engines
 

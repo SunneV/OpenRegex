@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] - YYYY-MM-DD
 
 ### Changed
+- Update engine registry
 - clean up registry implementation
 - Update registry
 - Update architecture for dynamic flag metadata definition
