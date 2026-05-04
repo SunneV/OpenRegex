@@ -8,10 +8,11 @@ import { RegexViewerNode } from '../RegexViewerNode';
 import { SHARED_TEXT_CLASSES } from './constants';
 
 interface OptimizedPatternSplitViewProps {
-  cheatSheetItems: string[];
+  cheatSheetMap: Map<string, string>;
+  cheatSheetItems: any[];
 }
 
-export const OptimizedPatternSplitView: React.FC<OptimizedPatternSplitViewProps> = ({ cheatSheetItems }) => {
+export const OptimizedPatternSplitView: React.FC<OptimizedPatternSplitViewProps> = ({ cheatSheetMap, cheatSheetItems }) => {
   const setRegex = useRegexStore(state => state.setRegex);
   const setActiveFlags = useRegexStore(state => state.setActiveFlags);
   const optimizedSelection = useOptimizedSelectionStore();
@@ -96,7 +97,7 @@ export const OptimizedPatternSplitView: React.FC<OptimizedPatternSplitViewProps>
       </div>
       <div className="relative flex-1" onMouseMove={handleOptMouseMove} onClick={handleOptClick} onMouseLeave={() => optimizedSelection.handleHover(null, null, null, null)}>
         <div ref={optPatternDivRef} className={`absolute inset-0 overflow-y-auto z-0 pointer-events-auto text-purple-600 dark:text-purple-300 ${SHARED_TEXT_CLASSES}`}>
-          {optAstTree ? <RegexViewerNode node={optAstTree} activeGroupIds={optimizedSelection.activeGroupIds} hoveredGroupId={optimizedSelection.hoveredGroupId} hoveredToken={optimizedSelection.hoveredToken} hoveredTokenIndex={optimizedSelection.hoveredTokenIndex} activeToken={optimizedSelection.activeToken} activeTokenIndex={optimizedSelection.activeTokenIndex} cheatSheetItems={cheatSheetItems} /> : null}
+          {optAstTree ? <RegexViewerNode node={optAstTree} activeGroupIds={optimizedSelection.activeGroupIds} hoveredGroupId={optimizedSelection.hoveredGroupId} hoveredToken={optimizedSelection.hoveredToken} hoveredTokenIndex={optimizedSelection.hoveredTokenIndex} activeToken={optimizedSelection.activeToken} activeTokenIndex={optimizedSelection.activeTokenIndex} cheatSheetMap={cheatSheetMap} cheatSheetItems={cheatSheetItems} /> : null}
         </div>
       </div>
     </div>

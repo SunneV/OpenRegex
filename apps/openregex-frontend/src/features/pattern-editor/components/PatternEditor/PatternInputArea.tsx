@@ -6,10 +6,11 @@ import { RegexViewerNode } from '../RegexViewerNode';
 import { SHARED_TEXT_CLASSES } from './constants';
 
 interface PatternInputAreaProps {
-  cheatSheetItems: string[];
+  cheatSheetMap: Map<string, string>;
+  cheatSheetItems: any[];
 }
 
-export const PatternInputArea: React.FC<PatternInputAreaProps> = ({ cheatSheetItems }) => {
+export const PatternInputArea: React.FC<PatternInputAreaProps> = ({ cheatSheetMap, cheatSheetItems }) => {
   const regex = useRegexStore(state => state.regex);
   const setRegex = useRegexStore(state => state.setRegex);
   const originalSelection = useSelectionStore();
@@ -81,7 +82,7 @@ export const PatternInputArea: React.FC<PatternInputAreaProps> = ({ cheatSheetIt
   return (
     <div className="relative flex-1 min-h-[80px]" onMouseLeave={() => originalSelection.handleHover(null, null, null, null)} onMouseMove={handleMouseMove}>
       <div ref={patternBackdropDivRef} className={`absolute inset-0 overflow-y-auto z-0 pointer-events-auto text-ide-dim ${SHARED_TEXT_CLASSES}`}>
-        {astTree ? <RegexViewerNode node={astTree} activeGroupIds={originalSelection.activeGroupIds} hoveredGroupId={originalSelection.hoveredGroupId} hoveredToken={originalSelection.hoveredToken} hoveredTokenIndex={originalSelection.hoveredTokenIndex} activeToken={originalSelection.activeToken} activeTokenIndex={originalSelection.activeTokenIndex} cheatSheetItems={cheatSheetItems} /> : <span className="text-transparent">Placeholder text</span>}
+        {astTree ? <RegexViewerNode node={astTree} activeGroupIds={originalSelection.activeGroupIds} hoveredGroupId={originalSelection.hoveredGroupId} hoveredToken={originalSelection.hoveredToken} hoveredTokenIndex={originalSelection.hoveredTokenIndex} activeToken={originalSelection.activeToken} activeTokenIndex={originalSelection.activeTokenIndex} cheatSheetMap={cheatSheetMap} cheatSheetItems={cheatSheetItems} /> : <span className="text-transparent">Placeholder text</span>}
         {regex.endsWith('\n') && <br />}
       </div>
       <textarea ref={patternBackdropRef} value={regex} onChange={e => setRegex(e.target.value.replace(/\r/g, ''))} onClick={handleEditorClick} onScroll={handleScroll} placeholder="e.g. (?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})" spellCheck={false} className={`absolute inset-0 w-full h-full bg-transparent text-transparent caret-theme-text resize-none placeholder-ide-dim overflow-y-auto z-10 pointer-events-auto pb-16 ${SHARED_TEXT_CLASSES}`} />

@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] - YYYY-MM-DD
 
 ### Changed
+- Optimize tooltip finding and improve performance in pattern editor components
 - Update terms modal component logic
 - refactor the architecture so engines define flag metadata dynamically
 
