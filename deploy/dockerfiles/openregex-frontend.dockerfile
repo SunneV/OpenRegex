@@ -35,5 +35,8 @@ COPY apps/openregex-frontend/nginx.conf /etc/nginx/conf.d/default.conf
 RUN sed -i 's/listen 80;/listen 5000;/g' /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/apps/openregex-frontend/dist /usr/share/nginx/html
 
+COPY apps/openregex-frontend/40-inject-robots.sh /docker-entrypoint.d/
+RUN chmod +x /docker-entrypoint.d/40-inject-robots.sh
+
 EXPOSE 5000
 CMD ["nginx", "-g", "daemon off;"]

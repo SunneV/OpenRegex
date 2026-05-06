@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const robotsMeta = env.ROBOTS_META || env.VITE_ROBOTS_META || 'noindex, nofollow'
+  const robotsMeta = env.ROBOTS_META || env.VITE_ROBOTS_META || '__ROBOTS_META_PLACEHOLDER__'
 
   const apiUrl = env.VITE_API_URL || 'http://backend:8000';
 
