@@ -35,7 +35,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - ROBOTS_META=${ROBOTS_META:-}
+      - ROBOTS_META=${ROBOTS_META:-index, follow}
       - VITE_APP_TERMS=${VITE_APP_TERMS:-accept}
     volumes:
       - ../apps/openregex-frontend:/app/apps/openregex-frontend

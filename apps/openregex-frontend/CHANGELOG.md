@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.1] - 2026-05-06
+### Fixed
+- implement dynamic runtime injection for ROBOTS_META via Nginx entrypoint
+
 ## [2.1.0] - 2026-05-04
 
 ### Changed

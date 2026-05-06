@@ -2,7 +2,7 @@ FROM node:24-slim AS base
 WORKDIR /app
 
 # Expose globally with VITE_ prefix for React to embed during build/dev
-ENV VITE_APP_VERSION="2.1.0"
+ENV VITE_APP_VERSION="2.1.1"
 ARG VITE_APP_RELEASE_DATE="Unreleased"
 ENV VITE_APP_RELEASE_DATE=${VITE_APP_RELEASE_DATE}
 ARG VITE_APP_TERMS=""
@@ -34,6 +34,9 @@ FROM nginx:alpine AS production
 COPY apps/openregex-frontend/nginx.conf /etc/nginx/conf.d/default.conf
 RUN sed -i 's/listen 80;/listen 5000;/g' /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/apps/openregex-frontend/dist /usr/share/nginx/html
+
+COPY apps/openregex-frontend/40-inject-robots.sh /docker-entrypoint.d/
+RUN chmod +x /docker-entrypoint.d/40-inject-robots.sh
 
 EXPOSE 5000
 CMD ["nginx", "-g", "daemon off;"]
