@@ -1,0 +1,9 @@
+# Files consumed inside Linux containers must keep LF endings regardless of
+# the checkout platform. CRLF breaks shebangs (script "not found") and can
+# corrupt config parsing.
+*.sh text eol=lf
+*.conf text eol=lf
+Dockerfile text eol=lf
+*.dockerfile text eol=lf
+
+*.bat text eol=crlf
