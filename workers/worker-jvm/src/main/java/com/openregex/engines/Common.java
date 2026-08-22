@@ -9,6 +9,8 @@ import java.util.Map;
 public class Common {
     public static final String WORKER_VERSION = System.getenv("WORKER_VERSION") != null ? System.getenv("WORKER_VERSION") : "Unknown";
     public static final String WORKER_RELEASE_DATE = System.getenv("WORKER_RELEASE_DATE") != null ? System.getenv("WORKER_RELEASE_DATE") : "Unreleased";
+    // Contract version: "1.1" = match offsets normalized to Unicode code points.
+    public static final String WORKER_SCHEMA_VERSION = "1.1";
     public static final String JAVA_VERSION = System.getProperty("java.version");
 
     public static final String CAT_CLASSES = "Character Classes & Escapes";

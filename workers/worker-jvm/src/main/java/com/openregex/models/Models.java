@@ -43,6 +43,7 @@ public class Models {
             String worker_name,
             String worker_version,
             String worker_release_date,
+            String worker_schema_version,
             List<EngineInfo> engines
     ) {}
 }

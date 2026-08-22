@@ -85,6 +85,38 @@ public class Processor {
         }
     }
 
+    // java.util.regex and RE2J report UTF-16 code unit offsets; the platform
+    // contract requires Unicode code point indices. Returns null when the text
+    // contains no surrogate pairs (offsets already equal code point indices).
+    private static int[] buildUtf16ToCodePointMap(String text) {
+        if (text.length() == text.codePointCount(0, text.length())) {
+            return null;
+        }
+        int[] map = new int[text.length() + 1];
+        int cp = 0;
+        int u = 0;
+        while (u < text.length()) {
+            int width = (Character.isHighSurrogate(text.charAt(u))
+                    && u + 1 < text.length()
+                    && Character.isLowSurrogate(text.charAt(u + 1))) ? 2 : 1;
+            map[u] = cp;
+            if (width == 2) {
+                map[u + 1] = cp;
+            }
+            u += width;
+            cp++;
+        }
+        map[text.length()] = cp;
+        return map;
+    }
+
+    private static int toCodePointIndex(int[] map, int utf16Index) {
+        if (map == null) {
+            return utf16Index;
+        }
+        return map[Math.min(utf16Index, map.length - 1)];
+    }
+
     private static void handleDlq(Jedis jedis, String taskJson, String errorMessage) {
         try {
             JsonNode rootNode = mapper.readTree(taskJson);
@@ -204,6 +236,7 @@ public class Processor {
                 }
 
                 java.util.regex.Matcher m = p.matcher(new InterruptibleCharSequence(req.text()));
+                int[] cpMap = buildUtf16ToCodePointMap(req.text());
 
                 int matchId = 0;
                 while (m.find()) {
@@ -216,10 +249,10 @@ public class Processor {
                             throw new IllegalStateException("Exceeded maximum allowed groups per match (" + MAX_GROUPS + ").");
                         }
                         if (m.group(i) != null) {
-                            groups.add(new MatchGroup(i, null, m.group(i), m.start(i), m.end(i)));
+                            groups.add(new MatchGroup(i, null, m.group(i), toCodePointIndex(cpMap, m.start(i)), toCodePointIndex(cpMap, m.end(i))));
                         }
                     }
-                    matchItems.add(new MatchItem(matchId++, m.group(), m.start(), m.end(), groups));
+                    matchItems.add(new MatchItem(matchId++, m.group(), toCodePointIndex(cpMap, m.start()), toCodePointIndex(cpMap, m.end()), groups));
                 }
             } else if ("jvm_re2j".equals(req.engine_id())) {
                 com.google.re2j.Pattern p;
@@ -240,6 +273,7 @@ public class Processor {
                 }
 
                 com.google.re2j.Matcher m = p.matcher(req.text());
+                int[] cpMap = buildUtf16ToCodePointMap(req.text());
 
                 int matchId = 0;
                 while (m.find()) {
@@ -252,10 +286,10 @@ public class Processor {
                             throw new IllegalStateException("Exceeded maximum allowed groups per match (" + MAX_GROUPS + ").");
                         }
                         if (m.group(i) != null) {
-                            groups.add(new MatchGroup(i, null, m.group(i), m.start(i), m.end(i)));
+                            groups.add(new MatchGroup(i, null, m.group(i), toCodePointIndex(cpMap, m.start(i)), toCodePointIndex(cpMap, m.end(i))));
                         }
                     }
-                    matchItems.add(new MatchItem(matchId++, m.group(), m.start(), m.end(), groups));
+                    matchItems.add(new MatchItem(matchId++, m.group(), toCodePointIndex(cpMap, m.start()), toCodePointIndex(cpMap, m.end()), groups));
                 }
             } else {
                 throw new IllegalArgumentException("Unknown JVM engine: " + req.engine_id());
