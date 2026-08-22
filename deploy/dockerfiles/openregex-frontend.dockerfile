@@ -2,7 +2,7 @@ FROM node:24-slim AS base
 WORKDIR /app
 
 # Expose globally with VITE_ prefix for React to embed during build/dev
-ENV VITE_APP_VERSION="2.2.0"
+ENV VITE_APP_VERSION="2.2.1"
 ARG VITE_APP_RELEASE_DATE="Unreleased"
 ENV VITE_APP_RELEASE_DATE=${VITE_APP_RELEASE_DATE}
 ARG VITE_APP_TERMS=""

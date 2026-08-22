@@ -16,7 +16,7 @@
 
 | Component | Changelog | Official Version | release date | Develop Version | dev release date |
 |:---|:---|:---|---|---|---|
-| **OpenRegex Frontend** | [View](./apps/openregex-frontend/CHANGELOG.md) | `2.2.0` | 2026.08.22 | `2.0.0.dev` | 2026.05.01 |
+| **OpenRegex Frontend** | [View](./apps/openregex-frontend/CHANGELOG.md) | `2.2.1` | 2026.08.22 | `2.0.0.dev` | 2026.05.01 |
 | **OpenRegex Backend** | [View](./apps/openregex-backend/CHANGELOG.md) | `2.3.0` | 2026.08.22 | N/A | N/A |
 | **Python Shared Library** | [View](./libs/python-shared/CHANGELOG.md) | `1.2.0` | 2026.08.22 | N/A | N/A |
 | **Worker AI** | [View](./workers/worker-ai/CHANGELOG.md) | `1.3.0` | 2026.05.04 | N/A | N/A |

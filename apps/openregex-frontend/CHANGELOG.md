@@ -2,7 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.1] - 2026-08-22
+### Fixed
+- keep container start independent of backend availability
+
 ## [2.2.0] - 2026-08-22
+
 ### Added
 - show worker communication schema version in engine panel
 - add JSON export and import of personal storage
