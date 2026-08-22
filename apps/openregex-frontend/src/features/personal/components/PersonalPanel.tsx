@@ -1,20 +1,37 @@
-import React, { useState, useMemo } from 'react';
-import { Bookmark, X, Search } from 'lucide-react';
+import React, { useState, useMemo, useRef } from 'react';
+import { Bookmark, X, Search, Download, Upload } from 'lucide-react';
 import { useStorageStore, PersonalItem } from '../../../core/store/useStorageStore';
 import { useUIStore } from '../../../core/store/useUIStore';
 import { useRegexStore } from '../../../core/store/useRegexStore';
 import { getShareUrl } from '../../../shared/utils/link';
+import { downloadPersonalDump, parsePersonalDump } from '../utils/dump';
 import { PersonalToolbar } from './PersonalToolbar';
 import { PersonalTableRow } from './PersonalTableRow';
 
 export const PersonalPanel: React.FC = () => {
-  const { personal, removePersonal, clearPersonal, updatePersonalItem } = useStorageStore();
+  const { personal, removePersonal, clearPersonal, updatePersonalItem, importPersonal } = useStorageStore();
   const { isPersonalOpen, setPersonalOpen } = useUIStore();
   const { setSelectedEngineId, setRegex, setText, setActiveFlags } = useRegexStore();
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [groupBy, setGroupBy] = useState<'none' | 'engine' | 'tags'>('none');
+  const [importStatus, setImportStatus] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    try {
+      const items = parsePersonalDump(await file.text());
+      const added = importPersonal(items);
+      setImportStatus(`Imported ${added} new item${added === 1 ? '' : 's'} (${items.length} in file).`);
+    } catch (err) {
+      setImportStatus(err instanceof Error ? err.message : 'Import failed.');
+    }
+    setTimeout(() => setImportStatus(null), 4000);
+  };
 
   const filteredItems = personal.filter(item => {
     if (!searchQuery) return true;
@@ -92,6 +109,34 @@ export const PersonalPanel: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            {importStatus && (
+              <span className="text-[10px] font-mono text-theme-muted">{importStatus}</span>
+            )}
+            {personal.length > 0 && (
+              <button
+                onClick={() => downloadPersonalDump(personal)}
+                title="Export all saved patterns to a JSON file"
+                aria-label="Export saved patterns to JSON"
+                className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-theme-muted hover:text-theme-text transition-colors"
+              >
+                <Download size={13} /> Export
+              </button>
+            )}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              title="Import patterns from a JSON dump (merged with existing items)"
+              aria-label="Import saved patterns from JSON"
+              className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-theme-muted hover:text-theme-text transition-colors"
+            >
+              <Upload size={13} /> Import
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/json,.json"
+              onChange={handleImportFile}
+              className="hidden"
+            />
             {personal.length > 0 && (
               <button
                 onClick={() => {
