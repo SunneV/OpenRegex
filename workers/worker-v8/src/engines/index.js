@@ -11,5 +11,7 @@ export const WORKER_INFO = {
   worker_name: "worker-v8",
   worker_version: WORKER_VERSION,
   worker_release_date: WORKER_RELEASE_DATE,
+  // Contract version: "1.1" = match offsets normalized to Unicode code points.
+  worker_schema_version: "1.1",
   engines: ENGINES
 };
