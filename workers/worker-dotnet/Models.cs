@@ -84,5 +84,6 @@ public record WorkerInfo(
     [property: JsonPropertyName("worker_name")] string WorkerName,
     [property: JsonPropertyName("worker_version")] string WorkerVersion,
     [property: JsonPropertyName("worker_release_date")] string WorkerReleaseDate,
+    [property: JsonPropertyName("worker_schema_version")] string WorkerSchemaVersion,
     [property: JsonPropertyName("engines")] List<EngineInfo> Engines
 );
