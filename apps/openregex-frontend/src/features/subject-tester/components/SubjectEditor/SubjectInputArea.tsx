@@ -64,11 +64,7 @@ export const SubjectInputArea: React.FC<SubjectInputAreaProps> = ({
         <textarea
           ref={textareaRef}
           value={text}
-          onChange={e => {
-            const val = e.target.value.replace(/\r/g, '');
-            const escaped = val.replace(/[^\x00-\x7F]/g, char => `\\u${char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`);
-            setText(escaped);
-          }}
+          onChange={e => setText(e.target.value.replace(/\r/g, ''))}
           onScroll={handleScroll}
           onClick={onClick}
           placeholder="Enter text to match against..."
