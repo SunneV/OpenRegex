@@ -53,6 +53,8 @@ class Registry {
             'worker_name' => 'worker-php',
             'worker_version' => $workerVersion,
             'worker_release_date' => $releaseDate,
+            // Contract version: "1.1" = match offsets normalized to Unicode code points.
+            'worker_schema_version' => '1.1',
             'engines' => [
                 [
                     'engine_id' => 'php_pcre',
