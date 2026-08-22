@@ -35,8 +35,14 @@ def _normalize_match_offsets(matches: list, text: str) -> None:
         return
     last = len(b2c) - 1
     for match in matches:
+        byte_end = match.get("end", 0)
         match["start"] = b2c[min(match.get("start", 0), last)]
-        match["end"] = b2c[min(match.get("end", 0), last)]
+        match["end"] = b2c[min(byte_end, last)]
+        # Hyperscan runs without start-of-match tracking and encodes the byte
+        # end offset in its synthetic full_match text; keep it consistent with
+        # the converted code point offsets.
+        if match.get("full_match") == f"Match ends at {byte_end}":
+            match["full_match"] = f"Match ends at {match['end']}"
         for group in match.get("groups", []):
             group["start"] = b2c[min(group.get("start", 0), last)]
             group["end"] = b2c[min(group.get("end", 0), last)]
