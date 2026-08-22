@@ -58,6 +58,12 @@ def get_component_path_by_scope(scope: str) -> str:
     if scope in scope_map:
         return scope_map[scope]
 
+    # Prefer an exact match on the component directory name (e.g. 'worker-rust'),
+    # so a typo cannot silently land in the wrong component via substring match.
+    for path in VERSIONS.keys():
+        if scope == path.rsplit("/", 1)[-1]:
+            return path
+
     for path in VERSIONS.keys():
         if scope in path:
             return path
@@ -72,6 +78,9 @@ def process_changelog_entries(root: Path, entries: list[dict]) -> list[str]:
             continue
         comp_path = get_component_path_by_scope(scope)
         if not comp_path:
+            if scope not in ("general", "release"):
+                print(ConsoleLogger.warning(
+                    f"Scope '{scope}' does not match any component. Entry skipped: {entry.get('message')}"))
             continue
         if comp_path not in comp_entries:
             comp_entries[comp_path] = []
@@ -185,6 +194,8 @@ def _update_changelog_file(file_path: Path, entries: list[dict]) -> bool:
 def main():
     parser = argparse.ArgumentParser(description="Update component changelogs based on commit messages.")
     parser.add_argument("--commits", type=str, nargs="+", help="Specific commit hashes to analyze")
+    parser.add_argument("--yes", "-y", action="store_true",
+                        help="Apply updates without the interactive confirmation (for CI or scripted use)")
     args = parser.parse_args()
 
     root = get_root_dir()
@@ -242,8 +253,11 @@ def main():
         print(ConsoleLogger.warning("No valid conventional commit headers found (feat, fix, refactor, perf)."))
         return
 
-    choice = input(
-        f"\n{ConsoleLogger.BOLD}{ConsoleLogger.YELLOW}Proceed with updating changelogs based on valid commits? [y/N]: {ConsoleLogger.RESET}").strip().lower()
+    if args.yes:
+        choice = "y"
+    else:
+        choice = input(
+            f"\n{ConsoleLogger.BOLD}{ConsoleLogger.YELLOW}Proceed with updating changelogs based on valid commits? [y/N]: {ConsoleLogger.RESET}").strip().lower()
 
     if choice in ['y', 'yes']:
         modified = process_changelog_entries(root, entries)
