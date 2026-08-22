@@ -7,7 +7,7 @@ VERSIONS = {
     "libs/python-shared": "1.2.0",
     "workers/worker-ai": "1.3.0",
     "workers/worker-python": "1.2.0",
-    "workers/worker-c-cpp": "1.2.0",
+    "workers/worker-c-cpp": "1.3.0",
     "workers/worker-dotnet": "1.2.0",
     "workers/worker-go": "1.2.0",
     "workers/worker-jvm": "1.2.0",
