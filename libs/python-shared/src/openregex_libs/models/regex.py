@@ -1,6 +1,11 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Any, List, Optional
 
+# Version of the worker <-> backend communication contract.
+# "1.0" - legacy: match offsets reported in engine-native units (bytes or UTF-16 units).
+# "1.1" - match offsets normalized to Unicode code point indices on every engine.
+WORKER_SCHEMA_VERSION = "1.1"
+
 
 class CheatSheetItem(BaseModel):
     character: str
@@ -72,6 +77,8 @@ class WorkerInfo(BaseModel):
     worker_name: str
     worker_version: str
     worker_release_date: str
+    # Workers registered before schema reporting default to the legacy contract.
+    worker_schema_version: str = "1.0"
     engines: List[EngineInfo] = Field(default_factory=list)
 
 
