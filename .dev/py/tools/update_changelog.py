@@ -110,6 +110,11 @@ def _update_changelog_file(file_path: Path, entries: list[dict]) -> bool:
         msg = entry.get("message")
         if not t or not msg:
             continue
+        # Skip messages already recorded anywhere in the changelog (released or
+        # unreleased), so re-running after apply_versions.py promoted a version
+        # does not duplicate entries into a fresh [Unreleased] section.
+        if msg in content:
+            continue
         if t not in updates_by_type:
             updates_by_type[t] = []
         updates_by_type[t].append(msg)

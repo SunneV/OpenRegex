@@ -16,6 +16,8 @@ echo [5] AI Commit: Amend Latest
 echo [6] AI Commit: Squash Commits
 echo [7] Update Changelog (Current Branch)
 echo [8] Check Unreleased Changelogs
+echo [9] Bump Versions (from commit labels)
+echo [10] Full Release Sync (changelogs ^> bumps ^> manifests ^> check)
 echo ====================================
 set /p choice="Select task to run: "
 
@@ -43,8 +45,31 @@ if "!choice!"=="1" (
 ) else if "!choice!"=="8" (
     echo Running check_unreleased.py...
     python "!PY_DIR!\tools\check_unreleased.py"
+) else if "!choice!"=="9" (
+    echo Running bump_versions.py...
+    python "!PY_DIR!\tools\bump_versions.py"
+) else if "!choice!"=="10" (
+    echo [1/4] Updating changelogs from commit labels...
+    python "!PY_DIR!\tools\update_changelog.py" --yes
+    if errorlevel 1 goto :sync_failed
+    echo [2/4] Bumping versions in registry.py...
+    python "!PY_DIR!\tools\bump_versions.py" --yes
+    if errorlevel 1 goto :sync_failed
+    echo [3/4] Propagating versions to manifests and changelogs...
+    python "!PY_DIR!\tools\apply_versions.py"
+    if errorlevel 1 goto :sync_failed
+    echo [4/4] Verifying unreleased changelogs...
+    python "!PY_DIR!\tools\check_unreleased.py"
+    if errorlevel 1 goto :sync_failed
+    echo Full release sync finished.
 ) else (
     echo Invalid choice.
 )
 
+goto :end
+
+:sync_failed
+echo Full release sync FAILED - fix the reported step before continuing.
+
+:end
 pause
