@@ -81,9 +81,11 @@ def main():
             ("libs/python-shared/pyproject.toml", r'^version\s*=\s*"[^"]+"', 'version = "{}"')
         ],
         "workers/worker-python": [
+            ("workers/worker-python/pyproject.toml", r'^version\s*=\s*"[^"]+"', 'version = "{}"'),
             ("deploy/dockerfiles/worker-python.dockerfile", r'^ENV WORKER_VERSION="[^"]+"', 'ENV WORKER_VERSION="{}"')
         ],
         "workers/worker-c-cpp": [
+            ("workers/worker-c-cpp/pyproject.toml", r'^version\s*=\s*"[^"]+"', 'version = "{}"'),
             ("deploy/dockerfiles/worker-c-cpp.dockerfile", r'^ENV WORKER_VERSION="[^"]+"', 'ENV WORKER_VERSION="{}"')
         ],
         "workers/worker-v8": [
@@ -105,6 +107,7 @@ def main():
             ("deploy/dockerfiles/worker-php.dockerfile", r'^ENV WORKER_VERSION="[^"]+"', 'ENV WORKER_VERSION="{}"')
         ],
         "workers/worker-ai": [
+            ("workers/worker-ai/pyproject.toml", r'^version\s*=\s*"[^"]+"', 'version = "{}"'),
             ("deploy/dockerfiles/worker-ai.dockerfile", r'^ENV WORKER_VERSION="[^"]+"', 'ENV WORKER_VERSION="{}"')
         ]
     }
