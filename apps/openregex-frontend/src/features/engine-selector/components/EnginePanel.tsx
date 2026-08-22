@@ -2,6 +2,7 @@ import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { ChevronDown, Terminal, Book, Check, Info } from 'lucide-react';
 import { EngineInfo } from '../../../core/types';
 import { useRegexStore } from '../../../core/store/useRegexStore';
+import { getWorkerSchemaVersion, isWorkerSchemaSupported, SUPPORTED_WORKER_SCHEMA_VERSION } from '../../../core/schema';
 
 const PythonIcon = ({ size }: { size: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24">
@@ -243,6 +244,22 @@ export const EnginePanel: React.FC = () => {
           <span className="font-sans font-black opacity-50 uppercase text-[8px]">Lib</span>
           <span className="text-theme-text font-bold">{activeEngine?.engine_regex_lib_version || '---'}</span>
         </span>
+        {activeWorker && (
+          <span
+            className="flex items-center gap-1 cursor-help"
+            title={
+              isWorkerSchemaSupported(activeWorker.worker_schema_version)
+                ? `Communication schema v${getWorkerSchemaVersion(activeWorker.worker_schema_version)}`
+                : `Worker reports schema v${getWorkerSchemaVersion(activeWorker.worker_schema_version)}, frontend expects v${SUPPORTED_WORKER_SCHEMA_VERSION}. Results may be inconsistent — update this worker.`
+            }
+          >
+            <span className="font-sans font-black opacity-50 uppercase text-[8px]">Schema</span>
+            <span className={`font-bold ${isWorkerSchemaSupported(activeWorker.worker_schema_version) ? 'text-theme-text' : 'text-amber-500'}`}>
+              {getWorkerSchemaVersion(activeWorker.worker_schema_version)}
+              {!isWorkerSchemaSupported(activeWorker.worker_schema_version) && ' !'}
+            </span>
+          </span>
+        )}
       </div>
     </div>
   );
