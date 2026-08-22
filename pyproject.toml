@@ -1,10 +1,41 @@
 [project]
 name = "openregex"
 version = "1.0.0"
+description = "A unified, open-source platform for testing, debugging, and analyzing regular expressions within isolated runtimes (Runtime-as-a-Service)."
+readme = "README.md"
 requires-python = ">=3.14"
-dependencies = [
-
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "SunneV (Wojciech Cichoń)" }
 ]
+keywords = [
+    "regex",
+    "regular-expressions",
+    "testing",
+    "debugging",
+    "polyglot",
+    "docker",
+    "runtime-as-a-service"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://www.openregex.com"
+Repository = "https://github.com/sunnev/openregex"
+Documentation = "https://github.com/sunnev/openregex/blob/main/docs/README.md"
+Issues = "https://github.com/sunnev/openregex/issues"
+Changelog = "https://github.com/sunnev/openregex/blob/main/CHANGELOG.md"
+Funding = "https://github.com/sponsors/sunnev"
 
 [dependency-groups]
 dev = [
@@ -22,53 +53,60 @@ members = [
 ]
 
 [tool.scriber]
+version = "2"
+format = "md"
+output = ".scriber/scriber_pack.md"
+only_tree = false
 use_gitignore = true
-single_process = false
-exclude = [
-    #    ".dev",
-    ".github",
-    #    "workers",
-    #    "apps",
-    "LICENSE",
-    "NOTICE",
-    ".git/",
-    ".idea/",
-    ".vscode/",
-    ".project/",
-    ".settings/",
-    ".classpath/",
-    ".ruff_cache",
-    "__pycache__/",
-    "*.pyc",
-    ".venv/",
-    "venv/",
-    ".pytest_cache/",
-    "uv.lock",
-    "node_modules/",
-    "npm-debug.log*",
-    "yarn-error.log",
-    "build/",
-    "dist/",
-    "target/",
-    "bin/",
-    "obj/",
-    "out/",
-    "vendor/",
-    "bower_components/",
-    "*.log",
-    "*.lock",
-    "*.tmp",
-    "temp/",
-    "tmp/",
-    ".DS_Store",
-    "Thumbs.db",
-    "*~",
-    "*.swp",
-    "*.swo",
-    "scriber_output.txt",
-    ".scriber.json"
+max_files = 0
+max_tokens = 0
+min_score = 45
+path_style = "project-relative"
+allow_external_paths = false
+emit_graph_html = true
+
+[tool.scriber.code_files]
+patterns = ["**/*.py", "**/*.pyi", "**/*.rs", "**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+
+[tool.scriber.support_files]
+enabled = true
+patterns = [
+  "**/*.toml",
+  "**/*.lock",
+  "pyproject.toml",
+  "README.md",
+  "requirements.txt",
+  "requirements/*.txt",
+  ".env.example",
+  "Dockerfile",
+  "docker-compose.yml",
+  ".github/workflows/*.yml",
+  "**/*.svg",
 ]
-hidden = [
-    ".env",
-    "CHANGELOG.md",
-    "*.svg"]
+
+[tool.scriber.support_files.content]
+default = "auto"
+full = ["**/*.toml", "pyproject.toml", "README.md", "requirements.txt", "requirements/*.txt", ".env.example", "Dockerfile", "docker-compose.yml", ".github/workflows/*.yml"]
+tree_only = ["**/*.svg", "**/*.lock"]
+
+[tool.scriber.modules]
+enabled = true
+depth = 2
+include_direct_dependencies = true
+include_reverse_dependencies = true
+include_tests = true
+include_same_package = true
+include_parent_entrypoints = true
+include_project_configs = true
+top_dependencies = 10
+content_min_score = 50
+tree_min_score = 30
+
+[tool.scriber.python]
+source_roots = ["src", "app", "."]
+test_roots = ["tests", "test"]
+entrypoint_patterns = ["main.py", "app.py", "asgi.py", "wsgi.py", "routes.py", "router.py"]
+
+[tool.scriber.tokens]
+estimator = "chars"
+chars_per_token = 4
