@@ -31,10 +31,14 @@ pub async fn register_engines(con: &mut redis::aio::MultiplexedConnection) -> re
     let release_date = env::var("WORKER_RELEASE_DATE").unwrap_or_else(|_| "Unreleased".to_string());
     let library_version = "1.12.3";
 
+    // Contract version: "1.1" = match offsets normalized to Unicode code points.
+    let schema_version = "1.1";
+
     let worker_info = json!({
         "worker_name": "worker-rust",
         "worker_version": worker_version,
         "worker_release_date": release_date,
+        "worker_schema_version": schema_version,
         "engines": [
             {
                 "engine_id": "rust_standard",
