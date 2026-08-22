@@ -2,8 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.3.0] - YYYY-MM-DD
-
+## [1.3.0] - 2026-08-22
 ### Fixed
 - keep hyperscan synthetic match text in code point units
 

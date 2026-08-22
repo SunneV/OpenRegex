@@ -2,8 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.3.0] - YYYY-MM-DD
-
+## [2.3.0] - 2026-08-22
 ### Added
 - validate worker schema versions and drop dead workers
 

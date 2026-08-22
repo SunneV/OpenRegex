@@ -343,10 +343,16 @@ def main():
         is_dev = task['is_dev']
 
         if action == "SKIP_LIBRARY":
+            # Libraries ship inside other images, but their changelog release
+            # date must still be stamped when the version goes official.
+            cl_updated = False
+            if not is_dev:
+                cl_updated = update_component_changelog_date(task['comp_changelog_path'], version, current_utc_date)
             state_updated = update_state_for_component(state, pretty, version, is_dev, current_utc_dot)
             if state_updated: root_summary_updated = True
             post_exec_table.append(
-                [pretty, version, action, ConsoleLogger.info("SKIPPED"), "NO", "YES" if state_updated else "NO"])
+                [pretty, version, action, ConsoleLogger.info("SKIPPED"), "YES" if cl_updated else "NO",
+                 "YES" if state_updated else "NO"])
             continue
 
         if action in ("SKIP_MISSING_DOCKERFILE", "SKIP_CHANGELOG_VERSION_MISSING", "SKIP_ALREADY_PUBLISHED"):
