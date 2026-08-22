@@ -123,10 +123,11 @@ func registerEngines(ctx context.Context, client *redis.Client) error {
 	}
 
 	workerInfo := WorkerInfo{
-		WorkerName:        "worker-go",
-		WorkerVersion:     workerVersion,
-		WorkerReleaseDate: workerReleaseDate,
-		Engines:           []EngineInfo{engineInfo},
+		WorkerName:          "worker-go",
+		WorkerVersion:       workerVersion,
+		WorkerReleaseDate:   workerReleaseDate,
+		WorkerSchemaVersion: "1.1", // match offsets normalized to Unicode code points
+		Engines:             []EngineInfo{engineInfo},
 	}
 
 	jsonBytes, err := json.Marshal(workerInfo)
