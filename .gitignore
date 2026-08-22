@@ -4,6 +4,7 @@
 # Local working documents
 audit.md
 agent.md
+.claude/
 
 # IDE
 .idea/
