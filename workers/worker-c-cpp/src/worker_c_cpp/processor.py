@@ -6,9 +6,40 @@ import queue
 import redis
 import threading
 import multiprocessing
+from array import array
+from itertools import accumulate
 from concurrent.futures import ThreadPoolExecutor
 
 from openregex_libs.models import MatchRequest, MatchResult
+
+# Maps each byte to 1 when it starts a UTF-8 sequence, 0 for continuation bytes.
+_UTF8_START_TABLE = bytes(0 if 0x80 <= b < 0xC0 else 1 for b in range(256))
+
+
+def _byte_to_char_map(text: str):
+    """Prefix map converting UTF-8 byte offsets to code point indices.
+
+    Returns None for pure-ASCII text, where byte offsets already equal
+    code point indices. The C engine binaries operate on UTF-8 bytes and
+    report byte offsets; the platform contract requires code points.
+    """
+    if text.isascii():
+        return None
+    starts = text.encode("utf-8").translate(_UTF8_START_TABLE)
+    return array("I", accumulate(starts, initial=0))
+
+
+def _normalize_match_offsets(matches: list, text: str) -> None:
+    b2c = _byte_to_char_map(text)
+    if b2c is None:
+        return
+    last = len(b2c) - 1
+    for match in matches:
+        match["start"] = b2c[min(match.get("start", 0), last)]
+        match["end"] = b2c[min(match.get("end", 0), last)]
+        for group in match.get("groups", []):
+            group["start"] = b2c[min(group.get("start", 0), last)]
+            group["end"] = b2c[min(group.get("end", 0), last)]
 
 ENGINE_BINARIES = {
     "cpp_re2": "/usr/local/bin/re2_engine",
@@ -218,11 +249,13 @@ def process_task(redis_client: redis.Redis, raw_json_bytes: bytes, pool: WorkerP
                 exec_time = (time.time() - start_time) * 1000
 
                 if parsed.get("success"):
+                    matches = parsed.get("matches", [])
+                    _normalize_match_offsets(matches, req.text)
                     out = MatchResult(
                         task_id=req.task_id,
                         engine_id=req.engine_id,
                         success=True,
-                        matches=parsed.get("matches", []),
+                        matches=matches,
                         execution_time_ms=exec_time
                     )
                 else:
