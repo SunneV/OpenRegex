@@ -1,0 +1,29 @@
+# Environment & secrets
+.env
+
+# Local working documents
+audit.md
+agent.md
+
+# IDE
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+dist/
+
+# Rust / Go / JVM / .NET build artifacts
+target/
+bin/
+obj/
+
+
+.scriber/
