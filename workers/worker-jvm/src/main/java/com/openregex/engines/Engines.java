@@ -14,6 +14,7 @@ public class Engines {
             "worker-jvm",
             Common.WORKER_VERSION,
             Common.WORKER_RELEASE_DATE,
+            Common.WORKER_SCHEMA_VERSION,
             ENGINES_LIST
     );
 }

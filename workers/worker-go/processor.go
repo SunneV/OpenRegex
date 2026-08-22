@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"sync"
 	"time"
+	"unicode/utf8"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -39,6 +40,47 @@ func (c *RegexCache) Set(key string, r *regexp.Regexp) {
 }
 
 var regexCache = &RegexCache{m: make(map[string]*regexp.Regexp)}
+
+// buildByteToCharMap returns a prefix map converting UTF-8 byte offsets to
+// Unicode code point indices, or nil for pure-ASCII text where both are equal.
+// Go's regexp reports byte offsets; the platform contract requires code points.
+func buildByteToCharMap(text string) []int {
+	ascii := true
+	for i := 0; i < len(text); i++ {
+		if text[i] >= 0x80 {
+			ascii = false
+			break
+		}
+	}
+	if ascii {
+		return nil
+	}
+
+	m := make([]int, len(text)+1)
+	count := 0
+	for i, r := range text {
+		width := utf8.RuneLen(r)
+		if width < 1 {
+			width = 1
+		}
+		for b := i; b < i+width; b++ {
+			m[b] = count
+		}
+		count++
+	}
+	m[len(text)] = count
+	return m
+}
+
+func toCharIndex(m []int, byteIdx int) int {
+	if m == nil {
+		return byteIdx
+	}
+	if byteIdx >= len(m) {
+		byteIdx = len(m) - 1
+	}
+	return m[byteIdx]
+}
 
 func getEnvInt(key string, fallback int) int {
 	if val, ok := os.LookupEnv(key); ok {
@@ -173,6 +215,7 @@ func listenAndProcess(client *redis.Client) {
 
 				submatches := re.FindAllStringSubmatchIndex(req.Text, maxMatches+1)
 				names := re.SubexpNames()
+				byteToChar := buildByteToCharMap(req.Text)
 
 				var matchItems []MatchItem
 
@@ -217,8 +260,8 @@ func listenAndProcess(client *redis.Client) {
 								GroupID: i,
 								Name:    namePtr,
 								Content: req.Text[groupStart:groupEnd],
-								Start:   groupStart,
-								End:     groupEnd,
+								Start:   toCharIndex(byteToChar, groupStart),
+								End:     toCharIndex(byteToChar, groupEnd),
 							})
 						}
 					}
@@ -230,8 +273,8 @@ func listenAndProcess(client *redis.Client) {
 					matchItems = append(matchItems, MatchItem{
 						MatchID:   matchId,
 						FullMatch: fullMatch,
-						Start:     matchIdxs[0],
-						End:       matchIdxs[1],
+						Start:     toCharIndex(byteToChar, matchIdxs[0]),
+						End:       toCharIndex(byteToChar, matchIdxs[1]),
 						Groups:    groups,
 					})
 				}

@@ -1,4 +1,5 @@
 from .regex import (
+    WORKER_SCHEMA_VERSION,
     CheatSheetItem,
     CheatSheetCategory,
     EngineDocs,
@@ -20,6 +21,7 @@ from .llm import (
 )
 
 __all__ = [
+    "WORKER_SCHEMA_VERSION",
     "CheatSheetItem",
     "CheatSheetCategory",
     "EngineDocs",

@@ -233,6 +233,29 @@ async fn execute_regex(
         }
     };
 
+    // The regex crate reports byte offsets; the platform contract requires
+    // Unicode code point indices. For ASCII text both are identical.
+    let byte_to_char: Option<Vec<u32>> = if req.text.is_ascii() {
+        None
+    } else {
+        let mut map = vec![0u32; req.text.len() + 1];
+        let mut count: u32 = 0;
+        for (i, ch) in req.text.char_indices() {
+            for b in i..i + ch.len_utf8() {
+                map[b] = count;
+            }
+            count += 1;
+        }
+        map[req.text.len()] = count;
+        Some(map)
+    };
+    let to_char = |byte_idx: usize| -> usize {
+        match &byte_to_char {
+            Some(map) => map[byte_idx.min(map.len() - 1)] as usize,
+            None => byte_idx,
+        }
+    };
+
     let mut match_items = Vec::new();
     let mut match_id = 0;
 
@@ -268,8 +291,8 @@ async fn execute_regex(
                         group_id: i,
                         name: name_opt.map(|s| s.to_string()),
                         content: m.as_str().to_string(),
-                        start: m.start(),
-                        end: m.end(),
+                        start: to_char(m.start()),
+                        end: to_char(m.end()),
                     });
                 }
             }
@@ -277,8 +300,8 @@ async fn execute_regex(
             match_items.push(MatchItem {
                 match_id,
                 full_match: full_match.as_str().to_string(),
-                start: full_match.start(),
-                end: full_match.end(),
+                start: to_char(full_match.start()),
+                end: to_char(full_match.end()),
                 groups,
             });
             match_id += 1;

@@ -46,10 +46,11 @@ type EngineInfo struct {
 }
 
 type WorkerInfo struct {
-	WorkerName        string       `json:"worker_name"`
-	WorkerVersion     string       `json:"worker_version"`
-	WorkerReleaseDate string       `json:"worker_release_date"`
-	Engines           []EngineInfo `json:"engines"`
+	WorkerName          string       `json:"worker_name"`
+	WorkerVersion       string       `json:"worker_version"`
+	WorkerReleaseDate   string       `json:"worker_release_date"`
+	WorkerSchemaVersion string       `json:"worker_schema_version"`
+	Engines             []EngineInfo `json:"engines"`
 }
 
 type MatchRequest struct {

@@ -2,7 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] - YYYY-MM-DD
+
+### Added
+- show worker communication schema version in engine panel
+- add JSON export and import of personal storage
+
+### Fixed
+- pass non-ASCII subject text unmodified to regex engines
+
+### Changed
+- remove unused monolithic SubjectEditor component
+
 ## [2.1.1] - 2026-05-06
+
 ### Fixed
 - implement dynamic runtime injection for ROBOTS_META via Nginx entrypoint
 

@@ -17,11 +17,23 @@ ecosystem.
 
 ### Automated Changelog & Manifest Synchronization
 
-The project uses a two-step script process to ensure all manifests and the central `CHANGELOG.md` stay in sync:
+All release tooling lives in `.dev/py/tools/` (menu runner: `.dev/scripts/run.bat`).
+The full chain, in order:
 
-1. **Version Propagation (`apply_versions.py`):** Updates `pyproject.toml`, `package.json`, and Dockerfiles based on the
-   registry.
-2. **Changelog & Build (`build_and_push.py`):**
+1. **Changelog Routing (`update_changelog.py`):** Parses labeled branch commits
+   (`feat|fix|refactor|perf(scope):`) and appends entries to each component's
+   `CHANGELOG.md` under `[Unreleased]`. Component changelogs are updated ONLY
+   through this script.
+2. **Version Bumping (`bump_versions.py`):** Derives per-component bumps from the
+   same commit labels (`!`/BREAKING -> major, `feat` -> minor, `fix`/`refactor`/
+   `perf` -> patch) and updates `.dev/registry.py`. Components without an
+   `[Unreleased]` section are never bumped twice.
+3. **Version Propagation (`apply_versions.py`):** Updates `pyproject.toml`,
+   `package.json`, and Dockerfiles based on the registry and promotes
+   `[Unreleased]` to the target version header.
+4. **Verification (`check_unreleased.py`):** Confirms no component still has
+   unreleased entries.
+5. **Changelog & Build (`build_and_push.py`):**
     * It parses the "Component Version Snapshot" table in the root `CHANGELOG.md`.
     * It updates the "Official Version" and "Release Date" columns automatically based on successful builds.
     * It updates the "Last Update" timestamp at the top of the platform log.
@@ -35,16 +47,24 @@ currently manual, moving to CI/CD):
 
 ### Local Automation Sequence
 
-After updating `.dev/registry.py`, run this command sequence to synchronize and commit all changes:
+After committing labeled work on a branch, run this sequence (or use
+`.dev/scripts/run.bat` option **[10] Full Release Sync**):
 
 ```bash
-# 1. Sync all version manifests
-python .dev/apply_versions.py
+# 1. Route changelog entries from commit labels
+python .dev/py/tools/update_changelog.py --yes
 
-# 2. Build images and update CHANGELOG.md table
-python .dev/build_and_push.py
+# 2. Bump versions in the registry from the same labels
+python .dev/py/tools/bump_versions.py --yes
 
+# 3. Sync all version manifests and promote changelogs
+python .dev/py/tools/apply_versions.py
 
+# 4. Verify nothing is left unreleased
+python .dev/py/tools/check_unreleased.py
+
+# 5. Build images and update the root CHANGELOG.md table
+python .dev/py/tools/build_and_push.py
 ```
 
 ---

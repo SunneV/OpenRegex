@@ -1,4 +1,4 @@
-from openregex_libs.models import WorkerInfo
+from openregex_libs.models import WorkerInfo, WORKER_SCHEMA_VERSION
 from .common import WORKER_VERSION, WORKER_RELEASE_DATE
 from .cpp_re2 import engine as cpp_re2
 from .cpp_std import engine as cpp_std
@@ -22,5 +22,6 @@ WORKER_INFO = WorkerInfo(
     worker_name="worker-c-cpp",
     worker_version=WORKER_VERSION,
     worker_release_date=WORKER_RELEASE_DATE,
+    worker_schema_version=WORKER_SCHEMA_VERSION,
     engines=ENGINES
 )

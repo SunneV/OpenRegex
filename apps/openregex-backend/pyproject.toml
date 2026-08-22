@@ -1,6 +1,11 @@
 [project]
 name = "openregex-backend"
-version = "2.2.0"
+version = "2.3.0"
+description = "OpenRegex API backend service orchestrating Redis queues and workers."
+authors = [
+    { name = "SunneV (Wojciech Cichoń)" }
+]
+license = { text = "Apache-2.0" }
 dependencies = [
     "fastapi",
     "uvicorn",

@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - YYYY-MM-DD
+
+### Fixed
+- keep hyperscan synthetic match text in code point units
+
+## [1.2.0] - YYYY-MM-DD
+
+### Added
+- add TTL heartbeat and graceful unregister
+- report communication schema version 1.1
+
+### Fixed
+- normalize match offsets to Unicode code point indices
+
 ## [1.1.0] - 2026-05-04
 
 ### Changed

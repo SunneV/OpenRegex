@@ -100,6 +100,32 @@ function executeRegexIsolated(req) {
             re.lastIndex++; // Prevent infinite loop on zero-length matches
           }
         }
+
+        // JS regex reports UTF-16 code unit offsets; the platform contract
+        // requires Unicode code point indices. They only differ when the
+        // text contains surrogate pairs (astral characters).
+        if (matches.length > 0 && /[\\uD800-\\uDFFF]/.test(text)) {
+          const map = new Uint32Array(text.length + 1);
+          let cp = 0;
+          for (let u = 0; u < text.length; ) {
+            const code = text.charCodeAt(u);
+            const wide = code >= 0xD800 && code <= 0xDBFF && u + 1 < text.length ? 2 : 1;
+            map[u] = cp;
+            if (wide === 2) map[u + 1] = cp;
+            u += wide;
+            cp++;
+          }
+          map[text.length] = cp;
+          for (const m of matches) {
+            m.start = map[m.start];
+            m.end = map[m.end];
+            for (const g of m.groups) {
+              g.start = map[g.start];
+              g.end = map[g.end];
+            }
+          }
+        }
+
         parentPort.postMessage({ success: true, matches });
       } catch (err) {
         parentPort.postMessage({ success: false, error: err.message });

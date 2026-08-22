@@ -23,8 +23,22 @@ class Processor {
         $maxGroups = (int)(getenv('WORKER_MAX_GROUPS') ?: 1000);
         $maxJsonSize = (int)(getenv('WORKER_MAX_JSON_SIZE') ?: 10485760);
 
+        // PHP is single-threaded, so the TTL heartbeat is refreshed from the
+        // poll loop; brpop's 5s timeout keeps refreshes within the 15s TTL.
+        $heartbeatKey = 'openregex:workers:heartbeat:worker-php';
+        $lastBeat = 0;
+
         while (true) {
             try {
+                if (time() - $lastBeat >= 5) {
+                    try {
+                        $client->setex($heartbeatKey, 15, (string)time());
+                    } catch (\Exception $e) {
+                        // transient Redis outage; the TTL just expires until it recovers
+                    }
+                    $lastBeat = time();
+                }
+
                 // Use a non-zero timeout to prevent silent TCP connection drops
                 $result = $client->brpop(['queue:php'], 5);
                 if (!$result) continue;

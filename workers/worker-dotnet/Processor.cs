@@ -18,6 +18,36 @@ public static class Processor
     private static readonly ConcurrentDictionary<string, Regex> _regexCache = new();
     private static readonly ConcurrentQueue<string> _cacheKeys = new();
 
+    // .NET regex reports UTF-16 code unit offsets; the platform contract
+    // requires Unicode code point indices. Returns null when the text contains
+    // no surrogates (offsets already equal code point indices).
+    private static int[]? BuildUtf16ToCodePointMap(string text)
+    {
+        bool hasSurrogates = false;
+        foreach (var c in text)
+        {
+            if (char.IsSurrogate(c)) { hasSurrogates = true; break; }
+        }
+        if (!hasSurrogates) return null;
+
+        var map = new int[text.Length + 1];
+        int cp = 0;
+        int u = 0;
+        while (u < text.Length)
+        {
+            int width = char.IsHighSurrogate(text[u]) && u + 1 < text.Length && char.IsLowSurrogate(text[u + 1]) ? 2 : 1;
+            map[u] = cp;
+            if (width == 2) map[u + 1] = cp;
+            u += width;
+            cp++;
+        }
+        map[text.Length] = cp;
+        return map;
+    }
+
+    private static int ToCodePointIndex(int[]? map, int utf16Index)
+        => map == null ? utf16Index : map[Math.Min(utf16Index, map.Length - 1)];
+
     private static async Task HandleDlqAsync(IDatabase db, string taskJson, string errorMessage)
     {
         try
@@ -124,6 +154,7 @@ public static class Processor
 
                         var matches = regex.Matches(resolvedText);
                         var matchItems = new List<MatchItem>();
+                        var cpMap = BuildUtf16ToCodePointMap(resolvedText);
 
                         int matchId = 0;
                         foreach (Match m in matches)
@@ -147,10 +178,10 @@ public static class Processor
                                     string? name = regex.GroupNameFromNumber(i);
                                     if (name == i.ToString()) name = null;
 
-                                    groups.Add(new MatchGroup(i, name, g.Value, g.Index, g.Index + g.Length));
+                                    groups.Add(new MatchGroup(i, name, g.Value, ToCodePointIndex(cpMap, g.Index), ToCodePointIndex(cpMap, g.Index + g.Length)));
                                 }
                             }
-                            matchItems.Add(new MatchItem(matchId++, m.Value, m.Index, m.Index + m.Length, groups));
+                            matchItems.Add(new MatchItem(matchId++, m.Value, ToCodePointIndex(cpMap, m.Index), ToCodePointIndex(cpMap, m.Index + m.Length), groups));
                         }
 
                         stopwatch.Stop();

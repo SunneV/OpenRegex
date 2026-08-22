@@ -12,7 +12,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv pip install --system -e ./workers/worker-python
 
 WORKDIR /app/workers/worker-python/src
-ENV WORKER_VERSION="1.1.0"
+ENV WORKER_VERSION="1.2.0"
 ARG WORKER_RELEASE_DATE="Unreleased"
 ENV WORKER_RELEASE_DATE=${WORKER_RELEASE_DATE}
 

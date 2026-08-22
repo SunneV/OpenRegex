@@ -1,6 +1,11 @@
 [project]
 name = "openregex-worker-python"
-version = "1.0.0"
+version = "1.2.0"
+description = "OpenRegex Python regex evaluation worker."
+authors = [
+    { name = "SunneV (Wojciech Cichoń)" }
+]
+license = { text = "Apache-2.0" }
 dependencies = [
     "redis",
     "regex",

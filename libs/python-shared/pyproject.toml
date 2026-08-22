@@ -1,6 +1,11 @@
 [project]
 name = "openregex-libs"
-version = "1.1.0"
+version = "1.2.0"
+description = "Shared models and utilities for OpenRegex services and workers."
+authors = [
+    { name = "SunneV (Wojciech Cichoń)" }
+]
+license = { text = "Apache-2.0" }
 dependencies = ["pydantic>=2.0.0"]
 
 [build-system]

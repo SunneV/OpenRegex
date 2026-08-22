@@ -47,6 +47,7 @@ export interface WorkerInfo {
   worker_name: string;
   worker_version: string;
   worker_release_date: string;
+  worker_schema_version?: string;
   engines: EngineInfo[];
 }
 

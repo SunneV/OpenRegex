@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request
 from backend.core.redis import redis_client
 from backend.core.config import APP_RELEASE_DATE
+from openregex_libs.models import WORKER_SCHEMA_VERSION
 
 router = APIRouter(tags=["System"])
 
@@ -17,7 +18,8 @@ async def get_info(request: Request):
         "version": request.app.version,
         "backend_version": request.app.version,
         "frontend_version": saved_frontend_version or "Unknown",
-        "release_date": APP_RELEASE_DATE
+        "release_date": APP_RELEASE_DATE,
+        "worker_schema_version": WORKER_SCHEMA_VERSION
     }
 
 @router.get("/health")

@@ -12,7 +12,7 @@ WORKDIR /app
 COPY --from=builder /app/vendor ./vendor
 COPY workers/worker-php/src ./src
 
-ENV WORKER_VERSION="1.1.0"
+ENV WORKER_VERSION="1.2.0"
 ARG WORKER_RELEASE_DATE="Unreleased"
 ENV WORKER_RELEASE_DATE=${WORKER_RELEASE_DATE}
 

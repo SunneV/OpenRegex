@@ -32,15 +32,17 @@ public static class Registry
 
     public static async Task RegisterEnginesAsync(IDatabase db)
     {
-        var workerVersion = Environment.GetEnvironmentVariable("WORKER_VERSION") ?? "Unknow";
+        var workerVersion = Environment.GetEnvironmentVariable("WORKER_VERSION") ?? "Unknown";
         var libVersion = RuntimeInformation.FrameworkDescription;
-        var releaseDate = Environment.GetEnvironmentVariable("WORKER__RELEASE_DATE") ?? "Unreleased";
+        var releaseDate = Environment.GetEnvironmentVariable("WORKER_RELEASE_DATE") ?? "Unreleased";
         var langVersion = $"{Environment.Version.Major}.{Environment.Version.Minor}";
 
         var workerInfo = new WorkerInfo(
             WorkerName: "worker-dotnet",
             WorkerVersion: workerVersion,
             WorkerReleaseDate: releaseDate,
+            // Contract version: "1.1" = match offsets normalized to Unicode code points.
+            WorkerSchemaVersion: "1.1",
             Engines: new List<EngineInfo>
             {
                 new EngineInfo(

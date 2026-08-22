@@ -30,6 +30,7 @@ interface StorageState {
   addPersonal: (item: Omit<PersonalItem, 'id' | 'timestamp'>) => void;
   removePersonal: (id: string) => void;
   clearPersonal: () => void;
+  importPersonal: (items: PersonalItem[]) => number;
   updatePersonalItem: (id: string, updates: Partial<PersonalItem>) => void;
   pushHistory: (item: Omit<HistoryItem, 'id' | 'timestamp'>) => void;
   setHistoryIndex: (index: number) => void;
@@ -52,6 +53,21 @@ export const useStorageStore = create<StorageState>()(
       })),
 
       clearPersonal: () => set({ personal: [] }),
+
+      // Single state update regardless of dump size; imported items win on id collision.
+      importPersonal: (items) => {
+        let imported = 0;
+        set((state) => {
+          const merged = new Map<string, PersonalItem>();
+          state.personal.forEach((i) => merged.set(i.id, i));
+          items.forEach((i) => {
+            if (!merged.has(i.id)) imported++;
+            merged.set(i.id, i);
+          });
+          return { personal: Array.from(merged.values()).sort((a, b) => b.timestamp - a.timestamp) };
+        });
+        return imported;
+      },
 
       updatePersonalItem: (id, updates) => set((state) => ({
         personal: state.personal.map((i) => i.id === id ? { ...i, ...updates } : i)
