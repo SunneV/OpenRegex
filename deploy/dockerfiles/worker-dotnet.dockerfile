@@ -12,7 +12,7 @@ RUN dotnet publish -c Release -o /out
 FROM mcr.microsoft.com/dotnet/runtime:10.0 AS production
 WORKDIR /app
 COPY --from=builder /out .
-ENV WORKER_VERSION="1.1.0"
+ENV WORKER_VERSION="1.2.0"
 ARG WORKER_RELEASE_DATE="Unreleased"
 ENV WORKER_RELEASE_DATE=${WORKER_RELEASE_DATE}
 

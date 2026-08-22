@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.0] - YYYY-MM-DD
+
+### Added
+- validate worker schema versions and drop dead workers
+
 ## [2.2.0] - 2026-05-04
+
 ### Changed
 
 - refactor the architecture so engines define flag metadata dynamically

@@ -12,7 +12,7 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:26-jre AS production
 WORKDIR /app
 COPY --from=builder /app/workers/worker-jvm/target/openregex-worker-jvm-*-jar-with-dependencies.jar ./worker.jar
-ENV WORKER_VERSION="1.1.0"
+ENV WORKER_VERSION="1.2.0"
 ARG WORKER_RELEASE_DATE="Unreleased"
 ENV WORKER_RELEASE_DATE=${WORKER_RELEASE_DATE}
 
