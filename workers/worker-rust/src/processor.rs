@@ -6,13 +6,13 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use tokio::time::timeout;
 
-struct BoundedRegexCache {
-    map: HashMap<String, regex::Regex>,
+struct BoundedRegexCache<T: Clone> {
+    map: HashMap<String, T>,
     order: VecDeque<String>,
     capacity: usize,
 }
 
-impl BoundedRegexCache {
+impl<T: Clone> BoundedRegexCache<T> {
     fn new(capacity: usize) -> Self {
         Self {
             map: HashMap::with_capacity(capacity),
@@ -21,11 +21,11 @@ impl BoundedRegexCache {
         }
     }
 
-    fn get(&mut self, key: &str) -> Option<regex::Regex> {
+    fn get(&mut self, key: &str) -> Option<T> {
         self.map.get(key).cloned()
     }
 
-    fn insert(&mut self, key: String, re: regex::Regex) {
+    fn insert(&mut self, key: String, re: T) {
         if !self.map.contains_key(&key) {
             if self.order.len() >= self.capacity {
                 if let Some(old_key) = self.order.pop_front() {
@@ -36,6 +36,42 @@ impl BoundedRegexCache {
         }
         self.map.insert(key, re);
     }
+}
+
+type StandardCache = Arc<Mutex<BoundedRegexCache<regex::Regex>>>;
+type FancyCache = Arc<Mutex<BoundedRegexCache<fancy_regex::Regex>>>;
+
+// The fancy-regex backtracking VM has no wall clock of its own; this caps how
+// many steps a catastrophic pattern may burn before it gives up.
+const FANCY_BACKTRACK_LIMIT: usize = 1_000_000;
+
+fn failure(req: &MatchRequest, error: String) -> MatchResult {
+    MatchResult {
+        task_id: req.task_id.clone(),
+        engine_id: req.engine_id.clone(),
+        success: false,
+        matches: vec![],
+        execution_time_ms: 0.0,
+        error: Some(error),
+    }
+}
+
+// The regex crates report byte offsets; the platform contract requires Unicode
+// code point indices. For ASCII text both are identical.
+fn build_byte_to_char(text: &str) -> Option<Vec<u32>> {
+    if text.is_ascii() {
+        return None;
+    }
+    let mut map = vec![0u32; text.len() + 1];
+    let mut count: u32 = 0;
+    for (i, ch) in text.char_indices() {
+        for b in i..i + ch.len_utf8() {
+            map[b] = count;
+        }
+        count += 1;
+    }
+    map[text.len()] = count;
+    Some(map)
 }
 
 pub async fn listen_and_process(client: Client) {
@@ -49,7 +85,8 @@ pub async fn listen_and_process(client: Client) {
     let max_groups: usize = env::var("WORKER_MAX_GROUPS").unwrap_or_else(|_| "1000".to_string()).parse().unwrap_or(1000);
     let max_json_size: usize = env::var("WORKER_MAX_JSON_SIZE").unwrap_or_else(|_| "10485760".to_string()).parse().unwrap_or(10485760);
 
-    let cache = Arc::new(Mutex::new(BoundedRegexCache::new(1000)));
+    let standard_cache: StandardCache = Arc::new(Mutex::new(BoundedRegexCache::new(1000)));
+    let fancy_cache: FancyCache = Arc::new(Mutex::new(BoundedRegexCache::new(1000)));
 
     loop {
         let result: redis::RedisResult<(String, String)> = con.brpop("queue:rust", 0.0).await;
@@ -67,7 +104,8 @@ pub async fn listen_and_process(client: Client) {
                 let mut con_clone = client.get_async_connection().await.unwrap();
                 let mut pub_con_clone = client.get_async_connection().await.unwrap();
                 let client_clone = client.clone();
-                let cache_clone = Arc::clone(&cache);
+                let standard_clone = Arc::clone(&standard_cache);
+                let fancy_clone = Arc::clone(&fancy_cache);
                 let original_json = task_json.clone();
 
                 tokio::spawn(async move {
@@ -93,7 +131,7 @@ pub async fn listen_and_process(client: Client) {
 
                     let start = std::time::Instant::now();
 
-                    let exec_future = execute_regex(&req, cache_clone, max_input_size, max_matches, max_groups);
+                    let exec_future = execute_regex(&req, standard_clone, fancy_clone, max_input_size, max_matches, max_groups);
                     let final_result = match timeout(Duration::from_millis(timeout_ms), exec_future).await {
                         Ok(res) => {
                             let mut r = res;
@@ -153,22 +191,29 @@ async fn publish_result(con: &mut redis::aio::Connection, task_id: &str, mut res
 
 async fn execute_regex(
     req: &MatchRequest,
-    cache: Arc<Mutex<BoundedRegexCache>>,
+    standard_cache: StandardCache,
+    fancy_cache: FancyCache,
     max_input_size: usize,
     max_matches: usize,
     max_groups: usize
 ) -> MatchResult {
 
     if req.text.len() > max_input_size {
-        return MatchResult {
-            task_id: req.task_id.clone(),
-            engine_id: req.engine_id.clone(),
-            success: false,
-            matches: vec![],
-            execution_time_ms: 0.0,
-            error: Some(format!("Input text exceeds maximum allowed size of {} bytes.", max_input_size)),
-        };
+        return failure(req, format!("Input text exceeds maximum allowed size of {} bytes.", max_input_size));
     }
+
+    match req.engine_id.as_str() {
+        "rust_fancy" => execute_fancy(req, fancy_cache, max_matches, max_groups),
+        _ => execute_standard(req, standard_cache, max_matches, max_groups),
+    }
+}
+
+fn execute_standard(
+    req: &MatchRequest,
+    cache: StandardCache,
+    max_matches: usize,
+    max_groups: usize
+) -> MatchResult {
 
     let mut case_insensitive = false;
     let mut multi_line = false;
@@ -221,34 +266,12 @@ async fn execute_regex(
                     cache.lock().unwrap().insert(cache_key, r.clone());
                     r
                 }
-                Err(e) => return MatchResult {
-                    task_id: req.task_id.clone(),
-                    engine_id: req.engine_id.clone(),
-                    success: false,
-                    matches: vec![],
-                    execution_time_ms: 0.0,
-                    error: Some(format!("Compilation failed: {}", e)),
-                }
+                Err(e) => return failure(req, format!("Compilation failed: {}", e))
             }
         }
     };
 
-    // The regex crate reports byte offsets; the platform contract requires
-    // Unicode code point indices. For ASCII text both are identical.
-    let byte_to_char: Option<Vec<u32>> = if req.text.is_ascii() {
-        None
-    } else {
-        let mut map = vec![0u32; req.text.len() + 1];
-        let mut count: u32 = 0;
-        for (i, ch) in req.text.char_indices() {
-            for b in i..i + ch.len_utf8() {
-                map[b] = count;
-            }
-            count += 1;
-        }
-        map[req.text.len()] = count;
-        Some(map)
-    };
+    let byte_to_char = build_byte_to_char(&req.text);
     let to_char = |byte_idx: usize| -> usize {
         match &byte_to_char {
             Some(map) => map[byte_idx.min(map.len() - 1)] as usize,
@@ -261,14 +284,7 @@ async fn execute_regex(
 
     for caps in re.captures_iter(&req.text) {
         if match_id >= max_matches {
-            return MatchResult {
-                task_id: req.task_id.clone(),
-                engine_id: req.engine_id.clone(),
-                success: false,
-                matches: vec![],
-                execution_time_ms: 0.0,
-                error: Some(format!("Exceeded maximum allowed matches ({}).", max_matches)),
-            };
+            return failure(req, format!("Exceeded maximum allowed matches ({}).", max_matches));
         }
 
         if let Some(full_match) = caps.get(0) {
@@ -276,20 +292,123 @@ async fn execute_regex(
 
             for (i, name_opt) in re.capture_names().enumerate().skip(1) {
                 if groups.len() >= max_groups {
-                    return MatchResult {
-                        task_id: req.task_id.clone(),
-                        engine_id: req.engine_id.clone(),
-                        success: false,
-                        matches: vec![],
-                        execution_time_ms: 0.0,
-                        error: Some(format!("Exceeded maximum allowed groups per match ({}).", max_groups)),
-                    };
+                    return failure(req, format!("Exceeded maximum allowed groups per match ({}).", max_groups));
                 }
 
                 if let Some(m) = caps.get(i) {
                     groups.push(MatchGroup {
                         group_id: i,
                         name: name_opt.map(|s| s.to_string()),
+                        content: m.as_str().to_string(),
+                        start: to_char(m.start()),
+                        end: to_char(m.end()),
+                    });
+                }
+            }
+
+            match_items.push(MatchItem {
+                match_id,
+                full_match: full_match.as_str().to_string(),
+                start: to_char(full_match.start()),
+                end: to_char(full_match.end()),
+                groups,
+            });
+            match_id += 1;
+        }
+    }
+
+    MatchResult {
+        task_id: req.task_id.clone(),
+        engine_id: req.engine_id.clone(),
+        success: true,
+        matches: match_items,
+        execution_time_ms: 0.0,
+        error: None,
+    }
+}
+
+// fancy-regex has no RegexBuilder switches for the mode flags, so they are
+// applied as an inline group prefix, exactly as a user would write them.
+fn execute_fancy(
+    req: &MatchRequest,
+    cache: FancyCache,
+    max_matches: usize,
+    max_groups: usize
+) -> MatchResult {
+
+    let mut inline = String::new();
+    for flag in &req.flags {
+        match flag.as_str() {
+            "i" | "m" | "s" | "x" | "U" => inline.push_str(flag),
+            other => return failure(req, format!("Unsupported flag '{}' for the Rust fancy-regex engine", other)),
+        }
+    }
+
+    let source = if inline.is_empty() {
+        req.regex.clone()
+    } else {
+        format!("(?{}){}", inline, req.regex)
+    };
+
+    let cache_key = format!("{}|{}", inline, req.regex);
+
+    let re_opt = {
+        let mut c = cache.lock().unwrap();
+        c.get(&cache_key)
+    };
+
+    let re = match re_opt {
+        Some(r) => r,
+        None => {
+            let built = fancy_regex::RegexBuilder::new(&source)
+                .backtrack_limit(FANCY_BACKTRACK_LIMIT)
+                .build();
+
+            match built {
+                Ok(r) => {
+                    cache.lock().unwrap().insert(cache_key, r.clone());
+                    r
+                }
+                Err(e) => return failure(req, format!("Compilation failed: {}", e))
+            }
+        }
+    };
+
+    let byte_to_char = build_byte_to_char(&req.text);
+    let to_char = |byte_idx: usize| -> usize {
+        match &byte_to_char {
+            Some(map) => map[byte_idx.min(map.len() - 1)] as usize,
+            None => byte_idx,
+        }
+    };
+
+    let names: Vec<Option<String>> = re.capture_names().map(|n| n.map(|s| s.to_string())).collect();
+
+    let mut match_items = Vec::new();
+    let mut match_id = 0;
+
+    for caps_result in re.captures_iter(&req.text) {
+        if match_id >= max_matches {
+            return failure(req, format!("Exceeded maximum allowed matches ({}).", max_matches));
+        }
+
+        let caps = match caps_result {
+            Ok(c) => c,
+            Err(e) => return failure(req, format!("Match failed: {}", e)),
+        };
+
+        if let Some(full_match) = caps.get(0) {
+            let mut groups = Vec::new();
+
+            for i in 1..caps.len() {
+                if groups.len() >= max_groups {
+                    return failure(req, format!("Exceeded maximum allowed groups per match ({}).", max_groups));
+                }
+
+                if let Some(m) = caps.get(i) {
+                    groups.push(MatchGroup {
+                        group_id: i,
+                        name: names.get(i).cloned().flatten(),
                         content: m.as_str().to_string(),
                         start: to_char(m.start()),
                         end: to_char(m.end()),

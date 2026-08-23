@@ -2,7 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.0] - 2026-08-23
+### Added
+- add engine icons for the Ruby, Perl, SQL, GNU and Vim families
+
 ## [2.2.1] - 2026-08-22
+
 ### Fixed
 - keep container start independent of backend availability
 

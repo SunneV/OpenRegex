@@ -120,3 +120,100 @@ services:
       target: production
     depends_on:
       - redis
+
+  # --- DATABASE ENGINES ---
+  # PostgreSQL and MySQL cannot be embedded in a worker: their regex engines
+  # only exist behind a server, so the workers query a real instance. Both are
+  # stateless here - no volumes, nothing to persist.
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-openregex}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-openregex}
+      - POSTGRES_DB=${POSTGRES_DB:-openregex}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-openregex}" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: always
+
+  mysql:
+    image: mysql:8.4
+    command: --regexp-time-limit=200000
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-openregex-root}
+      - MYSQL_USER=${MYSQL_USER:-openregex}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-openregex}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-openregex}
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: always
+
+  worker-ruby:
+    build:
+      context: ..
+      dockerfile: deploy/dockerfiles/worker-ruby.dockerfile
+      target: production
+    depends_on:
+      - redis
+
+  worker-perl:
+    build:
+      context: ..
+      dockerfile: deploy/dockerfiles/worker-perl.dockerfile
+      target: production
+    depends_on:
+      - redis
+
+  worker-jvm8:
+    build:
+      context: ..
+      dockerfile: deploy/dockerfiles/worker-jvm8.dockerfile
+      target: production
+    depends_on:
+      - redis
+
+  worker-posix:
+    build:
+      context: ..
+      dockerfile: deploy/dockerfiles/worker-posix.dockerfile
+      target: production
+    depends_on:
+      - redis
+
+  worker-vim:
+    build:
+      context: ..
+      dockerfile: deploy/dockerfiles/worker-vim.dockerfile
+      target: production
+    depends_on:
+      - redis
+
+  worker-postgres:
+    build:
+      context: ..
+      dockerfile: deploy/dockerfiles/worker-postgres.dockerfile
+      target: production
+    environment:
+      - POSTGRES_DSN=postgresql://${POSTGRES_USER:-openregex}:${POSTGRES_PASSWORD:-openregex}@postgres:5432/${POSTGRES_DB:-openregex}
+    depends_on:
+      - redis
+      - postgres
+
+  worker-mysql:
+    build:
+      context: ..
+      dockerfile: deploy/dockerfiles/worker-mysql.dockerfile
+      target: production
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=${MYSQL_USER:-openregex}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-openregex}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-openregex}
+    depends_on:
+      - redis
+      - mysql

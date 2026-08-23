@@ -66,9 +66,59 @@ const RustIcon = ({ size }: { size: number }) => (
   </svg>
 );
 
+const RubyIcon = ({ size }: { size: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24">
+    <polygon points="12,2 21,8 18,20 6,20 3,8" fill="#CC342D"/>
+    <polygon points="12,2 18,20 12,14" fill="#9B1C17"/>
+    <polygon points="3,8 12,14 6,20" fill="#E04A43"/>
+  </svg>
+);
+
+const PerlIcon = ({ size }: { size: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="11" fill="#39457E"/>
+    <text x="12" y="16" fill="#fff" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="11" textAnchor="middle">Pl</text>
+  </svg>
+);
+
+const PostgresIcon = ({ size }: { size: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24">
+    <ellipse cx="12" cy="12" rx="10" ry="11" fill="#336791"/>
+    <text x="12" y="16" fill="#fff" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="10" textAnchor="middle">Pg</text>
+  </svg>
+);
+
+const MySQLIcon = ({ size }: { size: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24">
+    <rect x="1" y="4" width="22" height="16" rx="3" fill="#00758F"/>
+    <text x="12" y="16" fill="#F29111" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="10" textAnchor="middle">My</text>
+  </svg>
+);
+
+const GnuIcon = ({ size }: { size: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24">
+    <rect x="1" y="3" width="22" height="18" rx="2" fill="#2D2D2D"/>
+    <path d="M5 8l4 4-4 4" stroke="#8CE99A" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 16h7" stroke="#8CE99A" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
+const VimIcon = ({ size }: { size: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24">
+    <polygon points="12,1 23,12 12,23 1,12" fill="#019833"/>
+    <text x="12" y="16" fill="#fff" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="11" textAnchor="middle">V</text>
+  </svg>
+);
+
 const getLanguageIcon = (family: string, size = 14) => {
   const f = family.toLowerCase();
   if (f.includes('python')) return <PythonIcon size={size} />;
+  if (f.includes('ruby')) return <RubyIcon size={size} />;
+  if (f.includes('perl')) return <PerlIcon size={size} />;
+  if (f.includes('postgres')) return <PostgresIcon size={size} />;
+  if (f.includes('mysql') || f.includes('mariadb')) return <MySQLIcon size={size} />;
+  if (f.includes('gnu') || f.includes('grep') || f.includes('sed') || f.includes('awk')) return <GnuIcon size={size} />;
+  if (f.includes('vim')) return <VimIcon size={size} />;
   if (f.includes('java') && !f.includes('script')) return <JavaIcon size={size} />;
   if (f.includes('javascript') || f.includes('node') || f.includes('v8')) return <JSIcon size={size} />;
   if (f.includes('c++') || f.includes('cpp')) return <CppIcon size={size} />;

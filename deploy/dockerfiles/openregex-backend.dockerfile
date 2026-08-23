@@ -3,7 +3,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 WORKDIR /app
 
 # Expose globally for both development and production
-ENV APP_VERSION="2.3.0"
+ENV APP_VERSION="2.3.1"
 ARG APP_RELEASE_DATE="Unreleased"
 ENV APP_RELEASE_DATE=${APP_RELEASE_DATE}
 

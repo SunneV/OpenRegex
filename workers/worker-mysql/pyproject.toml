@@ -1,0 +1,24 @@
+[project]
+name = "openregex-worker-mysql"
+version = "1.0.0"
+description = "OpenRegex MySQL (ICU) regex evaluation worker."
+authors = [
+    { name = "SunneV (Wojciech Cichoń)" }
+]
+license = { text = "Apache-2.0" }
+dependencies = [
+    "redis",
+    "pymysql",
+    "cryptography",
+    "openregex-libs",
+]
+
+[tool.uv.sources]
+openregex-libs = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/worker_mysql"]

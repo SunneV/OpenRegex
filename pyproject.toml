@@ -49,7 +49,11 @@ members = [
     "libs/python-shared",
     "workers/worker-python",
     "workers/worker-c-cpp",
-    "workers/worker-ai"
+    "workers/worker-ai",
+    "workers/worker-postgres",
+    "workers/worker-mysql",
+    "workers/worker-posix",
+    "workers/worker-vim"
 ]
 
 [tool.scriber]

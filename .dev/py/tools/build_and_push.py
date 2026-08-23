@@ -33,6 +33,13 @@ COMPONENT_NAMES = {
     "workers/worker-rust": "**Worker Rust**",
     "workers/worker-v8": "**Worker V8**",
     "workers/worker-php": "**Worker PHP**",
+    "workers/worker-perl": "**Worker Perl**",
+    "workers/worker-ruby": "**Worker Ruby**",
+    "workers/worker-jvm8": "**Worker Java 8**",
+    "workers/worker-postgres": "**Worker PostgreSQL**",
+    "workers/worker-mysql": "**Worker MySQL**",
+    "workers/worker-posix": "**Worker POSIX Tools**",
+    "workers/worker-vim": "**Worker Vim**",
 }
 
 

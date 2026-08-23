@@ -124,7 +124,11 @@ public static class Processor
                             throw new Exception($"Input text exceeds maximum allowed size of {MAX_INPUT_SIZE} bytes.");
                         }
 
-                        var options = RegexOptions.None;
+                        // Engine ids end with "_nonbacktracking" for the .NET 7+
+                        // automaton mode, which cannot be combined with RightToLeft.
+                        bool nonBacktracking = req.EngineId.EndsWith("_nonbacktracking", StringComparison.Ordinal);
+
+                        var options = nonBacktracking ? RegexOptions.NonBacktracking : RegexOptions.None;
                         string flagsStr = "";
                         foreach (var flag in req.Flags)
                         {
@@ -136,7 +140,13 @@ public static class Processor
                                 case "s": options |= RegexOptions.Singleline; break;
                                 case "x": options |= RegexOptions.IgnorePatternWhitespace; break;
                                 case "n": options |= RegexOptions.ExplicitCapture; break;
-                                case "r": options |= RegexOptions.RightToLeft; break;
+                                case "r":
+                                    if (nonBacktracking)
+                                    {
+                                        throw new Exception("The 'r' (right-to-left) flag cannot be combined with NonBacktracking mode.");
+                                    }
+                                    options |= RegexOptions.RightToLeft;
+                                    break;
                             }
                         }
 

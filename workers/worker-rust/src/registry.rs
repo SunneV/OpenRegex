@@ -30,6 +30,7 @@ pub async fn register_engines(con: &mut redis::aio::MultiplexedConnection) -> re
     let worker_version = env::var("WORKER_VERSION").unwrap_or_else(|_| "1.0.0".to_string());
     let release_date = env::var("WORKER_RELEASE_DATE").unwrap_or_else(|_| "Unreleased".to_string());
     let library_version = "1.12.3";
+    let fancy_version = "0.14";
 
     // Contract version: "1.1" = match offsets normalized to Unicode code points.
     let schema_version = "1.1";
@@ -199,13 +200,118 @@ pub async fn register_engines(con: &mut redis::aio::MultiplexedConnection) -> re
                         "text": "This is an example to get IP:\n\n192.168.1.100\n192.168.1.100:8080\n127.0.0.1\n192.168.1.0/24\n192.168.1.1-192.168.1.255\n192.168.1.1-192.168.1.255:80\n192.168.1.0/24:80"
                     }
                 ]
+            },
+            {
+                "engine_id": "rust_fancy",
+                "engine_language_type": "Rust",
+                "engine_language_version": "1.75+",
+                "engine_regex_lib": "fancy-regex",
+                "engine_regex_lib_version": fancy_version,
+                "engine_label": "Rust (fancy-regex crate)",
+                "engine_capabilities": {
+                    "flags": build_engine_flags(&["i", "m", "s", "U", "x"]),
+                    "supports_lookaround": true,
+                    "supports_backrefs": true
+                },
+                "engine_docs": {
+                    "trivia": [
+                        "fancy-regex wraps the regex crate: everything the linear-time engine can handle is delegated to it, and only lookaround and backreferences run on its own backtracking VM.",
+                        "The fancy-regex crate is distributed under the MIT license.",
+                        "This is the direct answer to the deliberate omissions of the regex crate - the same Rust ecosystem, but with (?=...), (?<=...), \\1 and atomic groups.",
+                        "Because part of the work is delegated, a pattern without fancy constructs runs at exactly the speed of the regex crate.",
+                        "The backtracking half is bounded by an explicit backtrack limit rather than a wall clock, so a catastrophic pattern fails fast with an error instead of hanging.",
+                        "Lookbehind must be fixed width, the same restriction the Python re module has.",
+                        "Put this engine side by side with the regex crate one: identical results for everything both support, and a hard error there for every construct only fancy-regex accepts."
+                    ],
+                    "cheat_sheet_url": "https://docs.rs/fancy-regex/latest/fancy_regex/"
+                },
+                "engine_cheat_sheet": [
+                    {
+                        "category": "Matching One Character & Classes",
+                        "items": [
+                            { "character": ".", "description": "Any character except newline unless 's' flag is set" },
+                            { "character": "\\w", "description": "Unicode word character" },
+                            { "character": "\\W", "description": "Non-word character" },
+                            { "character": "\\d", "description": "Unicode decimal digit" },
+                            { "character": "\\D", "description": "Non-digit" },
+                            { "character": "\\s", "description": "Unicode whitespace character" },
+                            { "character": "\\S", "description": "Non-whitespace character" },
+                            { "character": "\\p{Greek}", "description": "Unicode character class (general category or script)" },
+                            { "character": "[xyz]", "description": "Character class matching either x, y or z" },
+                            { "character": "[^xyz]", "description": "Negated character class" },
+                            { "character": "[[:alpha:]]", "description": "POSIX character class inside a class" }
+                        ]
+                    },
+                    {
+                        "category": "Anchors & Boundaries",
+                        "items": [
+                            { "character": "^", "description": "Start of haystack, or start of line if 'm' flag is set" },
+                            { "character": "$", "description": "End of haystack, or end of line if 'm' flag is set" },
+                            { "character": "\\A", "description": "Absolute start of haystack" },
+                            { "character": "\\z", "description": "Absolute end of haystack" },
+                            { "character": "\\b", "description": "Word boundary" },
+                            { "character": "\\B", "description": "Non-word boundary" },
+                            { "character": "\\G", "description": "Where the previous match ended" },
+                            { "character": "\\K", "description": "Keep-out: drop everything to the left from the reported match" }
+                        ]
+                    },
+                    {
+                        "category": "Quantifiers",
+                        "items": [
+                            { "character": "*", "description": "0 or more times, greedy" },
+                            { "character": "+", "description": "1 or more times, greedy" },
+                            { "character": "?", "description": "0 or 1 time, greedy" },
+                            { "character": "{m,n}", "description": "Between m and n times, greedy" },
+                            { "character": "*?", "description": "0 or more times, lazy" },
+                            { "character": "+?", "description": "1 or more times, lazy" },
+                            { "character": "??", "description": "0 or 1 time, lazy" },
+                            { "character": "*+", "description": "0 or more times, possessive" },
+                            { "character": "++", "description": "1 or more times, possessive" },
+                            { "character": "?+", "description": "0 or 1 time, possessive" }
+                        ]
+                    },
+                    {
+                        "category": "Grouping & Backreferences",
+                        "items": [
+                            { "character": "(...)", "description": "Capturing group" },
+                            { "character": "(?:...)", "description": "Non-capturing group" },
+                            { "character": "x|y", "description": "Alternation (x or y, prefer x)" },
+                            { "character": "(?<name>...)", "description": "Named capturing group" },
+                            { "character": "(?P<name>...)", "description": "Named capturing group, Python-compatible syntax" },
+                            { "character": "\\1", "description": "Backreference to capture group 1 - not available in the regex crate" },
+                            { "character": "\\k<name>", "description": "Backreference to a named group" }
+                        ]
+                    },
+                    {
+                        "category": "Lookarounds & Advanced",
+                        "items": [
+                            { "character": "(?=...)", "description": "Positive lookahead - not available in the regex crate" },
+                            { "character": "(?!...)", "description": "Negative lookahead" },
+                            { "character": "(?<=...)", "description": "Positive lookbehind; must be fixed width" },
+                            { "character": "(?<!...)", "description": "Negative lookbehind; must be fixed width" },
+                            { "character": "(?>...)", "description": "Atomic group; prevents backtracking" },
+                            { "character": "(?i)", "description": "Inline flag: case-insensitive" },
+                            { "character": "(?m)", "description": "Inline flag: multi-line anchors" },
+                            { "character": "(?s)", "description": "Inline flag: dot matches newline" },
+                            { "character": "(?x)", "description": "Inline flag: verbose / free-spacing" },
+                            { "character": "(?U)", "description": "Inline flag: swap greedy and lazy" },
+                            { "character": "(?i:...)", "description": "Scoped inline flag" }
+                        ]
+                    }
+                ],
+                "engine_examples": [
+                    {
+                        "regex": "(?<word>\\w+)\\s+\\k<word>",
+                        "text": "A backreference finds doubled words:\n\nthe the quick brown fox\nnot not only here\nbut but also there\nand a clean line without repeats"
+                    }
+                ]
             }
         ]
     });
 
     let json_str = serde_json::to_string(&worker_info).unwrap();
     let _: () = con.hset("openregex:workers", "worker-rust", json_str).await?;
-    println!("[Worker] Registered 'worker-rust' with 1 engine.");
+    println!("[Worker] Registered 'worker-rust' with 2 engines.");
 
     Ok(())
 }

@@ -148,6 +148,112 @@ public static class Registry
                             Text: "This is an example to get IP:\n\n192.168.1.100\n192.168.1.100:8080\n127.0.0.1\n192.168.1.0/24\n192.168.1.1-192.168.1.255\n192.168.1.1-192.168.1.255:80\n192.168.1.0/24:80"
                         )
                     }
+                ),
+                new EngineInfo(
+                    EngineId: $"dotnet{langVersion}_nonbacktracking",
+                    EngineLanguageType: "C#",
+                    EngineLanguageVersion: langVersion,
+                    EngineRegexLib: "System.Text.RegularExpressions (NonBacktracking)",
+                    EngineRegexLibVersion: libVersion,
+                    EngineLabel: "C# (.NET NonBacktracking)",
+                    EngineCapabilities: new EngineCapabilities(
+                        Flags: BuildEngineFlags("i", "m", "s", "x", "n"),
+                        SupportsLookaround: false,
+                        SupportsBackrefs: false
+                    ),
+                    EngineDocs: new EngineDocs(
+                        Trivia: new List<string>
+                        {
+                            "RegexOptions.NonBacktracking shipped with .NET 7 and swaps the classic backtracking matcher for a derivative-based automaton.",
+                            ".NET runtime libraries (including regex) are distributed under the MIT license.",
+                            "Matching time is linear in the length of the input and never depends on how the pattern is written, so catastrophic backtracking is impossible by construction.",
+                            "The price is expressiveness: lookarounds, backreferences, atomic groups and RegexOptions.RightToLeft are all rejected at construction time.",
+                            "Unlike RE2 it still returns the leftmost-first match that the backtracking engine would, so results agree with the standard .NET engine wherever both can run a pattern.",
+                            "Compare this engine with the standard .NET one side by side: identical answers for supported patterns, an immediate error here for anything that needs backtracking.",
+                            "Memory, not time, is the failure mode: the automaton is built lazily and very large patterns can hit an internal state limit."
+                        },
+                        CheatSheetUrl: "https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-options#nonbacktracking"
+                    ),
+                    EngineCheatSheet: new List<CheatSheetCategory>
+                    {
+                        new CheatSheetCategory(
+                            Category: "Character Classes & Escapes",
+                            Items: new List<CheatSheetItem>
+                            {
+                                new CheatSheetItem(".", "Any character (except newline unless 's' flag is set)"),
+                                new CheatSheetItem("\\w", "Word character (alphanumeric + underscore)"),
+                                new CheatSheetItem("\\W", "Non-word character"),
+                                new CheatSheetItem("\\d", "Decimal digit"),
+                                new CheatSheetItem("\\D", "Non-digit"),
+                                new CheatSheetItem("\\s", "Whitespace character"),
+                                new CheatSheetItem("\\S", "Non-whitespace character"),
+                                new CheatSheetItem("\\p{L}", "Unicode category"),
+                                new CheatSheetItem("[a-z]", "Character class"),
+                                new CheatSheetItem("[^a-z]", "Negated character class")
+                            }
+                        ),
+                        new CheatSheetCategory(
+                            Category: "Anchors & Boundaries",
+                            Items: new List<CheatSheetItem>
+                            {
+                                new CheatSheetItem("^", "Start of string (or line if 'm' flag is set)"),
+                                new CheatSheetItem("$", "End of string (or line if 'm' flag is set)"),
+                                new CheatSheetItem("\\A", "Absolute start of string"),
+                                new CheatSheetItem("\\z", "Absolute end of string"),
+                                new CheatSheetItem("\\Z", "End of string or before a final newline"),
+                                new CheatSheetItem("\\b", "Word boundary"),
+                                new CheatSheetItem("\\B", "Non-word boundary")
+                            }
+                        ),
+                        new CheatSheetCategory(
+                            Category: "Quantifiers",
+                            Items: new List<CheatSheetItem>
+                            {
+                                new CheatSheetItem("*", "0 or more times (greedy)"),
+                                new CheatSheetItem("+", "1 or more times (greedy)"),
+                                new CheatSheetItem("?", "0 or 1 time (greedy)"),
+                                new CheatSheetItem("{m}", "Exactly m times"),
+                                new CheatSheetItem("{m,n}", "Between m and n times (greedy)"),
+                                new CheatSheetItem("*?", "0 or more times (lazy)"),
+                                new CheatSheetItem("+?", "1 or more times (lazy)"),
+                                new CheatSheetItem("??", "0 or 1 time (lazy)"),
+                                new CheatSheetItem("*+", "Not supported: atomic quantifiers need backtracking")
+                            }
+                        ),
+                        new CheatSheetCategory(
+                            Category: "Grouping & Backreferences",
+                            Items: new List<CheatSheetItem>
+                            {
+                                new CheatSheetItem("(...)", "Capturing group"),
+                                new CheatSheetItem("(?:...)", "Non-capturing group"),
+                                new CheatSheetItem("x|y", "Alternation (match x or y)"),
+                                new CheatSheetItem("(?<name>...)", "Named capturing group"),
+                                new CheatSheetItem("\\1", "Not supported: backreferences are rejected in this mode"),
+                                new CheatSheetItem("(?<a-b>...)", "Not supported: balancing groups are rejected in this mode")
+                            }
+                        ),
+                        new CheatSheetCategory(
+                            Category: "Unsupported Constructs",
+                            Items: new List<CheatSheetItem>
+                            {
+                                new CheatSheetItem("(?=...)", "Positive lookahead - rejected at construction time"),
+                                new CheatSheetItem("(?!...)", "Negative lookahead - rejected at construction time"),
+                                new CheatSheetItem("(?<=...)", "Positive lookbehind - rejected at construction time"),
+                                new CheatSheetItem("(?<!...)", "Negative lookbehind - rejected at construction time"),
+                                new CheatSheetItem("(?>...)", "Atomic group - rejected at construction time"),
+                                new CheatSheetItem("RightToLeft", "The 'r' flag cannot be combined with NonBacktracking"),
+                                new CheatSheetItem("(?i)", "Inline flags are supported as usual"),
+                                new CheatSheetItem("(?m)", "Inline flags are supported as usual")
+                            }
+                        )
+                    },
+                    EngineExamples: new List<EngineExample>
+                    {
+                        new EngineExample(
+                            Regex: @"(a+)+$",
+                            Text: "The classic catastrophic pattern, harmless here:\n\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaab\naaaa"
+                        )
+                    }
                 )
             }
         );
