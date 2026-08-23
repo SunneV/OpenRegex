@@ -1,0 +1,4 @@
+# Runtime dependencies for the OpenRegex Perl worker.
+# JSON::PP, Encode, IO::Select, POSIX and Time::HiRes ship with core Perl.
+
+requires 'Redis', '>= 2.000';
