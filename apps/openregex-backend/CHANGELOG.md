@@ -2,8 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.3.1] - YYYY-MM-DD
-
+## [2.3.1] - 2026-08-23
 ### Fixed
 - release the pubsub connection after every match request
 
