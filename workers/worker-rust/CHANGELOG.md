@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - YYYY-MM-DD
+
+### Added
+- add fancy-regex engine with lookaround and backreferences
+
 ## [1.2.0] - 2026-08-22
+
 ### Added
 - add TTL heartbeat and graceful unregister
 - report communication schema version 1.1

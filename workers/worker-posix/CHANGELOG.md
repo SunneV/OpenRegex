@@ -2,4 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - YYYY-MM-DD
+## [1.0.0] - YYYY-MM-DD
+
+### Added
+- add GNU grep, sed and awk BRE/ERE engines

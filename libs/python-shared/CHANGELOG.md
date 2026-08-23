@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - YYYY-MM-DD
+
+### Added
+- add queue runtime and capture group scanner for externally driven workers
+
 ## [1.2.0] - 2026-08-22
+
 ### Added
 - add worker lifecycle helpers with TTL heartbeat
 - add worker schema version to worker info contract

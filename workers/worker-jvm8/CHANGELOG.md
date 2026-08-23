@@ -2,4 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - YYYY-MM-DD
+## [1.0.0] - YYYY-MM-DD
+
+### Added
+- add Java 8 java.util.regex worker for JDK version comparison
