@@ -1,6 +1,60 @@
-version: "3.8"
+# OpenRegex - self-hosted stack.
+#
+# Two networks split the deployment: everything that only ever talks to Redis
+# or a database lives on 'core', which is internal and therefore has no route
+# to or from the outside world. Only the frontend is published.
+
+x-worker-env: &worker-env
+  REDIS_URL: redis://redis:6379
+  WORKER_EXECUTION_TIMEOUT_MS: ${WORKER_EXECUTION_TIMEOUT_MS:-1000}
+  WORKER_MAX_INPUT_SIZE: ${WORKER_MAX_INPUT_SIZE:-10485760}
+  WORKER_MAX_MATCHES: ${WORKER_MAX_MATCHES:-10000}
+  WORKER_MAX_GROUPS: ${WORKER_MAX_GROUPS:-1000}
+  WORKER_MAX_JSON_SIZE: ${WORKER_MAX_JSON_SIZE:-10485760}
+
+x-worker: &worker
+  environment: *worker-env
+  networks: [ core ]
+  depends_on:
+    redis: { condition: service_healthy }
+  restart: always
 
 services:
+
+  # --- EDGE ---
+
+  frontend:
+    image: sunnev/openregex-frontend:latest
+    ports:
+      - "5000:5000"
+    environment:
+      ROBOTS_META: ${ROBOTS_META:-noindex, nofollow}
+    networks: [ edge ]
+    depends_on:
+      - backend
+    restart: always
+
+  backend:
+    image: sunnev/openregex-backend:latest
+    # The frontend's nginx proxies /api to backend:8000 over the edge network,
+    # so nothing in the browser needs this port. Publishing it only exposes
+    # FastAPI and /api/docs directly; uncomment if you want that on purpose.
+    # ports:
+    #   - "8000:8000"
+    environment:
+      REDIS_URL: redis://redis:6379
+      MAX_AI_QUEUE: ${MAX_AI_QUEUE:-10}
+      RATE_LIMIT_REQUESTS: ${RATE_LIMIT_REQUESTS:-60}
+      RATE_LIMIT_WINDOW: ${RATE_LIMIT_WINDOW:-60}
+      API_AI_ENDPOINT_ENABLE: ${API_AI_ENDPOINT_ENABLE:-false}
+      API_REGEX_ENDPOINT_ENABLE: ${API_REGEX_ENDPOINT_ENABLE:-true}
+    networks: [ edge, core ]
+    depends_on:
+      redis: { condition: service_healthy }
+    restart: always
+
+  # --- CORE ---
+
   redis:
     image: redis:alpine
     healthcheck:
@@ -8,299 +62,120 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+    networks: [ core ]
     restart: always
-
-  backend:
-    image: sunnev/openregex-backend:latest
-    ports:
-      - "8000:8000"
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - MAX_AI_QUEUE=${MAX_AI_QUEUE:-10}
-      - RATE_LIMIT_REQUESTS=${RATE_LIMIT_REQUESTS:-60}
-      - RATE_LIMIT_WINDOW=${RATE_LIMIT_WINDOW:-60}
-      - API_AI_ENDPOINT_ENABLE=${API_AI_ENDPOINT_ENABLE:-false}
-      - API_REGEX_ENDPOINT_ENABLE=${API_REGEX_ENDPOINT_ENABLE:-true}
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: always
-
-  frontend:
-    image: sunnev/openregex-frontend:latest
-    ports:
-      - "5000:5000"
-    environment:
-      - ROBOTS_META=${ROBOTS_META:-noindex, nofollow}
-      - VITE_APP_TERMS={VITE_APP_TERMS:-} # accepted for local
-    restart: always
-    depends_on:
-      - backend
 
   # --- OPTIONAL AI WORKER ---
   # Uncomment the lines below to enable LLM-powered regex assistance.
-  # 🛡️ SECURITY RECOMMENDATION: For production, we strongly advise pointing LLM_ENDPOINT
+  # This is the only worker that needs to reach the internet, which is why it
+  # also joins the edge network - on core alone it could not reach the API.
+  # SECURITY RECOMMENDATION: For production, we strongly advise pointing LLM_ENDPOINT
   # to a proxy server (like LiteLLM) to safely manage and isolate your API keys.
   # worker-ai:
   #   image: sunnev/openregex-worker-ai:latest
   #   environment:
-  #     - REDIS_URL=redis://redis:6379
-  #     - LLM_ENDPOINT=${LLM_ENDPOINT:-}
-  #     - LLM_MODEL=${LLM_MODEL:-}
-  #     - LLM_API_KEY=${LLM_API_KEY:-}
-  #     - LLM_SSL_VERIFY=${LLM_SSL_VERIFY:-true}
+  #     REDIS_URL: redis://redis:6379
+  #     AI_MAX_WORKERS: ${AI_MAX_WORKERS:-2}
+  #     LLM_ENDPOINT: ${LLM_ENDPOINT:-}
+  #     LLM_MODEL: ${LLM_MODEL:-}
+  #     LLM_API_KEY: ${LLM_API_KEY:-}
+  #     LLM_SSL_VERIFY: ${LLM_SSL_VERIFY:-true}
+  #   networks: [ core, edge ]
   #   depends_on:
-  #     redis:
-  #       condition: service_healthy
+  #     redis: { condition: service_healthy }
   #   restart: always
 
-  worker-python:
-    image: sunnev/openregex-worker-python:latest
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: always
+  # --- REGEX WORKERS ---
 
-  worker-c-cpp:
-    image: sunnev/openregex-worker-c-cpp:latest
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: always
-
-  worker-v8:
-    image: sunnev/openregex-worker-v8:latest
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: always
-
-  worker-jvm:
-    image: sunnev/openregex-worker-jvm:latest
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: always
-
-  worker-rust:
-    image: sunnev/openregex-worker-rust:latest
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: always
-
-  worker-dotnet:
-    image: sunnev/openregex-worker-dotnet:latest
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: always
-
-  worker-go:
-    image: sunnev/openregex-worker-go:latest
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: always
-
-  worker-php:
-    image: sunnev/openregex-worker-php:latest
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: always
+  worker-python: { <<: *worker, image: sunnev/openregex-worker-python:latest }
+  worker-c-cpp:  { <<: *worker, image: sunnev/openregex-worker-c-cpp:latest }
+  worker-v8:     { <<: *worker, image: sunnev/openregex-worker-v8:latest }
+  worker-jvm:    { <<: *worker, image: sunnev/openregex-worker-jvm:latest }
+  worker-jvm8:   { <<: *worker, image: sunnev/openregex-worker-jvm8:latest }
+  worker-rust:   { <<: *worker, image: sunnev/openregex-worker-rust:latest }
+  worker-dotnet: { <<: *worker, image: sunnev/openregex-worker-dotnet:latest }
+  worker-go:     { <<: *worker, image: sunnev/openregex-worker-go:latest }
+  worker-php:    { <<: *worker, image: sunnev/openregex-worker-php:latest }
+  worker-ruby:   { <<: *worker, image: sunnev/openregex-worker-ruby:latest }
+  worker-perl:   { <<: *worker, image: sunnev/openregex-worker-perl:latest }
+  worker-posix:  { <<: *worker, image: sunnev/openregex-worker-posix:latest }
+  worker-vim:    { <<: *worker, image: sunnev/openregex-worker-vim:latest }
 
   # --- DATABASE ENGINES ---
-  # PostgreSQL and MySQL cannot be embedded in a worker: their regex engines
-  # only exist behind a server, so the workers query a real instance. Both are
-  # stateless here - no volumes, nothing to persist.
+  # PostgreSQL exposes its regex engine only through the server: Spencer's ARE
+  # lives inside the backend and is not shipped as a standalone library, and the
+  # regexp_* functions the worker calls are SQL surface by definition. MySQL is
+  # different - since 8.0 it matches with ICU, which does exist standalone - but
+  # the server wraps it in regexp_time_limit, collation-driven case sensitivity
+  # and a pinned ICU version, so only a real instance reproduces MySQL faithfully.
+  #
+  # Neither database stores anything worth keeping, but both images declare a
+  # VOLUME, so Docker creates one either way. Naming them keeps the data out of
+  # dangling anonymous volumes and lets 'docker compose down -v' clear it.
   postgres:
     image: postgres:17-alpine
     environment:
-      - POSTGRES_USER=${POSTGRES_USER:-openregex}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-openregex}
-      - POSTGRES_DB=${POSTGRES_DB:-openregex}
+      POSTGRES_USER: ${POSTGRES_USER:-openregex}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-openregex}
+      POSTGRES_DB: ${POSTGRES_DB:-openregex}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-openregex}" ]
       interval: 5s
       timeout: 3s
       retries: 10
+    networks: [ core ]
     restart: always
 
   mysql:
     image: mysql:8.4
     command: --regexp-time-limit=200000
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-openregex-root}
-      - MYSQL_USER=${MYSQL_USER:-openregex}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-openregex}
-      - MYSQL_DATABASE=${MYSQL_DATABASE:-openregex}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-openregex-root}
+      MYSQL_USER: ${MYSQL_USER:-openregex}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-openregex}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-openregex}
+    volumes:
+      - mysql-data:/var/lib/mysql
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1" ]
       interval: 5s
       timeout: 3s
       retries: 20
-    restart: always
-
-  worker-ruby:
-    image: sunnev/openregex-worker-ruby:latest
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: always
-
-  worker-perl:
-    image: sunnev/openregex-worker-perl:latest
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: always
-
-  worker-jvm8:
-    image: sunnev/openregex-worker-jvm8:latest
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: always
-
-  worker-posix:
-    image: sunnev/openregex-worker-posix:latest
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: always
-
-  worker-vim:
-    image: sunnev/openregex-worker-vim:latest
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-    depends_on:
-      redis:
-        condition: service_healthy
+    networks: [ core ]
     restart: always
 
   worker-postgres:
     image: sunnev/openregex-worker-postgres:latest
     environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-      - POSTGRES_DSN=postgresql://${POSTGRES_USER:-openregex}:${POSTGRES_PASSWORD:-openregex}@postgres:5432/${POSTGRES_DB:-openregex}
+      <<: *worker-env
+      POSTGRES_DSN: postgresql://${POSTGRES_USER:-openregex}:${POSTGRES_PASSWORD:-openregex}@postgres:5432/${POSTGRES_DB:-openregex}
+    networks: [ core ]
     depends_on:
-      redis:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
+      redis: { condition: service_healthy }
+      postgres: { condition: service_healthy }
     restart: always
 
   worker-mysql:
     image: sunnev/openregex-worker-mysql:latest
     environment:
-      - REDIS_URL=redis://redis:6379
-      - WORKER_EXECUTION_TIMEOUT_MS=${WORKER_EXECUTION_TIMEOUT_MS:-1000}
-      - WORKER_MAX_INPUT_SIZE=${WORKER_MAX_INPUT_SIZE:-10485760}
-      - WORKER_MAX_MATCHES=${WORKER_MAX_MATCHES:-10000}
-      - WORKER_MAX_GROUPS=${WORKER_MAX_GROUPS:-1000}
-      - WORKER_MAX_JSON_SIZE=${WORKER_MAX_JSON_SIZE:-10485760}
-      - MYSQL_HOST=mysql
-      - MYSQL_USER=${MYSQL_USER:-openregex}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-openregex}
-      - MYSQL_DATABASE=${MYSQL_DATABASE:-openregex}
+      <<: *worker-env
+      MYSQL_HOST: mysql
+      MYSQL_USER: ${MYSQL_USER:-openregex}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-openregex}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-openregex}
+    networks: [ core ]
     depends_on:
-      redis:
-        condition: service_healthy
-      mysql:
-        condition: service_healthy
+      redis: { condition: service_healthy }
+      mysql: { condition: service_healthy }
     restart: always
+
+networks:
+  edge:
+  core:
+    internal: true
+
+volumes:
+  postgres-data:
+  mysql-data:
