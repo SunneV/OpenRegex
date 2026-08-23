@@ -106,6 +106,32 @@ def main():
         "workers/worker-php": [
             ("deploy/dockerfiles/worker-php.dockerfile", r'^ENV WORKER_VERSION="[^"]+"', 'ENV WORKER_VERSION="{}"')
         ],
+        "workers/worker-perl": [
+            ("deploy/dockerfiles/worker-perl.dockerfile", r'^ENV WORKER_VERSION="[^"]+"', 'ENV WORKER_VERSION="{}"')
+        ],
+        "workers/worker-ruby": [
+            ("deploy/dockerfiles/worker-ruby.dockerfile", r'^ENV WORKER_VERSION="[^"]+"', 'ENV WORKER_VERSION="{}"')
+        ],
+        "workers/worker-jvm8": [
+            ("workers/worker-jvm8/pom.xml", r'^    <version>[^<]+</version>', '    <version>{}</version>'),
+            ("deploy/dockerfiles/worker-jvm8.dockerfile", r'^ENV WORKER_VERSION="[^"]+"', 'ENV WORKER_VERSION="{}"')
+        ],
+        "workers/worker-postgres": [
+            ("workers/worker-postgres/pyproject.toml", r'^version\s*=\s*"[^"]+"', 'version = "{}"'),
+            ("deploy/dockerfiles/worker-postgres.dockerfile", r'^ENV WORKER_VERSION="[^"]+"', 'ENV WORKER_VERSION="{}"')
+        ],
+        "workers/worker-mysql": [
+            ("workers/worker-mysql/pyproject.toml", r'^version\s*=\s*"[^"]+"', 'version = "{}"'),
+            ("deploy/dockerfiles/worker-mysql.dockerfile", r'^ENV WORKER_VERSION="[^"]+"', 'ENV WORKER_VERSION="{}"')
+        ],
+        "workers/worker-posix": [
+            ("workers/worker-posix/pyproject.toml", r'^version\s*=\s*"[^"]+"', 'version = "{}"'),
+            ("deploy/dockerfiles/worker-posix.dockerfile", r'^ENV WORKER_VERSION="[^"]+"', 'ENV WORKER_VERSION="{}"')
+        ],
+        "workers/worker-vim": [
+            ("workers/worker-vim/pyproject.toml", r'^version\s*=\s*"[^"]+"', 'version = "{}"'),
+            ("deploy/dockerfiles/worker-vim.dockerfile", r'^ENV WORKER_VERSION="[^"]+"', 'ENV WORKER_VERSION="{}"')
+        ],
         "workers/worker-ai": [
             ("workers/worker-ai/pyproject.toml", r'^version\s*=\s*"[^"]+"', 'version = "{}"'),
             ("deploy/dockerfiles/worker-ai.dockerfile", r'^ENV WORKER_VERSION="[^"]+"', 'ENV WORKER_VERSION="{}"')
