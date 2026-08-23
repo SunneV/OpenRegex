@@ -48,11 +48,11 @@ async def match_regex(request: MatchRequest, fastapi_req: Request):
 
     pubsub = redis_client.pubsub()
     channel_name = f"result:{request.task_id}"
-    await pubsub.subscribe(channel_name)
-
-    await redis_client.lpush(queue_name, task_json)
 
     try:
+        await pubsub.subscribe(channel_name)
+        await redis_client.lpush(queue_name, task_json)
+
         async with asyncio.timeout(5.0):
             async for message in pubsub.listen():
                 if message["type"] == "message":
@@ -60,15 +60,19 @@ async def match_regex(request: MatchRequest, fastapi_req: Request):
                     if data == "ready":
                         result_data = await redis_client.get(f"result:{request.task_id}")
                         if result_data:
-                            await pubsub.unsubscribe(channel_name)
                             return MatchResult.model_validate_json(result_data)
                     else:
                         # Fallback for workers not yet using the SETEX pattern
-                        await pubsub.unsubscribe(channel_name)
                         return MatchResult.model_validate_json(data)
     except asyncio.TimeoutError:
-        await pubsub.unsubscribe(channel_name)
         raise HTTPException(status_code=504, detail="Backend Timeout: Worker failed to respond within 5000ms.")
+    except HTTPException:
+        raise
     except Exception as e:
-        await pubsub.unsubscribe(channel_name)
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        # A pubsub object holds a connection checked out of the pool for the
+        # whole request. Unsubscribing does not give it back - only closing
+        # does - so without this the pool ran dry after a few hundred matches
+        # and every further request failed with "Too many connections".
+        await pubsub.aclose()
